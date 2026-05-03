@@ -1385,7 +1385,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #86817a;
+  background: #ffffc7;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2910,4 +2910,68 @@ table th {
 .footer .copyright,
 .footer .powered-by {
   display: none !important;
+}
+/* 11. 动态标题样式 - 移除黑框 + 渐变动画 */
+/* 移除标题周围的黑色背景 */
+.site-brand-container,
+.brand,
+.site-meta {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+/* 标题容器 */
+.site-title {
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  background: linear-gradient(45deg, #c47021, #d48c32, #daa520, #cd853f, #c47021) !important;
+  background-size: 300% 300% !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: gradientShift 4s ease infinite !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 2px 4px rgba(196,112,33,0.3));
+}
+/* 渐变动画 */
+/* 副标题 */
+.site-subtitle {
+  color: #8b6914 !important;
+  font-size: 0.9rem !important;
+  margin-top: 8px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.1em !important;
+}
+/* 菜单项 */
+.menu-item a {
+  color: #5c3d1e !important;
+  font-weight: 500 !important;
+}
+.menu-item a:hover,
+.menu-item-active a {
+  color: #c47021 !important;
+  background: rgba(196,112,33,0.1) !important;
+  border-radius: 8px !important;
+}
+/* 头部区域整体透明化 */
+.header {
+  background: rgba(255,248,238,0.6) !important;
+  border-bottom: 1px solid rgba(196,112,33,0.15) !important;
+}
+/* 移动端菜单按钮 */
+.toggle .toggle-line {
+  background: #8b6914 !important;
+}
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
