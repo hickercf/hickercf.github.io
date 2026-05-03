@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+<meta name="theme-color" content="#faf5eb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#3d2b1f" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#ffffff">
+  <link rel="mask-icon" href="/images/logo.svg" color="#faf5eb">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -254,6 +254,61 @@
 </noscript>
 <script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"hickercf/hickercf.github.io","issue_term":"pathname","theme":"preferred-color-scheme"}</script>
 <script src="/js/third-party/comments/utterances.js" defer></script>
+<script>
+(function() {
+  // 枫叶飘落效果
+  const container = document.createElement('div');
+  container.className = 'maple-leaves-container';
+  document.body.appendChild(container);
+
+  const leaves = ['🍁', '🍂', '🍃'];
+  const colors = ['#d28c32', '#c4702a', '#a0522d', '#cd853f', '#daa520', '#b8860b'];
+  
+  function createLeaf() {
+    const leaf = document.createElement('div');
+    leaf.className = 'maple-leaf';
+    leaf.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+    
+    // 随机位置
+    leaf.style.left = Math.random() * 100 + '%';
+    
+    // 随机大小
+    const size = 15 + Math.random() * 20;
+    leaf.style.fontSize = size + 'px';
+    
+    // 随机动画时长
+    const duration = 8 + Math.random() * 12;
+    leaf.style.animationDuration = duration + 's, 3s';
+    
+    // 随机延迟
+    leaf.style.animationDelay = Math.random() * 5 + 's';
+    
+    // 随机颜色（通过滤镜）
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    leaf.style.color = color;
+    
+    // 随机透明度
+    leaf.style.opacity = 0.4 + Math.random() * 0.4;
+    
+    container.appendChild(leaf);
+    
+    // 动画结束后移除元素
+    setTimeout(() => {
+      if (leaf.parentNode) {
+        leaf.parentNode.removeChild(leaf);
+      }
+    }, (duration + 5) * 1000);
+  }
+
+  // 初始创建一些枫叶
+  for (let i = 0; i < 8; i++) {
+    setTimeout(createLeaf, i * 800);
+  }
+
+  // 持续创建新枫叶
+  setInterval(createLeaf, 2000);
+})();
+</script>
 
 </body>
 </html>
