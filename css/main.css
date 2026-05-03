@@ -1385,7 +1385,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #75feff;
+  background: #ff0059;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2561,6 +2561,9 @@ ul.breadcrumb li:last-child {
     border-bottom-color: #eee;
     color: #eee;
   }
+}
+.utterances {
+  max-width: unset;
 }
 mark.search-keyword {
   background: transparent;
