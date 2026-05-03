@@ -1,0 +1,124 @@
+/* autumn.css - Hexo NexT 秋天背景 + 毛玻璃优化 */
+
+/* 1. 全站秋天背景 */
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  position: relative;
+  background:
+    linear-gradient(
+      rgba(255, 244, 230, 0.30),
+      rgba(255, 248, 238, 0.18)
+    ),
+    url("/img/bg/autumn-bg.png") center center / cover no-repeat fixed !important;
+}
+
+/* 2. 给背景加一层柔光，降低假感和刺眼感 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(255, 234, 190, 0.38), transparent 32%),
+    radial-gradient(circle at 82% 15%, rgba(255, 170, 88, 0.14), transparent 30%),
+    linear-gradient(to bottom, rgba(255, 246, 235, 0.12), rgba(80, 45, 25, 0.08));
+}
+
+/* 3. 内容容器：NexT.Muse 常见区域，做成半透明毛玻璃 */
+.main-inner,
+.content-wrap,
+.post-block,
+.sidebar-inner,
+.comments,
+.pagination,
+#comments,
+#archive,
+.category-all-page,
+.tag-cloud,
+.search-popup,
+.popup {
+  background: rgba(255, 252, 247, 0.74) !important;
+  backdrop-filter: blur(14px) saturate(1.08);
+  -webkit-backdrop-filter: blur(14px) saturate(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  box-shadow: 0 14px 40px rgba(118, 74, 34, 0.10);
+  border-radius: 18px;
+}
+
+/* NexT 文章块内部稍微松一点 */
+.post-block {
+  padding: 28px !important;
+}
+
+/* 4. 顶部/底部区域适配背景 */
+.header-inner,
+.footer-inner {
+  background: rgba(255, 250, 243, 0.58) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+}
+
+/* 5. 文字颜色更贴合秋天，但不要影响代码块 */
+body,
+.post-body,
+.site-title,
+.site-subtitle,
+.menu-item a {
+  color: #3f2b20;
+}
+
+a {
+  color: #a85419;
+}
+
+a:hover {
+  color: #d46b1f;
+}
+
+/* 6. 代码块保持可读 */
+.highlight,
+pre,
+code {
+  backdrop-filter: none;
+}
+
+/* 7. 枫叶 canvas 层 */
+#autumn-leaf-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* 8. 降低动画偏好的用户，直接隐藏飘叶 */
+@media (prefers-reduced-motion: reduce) {
+  #autumn-leaf-canvas {
+    display: none !important;
+  }
+}
+
+/* 9. 手机端减少背景固定导致的卡顿 */
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll !important;
+  }
+
+  .main-inner,
+  .content-wrap,
+  .post-block,
+  .sidebar-inner {
+    border-radius: 14px;
+  }
+
+  .post-block {
+    padding: 18px !important;
+  }
+}
