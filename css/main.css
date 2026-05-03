@@ -1385,7 +1385,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #ffffc7;
+  background: #ebeb14;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2963,6 +2963,37 @@ table th {
 /* 移动端菜单按钮 */
 .toggle .toggle-line {
   background: #8b6914 !important;
+}
+/* 12. 博客 Logo 样式 */
+.blog-logo-container {
+  text-align: center;
+  margin: 20px 0 30px;
+  padding: 20px;
+}
+.blog-logo {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(196,112,33,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255,252,247,0.5);
+  padding: 15px;
+}
+.blog-logo:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(196,112,33,0.3);
+}
+@media (max-width: 768px) {
+  .blog-logo {
+    max-width: 200px;
+    padding: 10px;
+    border-radius: 16px;
+  }
+  .blog-logo-container {
+    margin: 15px 0 20px;
+    padding: 10px;
+  }
 }
 @keyframes gradientShift {
   0% {
