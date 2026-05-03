@@ -1385,7 +1385,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #c9d696;
+  background: #86817a;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2728,14 +2728,14 @@ body {
   position: relative;
   background: linear-gradient(rgba(255,244,230,0.3), rgba(255,248,238,0.18)), url("/img/bg/autumn-bg.png") center center/cover no-repeat fixed !important;
 }
-/* 2. 给背景加一层柔光，降低假感和刺眼感 */
+/* 2. 移除白膜，只保留暖色调柔光 */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  background: radial-gradient(circle at 18% 8%, rgba(255,234,190,0.38), transparent 32%), radial-gradient(circle at 82% 15%, rgba(255,170,88,0.14), transparent 30%), linear-gradient(to bottom, rgba(255,246,235,0.12), rgba(80,45,25,0.08));
+  background: radial-gradient(circle at 18% 8%, rgba(255,200,140,0.15), transparent 40%), radial-gradient(circle at 82% 15%, rgba(255,160,80,0.08), transparent 35%);
 }
 /* 3. 内容容器：NexT.Muse 常见区域，做成半透明毛玻璃 */
 .main-inner,
@@ -2818,4 +2818,96 @@ code {
   .post-block {
     padding: 18px !important;
   }
+}
+/* 10. 修复黑色元素为秋天色系 */
+/* 侧边栏背景 */
+.sidebar {
+  background: rgba(61,43,31,0.92) !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+/* 侧边栏切换按钮 */
+.sidebar-toggle {
+  background: rgba(196,112,33,0.85) !important;
+}
+.sidebar-toggle:hover {
+  background: #c47021 !important;
+}
+.sidebar-toggle .toggle-line {
+  background: #fff8f0 !important;
+}
+/* 返回顶部按钮 */
+.back-to-top {
+  background: rgba(196,112,33,0.85) !important;
+}
+.back-to-top:hover {
+  background: #c47021 !important;
+  color: #fff8f0 !important;
+}
+/* 侧边栏遮罩 */
+.sidebar-dimmer {
+  background: rgba(61,43,31,0.6) !important;
+}
+/* 侧边栏文字颜色 */
+.sidebar a {
+  color: #e8d5c4 !important;
+  border-bottom-color: rgba(232,213,196,0.3) !important;
+}
+.sidebar a:hover {
+  color: #fff8f0 !important;
+  border-bottom-color: #fff8f0 !important;
+}
+.sidebar-nav li:hover {
+  color: #f5efe6 !important;
+}
+.sidebar-toc-active .sidebar-nav-toc,
+.sidebar-overview-active .sidebar-nav-overview {
+  color: #daa520 !important;
+  border-bottom-color: #daa520 !important;
+}
+.site-author-name {
+  color: #fff8f0 !important;
+}
+.site-description {
+  color: #d4b896 !important;
+}
+/* 分页器 */
+.pagination .page-number.current {
+  background: #c47021 !important;
+  border-color: #c47021 !important;
+  color: #fff8f0 !important;
+}
+/* 代码块高亮背景 */
+figure.highlight {
+  background: rgba(255,252,247,0.9) !important;
+}
+pre {
+  background: rgba(255,252,247,0.9) !important;
+}
+code {
+  background: rgba(240,225,200,0.5) !important;
+}
+/* 引用块 */
+blockquote {
+  border-left-color: #c47021 !important;
+  background: rgba(196,112,33,0.08) !important;
+}
+/* 表格 */
+table th {
+  background: rgba(196,112,33,0.15) !important;
+}
+/* 标签云 */
+.tag-cloud a {
+  color: #a85419 !important;
+}
+.tag-cloud a:hover {
+  color: #d46b1f !important;
+}
+/* 搜索弹出框 */
+.search-popup {
+  background: rgba(255,252,247,0.95) !important;
+}
+/* 修复页脚重复 - 隐藏默认 NexT 页脚 */
+.footer .copyright,
+.footer .powered-by {
+  display: none !important;
 }
