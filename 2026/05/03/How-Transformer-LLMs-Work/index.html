@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hickercf.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1.引言：LLM到底是怎么读懂一句话，并且继续写下去的？LLM不是一次读&#x2F;写一整段话，而是一个token一个token的写 什么是token？LLM无法处理文字，只能处理数据，所以想要读懂用户的input需要tokenizer将input的text切成一小块一小块的token比如英文:	unbelievable可能被切成:	un + believable中文：	人工智能可能被切成：	人">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How-Transformer-LLMs-Work">
+<meta property="og:url" content="https://hickercf.github.io/2026/05/03/How-Transformer-LLMs-Work/index.html">
+<meta property="og:site_name" content="我的博客">
+<meta property="og:description" content="1.引言：LLM到底是怎么读懂一句话，并且继续写下去的？LLM不是一次读&#x2F;写一整段话，而是一个token一个token的写 什么是token？LLM无法处理文字，只能处理数据，所以想要读懂用户的input需要tokenizer将input的text切成一小块一小块的token比如英文:	unbelievable可能被切成:	un + believable中文：	人工智能可能被切成：	人">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-03T01:59:00.000Z">
+<meta property="article:modified_time" content="2026-05-03T10:00:16.060Z">
+<meta property="article:author" content="博主">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hickercf.github.io/2026/05/03/How-Transformer-LLMs-Work/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hickercf.github.io/2026/05/03/How-Transformer-LLMs-Work/","path":"2026/05/03/How-Transformer-LLMs-Work/","title":"How-Transformer-LLMs-Work"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>How-Transformer-LLMs-Work | 我的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">我的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录生活与技术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80%EF%BC%9ALLM%E5%88%B0%E5%BA%95%E6%98%AF%E6%80%8E%E4%B9%88%E8%AF%BB%E6%87%82%E4%B8%80%E5%8F%A5%E8%AF%9D%EF%BC%8C%E5%B9%B6%E4%B8%94%E7%BB%A7%E7%BB%AD%E5%86%99%E4%B8%8B%E5%8E%BB%E7%9A%84%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1.引言：LLM到底是怎么读懂一句话，并且继续写下去的？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFtoken%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">什么是token？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Understanding-Lauguage-Models"><span class="nav-number">2.</span> <span class="nav-text">2.Understanding Lauguage Models</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bag-of-Words"><span class="nav-number">2.1.</span> <span class="nav-text">Bag-of-Words</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Word-Embeddings"><span class="nav-number">2.2.</span> <span class="nav-text">Word Embeddings</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Embedding%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.2.1.</span> <span class="nav-text">Embedding是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Word2Vec"><span class="nav-number">2.2.2.</span> <span class="nav-text">Word2Vec</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Encoding-and-Decoding-Context-with-Attention"><span class="nav-number">2.3.</span> <span class="nav-text">Encoding and Decoding Context with Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFAttention"><span class="nav-number">2.3.1.</span> <span class="nav-text">什么是Attention?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFEncoding"><span class="nav-number">2.3.2.</span> <span class="nav-text">什么是Encoding?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFDecoding"><span class="nav-number">2.3.3.</span> <span class="nav-text">什么是Decoding?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer%E6%9E%B6%E6%9E%84"><span class="nav-number">2.4.</span> <span class="nav-text">Transformer架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Transformer%E5%88%B0%E5%BA%95%E6%98%AF%E5%95%A5%EF%BC%9F"><span class="nav-number">2.4.1.</span> <span class="nav-text">Transformer到底是啥？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%B0%E4%BB%A3%E7%9A%84LLM%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.4.2.</span> <span class="nav-text">现代的LLM模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transformer%E7%9A%84%E8%BE%93%E5%85%A5-Token-embedding"><span class="nav-number">2.4.3.</span> <span class="nav-text">Transformer的输入: Token -&gt; embedding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transformer-Block"><span class="nav-number">2.4.4.</span> <span class="nav-text">Transformer Block</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q%EF%BC%8CK%EF%BC%8CV%EF%BC%9AAttention%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="nav-number">2.4.5.</span> <span class="nav-text">Q，K，V：Attention的核心机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Masked-Self-Attention-Decoder-only-LLM%E7%9A%84%E5%85%B3%E9%94%AE"><span class="nav-number">2.4.6.</span> <span class="nav-text">Masked Self-Attention: Decoder-only LLM的关键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Feed-Forward-Network"><span class="nav-number">2.4.7.</span> <span class="nav-text">Feed Forward Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Residual-Connection"><span class="nav-number">2.4.8.</span> <span class="nav-text">Residual Connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LayerNorm%E8%AE%A9%E8%AE%AD%E7%BB%83%E7%A8%B3%E5%AE%9A"><span class="nav-number">2.4.9.</span> <span class="nav-text">LayerNorm让训练稳定</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Post-LN"><span class="nav-number">2.4.9.1.</span> <span class="nav-text">Post-LN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pre-LN"><span class="nav-number">2.4.9.2.</span> <span class="nav-text">Pre-LN</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Encoder-Block-%E5%92%8C-Decoder-Block"><span class="nav-number">2.4.10.</span> <span class="nav-text">Encoder Block 和 Decoder Block</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Encoder-Block%E9%80%82%E5%90%88%E7%90%86%E8%A7%A3%E8%BE%93%E5%85%A5"><span class="nav-number">2.4.10.1.</span> <span class="nav-text">Encoder Block适合理解输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Decoder-Block"><span class="nav-number">2.4.10.2.</span> <span class="nav-text">Decoder Block</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFCross-Attention"><span class="nav-number">2.4.10.3.</span> <span class="nav-text">什么是Cross-Attention</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LM-Head%EF%BC%9A%E5%A6%82%E4%BD%95%E8%BE%93%E5%87%BA%E4%B8%8B%E4%B8%80%E4%B8%AAToken"><span class="nav-number">2.4.11.</span> <span class="nav-text">LM Head：如何输出下一个Token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transformer%E8%AE%AD%E7%BB%83"><span class="nav-number">2.4.12.</span> <span class="nav-text">Transformer训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transformer%E6%8E%A8%E7%90%86%E7%9A%84%E6%B5%81%E7%A8%8B%E7%A4%BA%E6%84%8F"><span class="nav-number">2.4.13.</span> <span class="nav-text">Transformer推理的流程示意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K%EF%BC%8CV-Cache"><span class="nav-number">2.4.14.</span> <span class="nav-text">K，V Cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E4%BE%8B%E5%AD%90%E6%80%BB%E7%BB%93Transformer%E7%9A%84%E6%8E%A8%E7%90%86%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">2.4.15.</span> <span class="nav-text">用一个完整的例子总结Transformer的推理流程：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%88%87token"><span class="nav-number">2.4.15.1.</span> <span class="nav-text">第一步：切token</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%8F%98token-ID"><span class="nav-number">2.4.15.2.</span> <span class="nav-text">第二步：变token ID</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9Aembedding"><span class="nav-number">2.4.15.3.</span> <span class="nav-text">第三步：embedding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E5%8A%A0%E5%85%A5%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.4.15.4.</span> <span class="nav-text">第四步：加入位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9ASelf-Attention"><span class="nav-number">2.4.15.5.</span> <span class="nav-text">第五步：Self-Attention</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%9AFFN%E5%8A%A0%E5%B7%A5"><span class="nav-number">2.4.15.6.</span> <span class="nav-text">第六步：FFN加工</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%83%E6%AD%A5%EF%BC%9A%E5%A4%9A%E5%B1%82%E9%87%8D%E5%A4%8D"><span class="nav-number">2.4.15.7.</span> <span class="nav-text">第七步：多层重复</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">博主</p>
+  <div class="site-description" itemprop="description">一个简洁的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hickercf.github.io/2026/05/03/How-Transformer-LLMs-Work/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="博主">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="我的博客">
+      <meta itemprop="description" content="一个简洁的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="How-Transformer-LLMs-Work | 我的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          How-Transformer-LLMs-Work
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-03 09:59:00 / 修改时间：18:00:16" itemprop="dateCreated datePublished" datetime="2026-05-03T09:59:00+08:00">2026-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">AI学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-引言：LLM到底是怎么读懂一句话，并且继续写下去的？"><a href="#1-引言：LLM到底是怎么读懂一句话，并且继续写下去的？" class="headerlink" title="1.引言：LLM到底是怎么读懂一句话，并且继续写下去的？"></a>1.引言：<code>LLM</code>到底是怎么读懂一句话，并且继续写下去的？</h1><p><code>LLM</code>不是一次读&#x2F;写一整段话，而是一个<code>token</code>一个<code>token</code>的写</p>
+<h2 id="什么是token？"><a href="#什么是token？" class="headerlink" title="什么是token？"></a>什么是<code>token</code>？</h2><p><code>LLM</code>无法处理文字，只能处理数据，所以想要读懂用户的<code>input</code>需要<code>tokenizer</code><br>将<code>input</code>的<code>text</code>切成一小块一小块的<code>token</code><br>比如英文:<br>	<code>unbelievable</code><br>可能被切成:<br>	<code>un + believable</code><br>中文：<br>	<code>人工智能</code><br>可能被切成：<br>	<code>人 + 工 + 智 + 能</code><br>不同的模型切法不同，具体实现取决于&#96;tokenizer</p>
+<p>而<code>LLM</code>的核心工作就是，<em><strong>根据前文的内容，预测下一个<code>token</code></strong></em><br>例如，用户输入：<br>	<code>今天天气很好，我想去</code><br>模型要做的并不是真的去“思考人生”，而是去预测：<br>	<code>公园</code><br>	<code>散步</code><br>	<code>爬山</code><br>	<code>外面</code><br><code>LLM</code>不断的重复：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">预测一个token -&gt; 加到上下文中 -&gt; 预测下一个token -&gt;再加入上下文</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="2-Understanding-Lauguage-Models"><a href="#2-Understanding-Lauguage-Models" class="headerlink" title="2.Understanding Lauguage Models"></a>2.Understanding Lauguage Models</h1><p>机器不能直接理解文字，所以我们必须先把文字表示成数字</p>
+<h2 id="Bag-of-Words"><a href="#Bag-of-Words" class="headerlink" title="Bag-of-Words"></a>Bag-of-Words</h2><p>这是最早的一种简单方式</p>
+<p>假设有三句话</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">我喜欢猫</span><br><span class="line">我喜欢狗</span><br><span class="line">我喜欢与</span><br></pre></td></tr></table></figure>
+<p>根据这三句话先做一个词表：<br><code>我, 喜欢, 猫, 狗, 鱼</code><br>然后每句话就可以表示成一个数字向量<br>比如：<code>我喜欢猫</code> 可以表示成:</p>
+<table>
+<thead>
+<tr>
+<th align="right">我</th>
+<th align="right">喜欢</th>
+<th align="right">猫</th>
+<th align="right">狗</th>
+<th align="right">鱼</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td align="right">记录词表中词元的出现次数</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+</tr>
+</tbody></table>
+<p>但是这种方式，只能知道出现了哪些词，不知道顺序，不懂语义，不懂上下文。<br>只能处理一些很简单的任务。</p>
+<hr>
+<h2 id="Word-Embeddings"><a href="#Word-Embeddings" class="headerlink" title="Word Embeddings"></a>Word Embeddings</h2><h3 id="Embedding是什么？"><a href="#Embedding是什么？" class="headerlink" title="Embedding是什么？"></a><code>Embedding</code>是什么？</h3><p><code>Embedding</code>就是把一个词变成一个向量，比如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">猫 → [0.21, -0.45, 0.88, ...]</span><br><span class="line">狗 → [0.19, -0.41, 0.84, ...]</span><br><span class="line">汽车 → [-0.72, 0.13, 0.08, ...]</span><br></pre></td></tr></table></figure>
+<p>向量的目的：表达词的相似性<br>如果两个词的意思相近，他们的向量也会比较靠近</p>
+<h3 id="Word2Vec"><a href="#Word2Vec" class="headerlink" title="Word2Vec"></a><code>Word2Vec</code></h3><p><code>Word2Vec</code>这类方法的核心思想就是：<br>	一个词的含义，可以通过它经常和哪些词一起出现来学习。<br>比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">猫 吃 鱼</span><br><span class="line">狗 吃 骨头</span><br><span class="line">鸟 吃 虫子</span><br></pre></td></tr></table></figure>
+<p>模型慢慢就会知道：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">猫、狗、鸟 都是动物</span><br><span class="line">吃 后面常接食物</span><br></pre></td></tr></table></figure>
+<p>从上下文中学习词义。<br>但是传统的<code>word embedding</code>是静态的，也就是说一个词只有一个固定的向量<br>比如:<br><code>bank</code><br>在下面两句话意思不同</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">I went to the bank to deposit money.</span><br><span class="line">我去银行存钱。</span><br><span class="line"></span><br><span class="line">I sat on the bank of the river.</span><br><span class="line">我坐在河岸边。</span><br></pre></td></tr></table></figure>
+<p>所以需要<code>Transformer</code>，让词的表示根据上下文的变化而变化</p>
+<hr>
+<h2 id="Encoding-and-Decoding-Context-with-Attention"><a href="#Encoding-and-Decoding-Context-with-Attention" class="headerlink" title="Encoding and Decoding Context with Attention"></a>Encoding and Decoding Context with Attention</h2><h3 id="什么是Attention"><a href="#什么是Attention" class="headerlink" title="什么是Attention?"></a>什么是<code>Attention</code>?</h3><p><code>Attention</code>就是，让模型在理解某个<code>token</code>的时候，知道重点看上下文的哪些<code>token</code><br>如输入为：<br><code>小明把书给了小红，因为她明天要考试。</code><br>这里的“她”指的是谁？<br>大概率是“小红”。<br><code>Attention</code>就是模型的这种会看上下文的机制</p>
+<h3 id="什么是Encoding"><a href="#什么是Encoding" class="headerlink" title="什么是Encoding?"></a>什么是<code>Encoding</code>?</h3><p>把输入的text转化成有上下问含义的向量<br>比如原始输入的：“她”，开始只是个普通的代词<br>经过<code>attention</code>后，它变成：<br><code>她 = 小红，明天要考试的人</code></p>
+<h3 id="什么是Decoding"><a href="#什么是Decoding" class="headerlink" title="什么是Decoding?"></a>什么是<code>Decoding</code>?</h3><p><code>Decoding</code>是生成输出<br>比如你让模型翻译：<br><code>I love cats</code><br>模型生成：<br><code>我 喜欢 猫</code></p>
+<hr>
+<h2 id="Transformer架构"><a href="#Transformer架构" class="headerlink" title="Transformer架构"></a>Transformer架构</h2><h3 id="Transformer到底是啥？"><a href="#Transformer到底是啥？" class="headerlink" title="Transformer到底是啥？"></a><code>Transformer</code>到底是啥？</h3><p>Transformer是一种处理序列数据的神经网络架构，在<code>LLM</code>里面的任务通常是：<br><code>给定前面的tokens，预测下一个token</code><br>Transformer的强大之处在于，它可以让一句话里的所有token同时相互建立关系</p>
+<h3 id="现代的LLM模型"><a href="#现代的LLM模型" class="headerlink" title="现代的LLM模型"></a>现代的<code>LLM</code>模型</h3><p>通常使用的是 <code>Decoder-only Transformer</code>，也就是省略了encoder部分只保留了decoder</p>
+<h3 id="Transformer的输入-Token-embedding"><a href="#Transformer的输入-Token-embedding" class="headerlink" title="Transformer的输入: Token -&gt; embedding"></a>Transformer的输入: Token -&gt; embedding</h3><p>由于模型不能直接处理文字<br>所以对于用户的输入，如：<br><code>我喜欢学习 Transformer</code><br>第一步是<code>tokenizer</code>，把我的输入切成Tokens<br><code>[&quot;我&quot;, &quot;喜欢&quot;, &quot;学习&quot;, &quot;Transformer&quot;]</code><br>然后每个token会被变成一个编号<br><code>[102, 3921, 8456, 19384]</code><br>这些编号本身没有意义，所以模型会查一张表，把每个token ID变成向量，即Token Embedding</p>
+<h3 id="Transformer-Block"><a href="#Transformer-Block" class="headerlink" title="Transformer Block"></a>Transformer Block</h3><p>Transformer Block通常由很多层block堆起来<br>一个典型的Transformer Block如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">输入 hidden states</span><br><span class="line">    ↓</span><br><span class="line">LayerNorm            //稳定数值</span><br><span class="line">    ↓</span><br><span class="line">Self-Attention       //让每个token之间互相attention</span><br><span class="line">    ↓</span><br><span class="line">Residual Connection</span><br><span class="line">    ↓</span><br><span class="line">LayerNorm</span><br><span class="line">    ↓</span><br><span class="line">Feed Forward Network //对每个token的信息进行加工</span><br><span class="line">    ↓</span><br><span class="line">Residual Connection  //保留原信息</span><br><span class="line">    ↓</span><br><span class="line">输出 hidden states</span><br></pre></td></tr></table></figure>
+<h3 id="Q，K，V：Attention的核心机制"><a href="#Q，K，V：Attention的核心机制" class="headerlink" title="Q，K，V：Attention的核心机制"></a>Q，K，V：Attention的核心机制</h3><p>在Self-Attention里面，每个token会生成三个向量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Q = Query        //我想找什么信息</span><br><span class="line">K = Key          //我有什么特征，方便别人匹配到我</span><br><span class="line">V = Value        //如果别人关注我，我能提供什么内容</span><br></pre></td></tr></table></figure>
+<p>还是之前的句子：<br><code>小红把苹果给了小明，因为他饿了。</code><br>当模型处理到“他”时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">“他”的 Query：我指的是谁？</span><br><span class="line">“小明”的 Key：我是一个男性人物，前面出现过</span><br><span class="line">“小红”的 Key：我是一个女性人物，前面出现过</span><br></pre></td></tr></table></figure>
+<p>模型发现”他”的Query和“小明”的Key更匹配<br>于是“他”更多的吸收“小明”的Value</p>
+<h3 id="Masked-Self-Attention-Decoder-only-LLM的关键"><a href="#Masked-Self-Attention-Decoder-only-LLM的关键" class="headerlink" title="Masked Self-Attention: Decoder-only LLM的关键"></a>Masked Self-Attention: Decoder-only <code>LLM</code>的关键</h3><p>普通的self-attention允许每个token看一整句话<br>但是<code>GPT</code>这类生成模型不能这样<br>比如训练句子:<br><code>我喜欢吃苹果</code><br>当模型预测“吃”后面的内容是什么的时候，不能提前看到“苹果”<br>每个token只能看到自己和自己左边的token，不能看到右边未来的token</p>
+<h3 id="Feed-Forward-Network"><a href="#Feed-Forward-Network" class="headerlink" title="Feed Forward Network"></a>Feed Forward Network</h3><p>Self-Attention负责让token之间交流<br>交流之后，还需要加工<br>这一步由<code>FFN</code>完成</p>
+<p>典型形式<br><code>FFN(x) = W₂ · activation(W₁x + b₁) + b₂</code></p>
+<p>Attention:你应该从哪些token哪里获得信息<br><code>FFN</code>:拿到这些信息之后你该怎么处理</p>
+<h3 id="Residual-Connection"><a href="#Residual-Connection" class="headerlink" title="Residual Connection"></a>Residual Connection</h3><p>Transformer block里会有一个残差连接<br>他的形式是：<br><code>输出 = 输入 + 子层输出</code><br>如attention后：<br><code>x = x + attention(x)</code><br><code>FFN</code>后：<br><code>x = x + FFN(x)</code><br>因为模型层数很深，如果每一层都彻底重写信息，原始信息可能丢掉。</p>
+<h3 id="LayerNorm让训练稳定"><a href="#LayerNorm让训练稳定" class="headerlink" title="LayerNorm让训练稳定"></a><code>LayerNorm</code>让训练稳定</h3><p>神经网络里每层都会产生一堆数字。如果这些数字变化太大，模型训练会不稳定。<br><code>LayerNorm</code>会把每个token的向量调整到比较稳定的范围。<br>常见的Transformer结构有两种：</p>
+<h4 id="Post-LN"><a href="#Post-LN" class="headerlink" title="Post-LN"></a>Post-LN</h4><p><code>x = LayerNorm(x + Attention(x))</code></p>
+<h4 id="Pre-LN"><a href="#Pre-LN" class="headerlink" title="Pre-LN"></a>Pre-LN</h4><p>现代<code>LLM</code>更常见，更利于训练很深的模型<br><code>x = x + Attention(LayerNorm(x))</code></p>
+<h3 id="Encoder-Block-和-Decoder-Block"><a href="#Encoder-Block-和-Decoder-Block" class="headerlink" title="Encoder Block 和 Decoder Block"></a>Encoder Block 和 Decoder Block</h3><h4 id="Encoder-Block适合理解输入"><a href="#Encoder-Block适合理解输入" class="headerlink" title="Encoder Block适合理解输入"></a>Encoder Block适合理解输入</h4><p>一个Encoder Block通常包括：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Self-Attention</span><br><span class="line">Feed Forward Network</span><br><span class="line">Residual</span><br><span class="line">LayerNorm</span><br></pre></td></tr></table></figure>
+<p>Encoder Block 的self-attention可以看到完整的输入<br>所以Encoder Block适合理解任务</p>
+<h4 id="Decoder-Block"><a href="#Decoder-Block" class="headerlink" title="Decoder Block"></a>Decoder Block</h4><p>一个Decoder Block通常包括：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Masked Self-Attention</span><br><span class="line">Cross-Attention</span><br><span class="line">Feed Forward Network</span><br><span class="line">Residual</span><br><span class="line">LayerNorm</span><br></pre></td></tr></table></figure>
+<p>相比于Encoder Block，Decoder多了两个关键点：</p>
+<ol>
+<li>Self-Attention是Masked的</li>
+<li>由Cross-Attention可以看Encoder的输出</li>
+</ol>
+<h4 id="什么是Cross-Attention"><a href="#什么是Cross-Attention" class="headerlink" title="什么是Cross-Attention"></a>什么是Cross-Attention</h4><p>Cross-Attention出现在Encoder-Decoder Transformer里<br>比如翻译任务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入英文：I love cats</span><br><span class="line">输出中文: 我喜欢猫</span><br></pre></td></tr></table></figure>
+<p>Encoder先读懂英文，得到一组上下文向量。<br>Decoder生成中文的时候，一边看已经生成了的中文(Masked Self-Attention)，一边看Encoder的输出，也就是Encoder在Self-Attention后生成的一组上下文向量。</p>
+<h3 id="LM-Head：如何输出下一个Token"><a href="#LM-Head：如何输出下一个Token" class="headerlink" title="LM Head：如何输出下一个Token"></a><code>LM Head</code>：如何输出下一个Token</h3><p>经过很多层的Transformer Block后，每个Token都有一个最终的hidden state<br>比如输入：<br><code>中国的首都是</code><br>最后一个token”是”的hidden state进入<code>LM Head</code><br><code>LM token</code>会输出整个词表中每个token中的分数。<br>如:</p>
+<table>
+<thead>
+<tr>
+<th>token</th>
+<th align="right">分数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>北京</td>
+<td align="right">14.2</td>
+</tr>
+<tr>
+<td>上海</td>
+<td align="right">8.1</td>
+</tr>
+<tr>
+<td>东京</td>
+<td align="right">4.5</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td align="right">-2.3</td>
+</tr>
+<tr>
+<td>然后经过softmax变成概率</td>
+<td align="right"></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>token</th>
+<th align="right">概率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>北京</td>
+<td align="right">0.91</td>
+</tr>
+<tr>
+<td>上海</td>
+<td align="right">0.03</td>
+</tr>
+<tr>
+<td>东京</td>
+<td align="right">0.01</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td align="right">接近 0</td>
+</tr>
+<tr>
+<td>于是模型生成：</td>
+<td align="right"></td>
+</tr>
+<tr>
+<td><code>北京</code></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td>然后上下文变成：</td>
+<td align="right"></td>
+</tr>
+<tr>
+<td><code>中国的首都是北京</code></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td>继续预测下一个token</td>
+<td align="right"></td>
+</tr>
+</tbody></table>
+<h3 id="Transformer训练"><a href="#Transformer训练" class="headerlink" title="Transformer训练"></a>Transformer训练</h3><p>训练Decoder-only LLM时，目标是：<br><code>根据前面的tokens，预测下一个token</code><br>比如训练文本为：<br><code>我喜欢学习人工智能</code><br>模型会学习多个预测任务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">看到“我” → 预测“喜欢”</span><br><span class="line">看到“我 喜欢” → 预测“学习”</span><br><span class="line">看到“我 喜欢 学习” → 预测“人工”</span><br><span class="line">看到“我 喜欢 学习 人工” → 预测“智能”</span><br></pre></td></tr></table></figure>
+<p>训练的文本越多，就能让模型预测越接近真实的下一个token</p>
+<h3 id="Transformer推理的流程示意"><a href="#Transformer推理的流程示意" class="headerlink" title="Transformer推理的流程示意"></a>Transformer推理的流程示意</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. 用户输入 promp</span><br><span class="line">2. tokenizer 转成 token IDs</span><br><span class="line">3. 模型计算 hidden states</span><br><span class="line">4. LM head 输出下一个 token 概率</span><br><span class="line">5. 选择一个 token</span><br><span class="line">6. 把新 token 加回上下文</span><br><span class="line">7. 重复 3-6</span><br><span class="line">8. 遇到停止条件后结束</span><br></pre></td></tr></table></figure>
+
+<h3 id="K，V-Cache"><a href="#K，V-Cache" class="headerlink" title="K，V Cache"></a>K，V Cache</h3><p>解决生成token时的效率问题<br>为了计算新生成token的Q，K，V，需要利用到之前的tokens的K和V<br>如果在预测的时候，重新计算之前tokens的K和V，会浪费很多资源<br><code>KVCache</code>的做法就是</p>
+<blockquote>
+<p>把之前token的Key和Value存起来，下一步预测的时候直接拿来用。</p>
+</blockquote>
+<h3 id="用一个完整的例子总结Transformer的推理流程："><a href="#用一个完整的例子总结Transformer的推理流程：" class="headerlink" title="用一个完整的例子总结Transformer的推理流程："></a>用一个完整的例子总结Transformer的推理流程：</h3><h4 id="第一步：切token"><a href="#第一步：切token" class="headerlink" title="第一步：切token"></a>第一步：切token</h4><p>用户输入：<br><code>小明把书给了小红，因为她要考试。</code><br><code>tokenizer</code>把输入分割成:<br><code>小明/把/书/给/了/小红/因为/她/要/考试/。</code></p>
+<h4 id="第二步：变token-ID"><a href="#第二步：变token-ID" class="headerlink" title="第二步：变token ID"></a>第二步：变token ID</h4><p><code>[101, 232, 981, 445, ....]</code></p>
+<h4 id="第三步：embedding"><a href="#第三步：embedding" class="headerlink" title="第三步：embedding"></a>第三步：embedding</h4><p>把每个token变成向量</p>
+<h4 id="第四步：加入位置"><a href="#第四步：加入位置" class="headerlink" title="第四步：加入位置"></a>第四步：加入位置</h4><p>模型知道：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">小明在前面</span><br><span class="line">小红在“她”前面不远</span><br><span class="line">考试在“她”后面</span><br></pre></td></tr></table></figure>
+<p>如果是Decoder-only，模型就不能看到当前token后面的内容</p>
+<h4 id="第五步：Self-Attention"><a href="#第五步：Self-Attention" class="headerlink" title="第五步：Self-Attention"></a>第五步：Self-Attention</h4><p>处理”她”的时候，模型计算“她”和其他tokens的关系：</p>
+<table>
+<thead>
+<tr>
+<th>token</th>
+<th align="right">相关性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>小明</td>
+<td align="right">较低</td>
+</tr>
+<tr>
+<td>书</td>
+<td align="right">很低</td>
+</tr>
+<tr>
+<td>小红</td>
+<td align="right">很高</td>
+</tr>
+<tr>
+<td>因为</td>
+<td align="right">中等</td>
+</tr>
+<tr>
+<td>因此“她”更多吸收”小红的信息“</td>
+<td align="right"></td>
+</tr>
+</tbody></table>
+<h4 id="第六步：FFN加工"><a href="#第六步：FFN加工" class="headerlink" title="第六步：FFN加工"></a>第六步：<code>FFN</code>加工</h4><p><code>FFN</code>进一步把信息加工成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">她 = 小红</span><br><span class="line">小红可能是要考试的人</span><br></pre></td></tr></table></figure>
+<h4 id="第七步：多层重复"><a href="#第七步：多层重复" class="headerlink" title="第七步：多层重复"></a>第七步：多层重复</h4><p>第一次可能处理简单的关系<br>中间层可能处理语法和指代<br>高层可能处理整体语义<br>最后每个token的向量都包含了丰富的上下文</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/" rel="prev" title="汇编语言与接口设计">
+                  <i class="fa fa-angle-left"></i> 汇编语言与接口设计
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/05/03/%E9%A6%96%E9%A1%B5-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/" rel="next" title="👋 欢迎来到我的博客">
+                  👋 欢迎来到我的博客 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">博主</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
