@@ -35,7 +35,7 @@
 <link rel="canonical" href="https://hickercf.github.io/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>MuZZZFeng's Blog</title>
@@ -97,7 +97,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">MuZZZFeng's Blog</h1>
+      <p class="site-title">MuZZZFeng's Blog</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">记录学习、思考、折腾和一些凌晨的碎碎念。</p>
@@ -186,7 +186,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hickercf.github.io/2026/05/05/OS/">
+    <link itemprop="mainEntityOfPage" href="https://hickercf.github.io/2026/05/03/%E9%A6%96%E9%A1%B5-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -204,7 +204,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/05/05/OS/" class="post-title-link" itemprop="url">OS</a>
+          <a href="/2026/05/03/%E9%A6%96%E9%A1%B5-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/" class="post-title-link" itemprop="url">👋 欢迎来到我的博客</a>
         </h2>
 
         <div class="post-meta-container">
@@ -216,7 +216,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-05-05 15:46:00 / 修改时间：23:46:18" itemprop="dateCreated datePublished" datetime="2026-05-05T15:46:00+08:00">2026-05-05</time>
+      <time title="创建时间：2026-05-03 12:00:00 / 修改时间：21:12:20" itemprop="dateCreated datePublished" datetime="2026-05-03T12:00:00+08:00">2026-05-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -224,7 +224,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">课程笔记</span></a>
+          <a href="/categories/%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">生活随笔</span></a>
         </span>
     </span>
 
@@ -238,329 +238,16 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="POSIX共享内存"><a href="#POSIX共享内存" class="headerlink" title="POSIX共享内存"></a><code>POSIX</code>共享内存</h1><ol>
-<li>进程通过系统调用<code>shm_open()</code>创建共享内存</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">shm_fd = shm_open(name, O_CREAT | O_RDRW, <span class="number">0666</span>);</span><br><span class="line"><span class="comment">//name: 共享内存对象的名称, </span></span><br><span class="line"><span class="comment">//当name 不存在时，创建共享内存(O_CREAT)  对象需要打开以便读写(O_RDRW),</span></span><br><span class="line"><span class="comment">//0666设定共享内存对象的目录权限</span></span><br></pre></td></tr></table></figure>
-<p><code>shm_open</code> 返回共享内存对象的一个文件描述符<br>2. <code>ftruncate()</code>函数配置对象的大小</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ftruncate(shm_fd, <span class="number">4096</span>);</span><br><span class="line"><span class="comment">//将对象的大小分配为4096字节</span></span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>最后<code>mmap()</code>函数创建内存映射文件，以便包含共享内存对象，返回一个指向内存映射文件的指针，以便用于访问共享内存对象</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mmap(<span class="number">0</span>, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<h1 id="第三章：调度"><a href="#第三章：调度" class="headerlink" title="第三章：调度"></a>第三章：调度</h1><h4 id="调度是多道程序操作系统的基础"><a href="#调度是多道程序操作系统的基础" class="headerlink" title="调度是多道程序操作系统的基础"></a>调度是多道程序操作系统的基础</h4><ul>
-<li><strong>多道程序的目标</strong>：无论何时都有进程在运行，从而最大化操作系统的利用率。</li>
-<li><strong>分时系统的目的</strong>：在进程之间快速切换CPU，以方便多个用户在程序运行时能与其进行交互。</li>
-<li><strong>进程调度器</strong>：(可能从多个可用进程中)选择一个可用进程，装入到CPU上执行。</li>
+          <p>这是我的个人博客，记录 AI 学习、课程笔记、工具折腾与生活碎片。</p>
+<p>在代码、书本和凌晨三点之间游荡。</p>
+<hr>
+<h2 id="📝-最近更新"><a href="#📝-最近更新" class="headerlink" title="📝 最近更新"></a>📝 最近更新</h2><h2 id="📂-浏览内容"><a href="#📂-浏览内容" class="headerlink" title="📂 浏览内容"></a>📂 浏览内容</h2><ul>
+<li><a href="/categories/">分类</a> - 按类别浏览所有文章</li>
+<li><a href="/archives/">归档</a> - 按时间线查看文章</li>
+<li><a href="/about/">关于</a> - 了解更多关于我</li>
 </ul>
-<h2 id="3-1-调度的基本概念"><a href="#3-1-调度的基本概念" class="headerlink" title="3.1 调度的基本概念"></a>3.1 调度的基本概念</h2><h3 id="1-调度队列"><a href="#1-调度队列" class="headerlink" title="1. 调度队列"></a>1. 调度队列</h3><h4 id="操作系统中维护了一组进程调度队列"><a href="#操作系统中维护了一组进程调度队列" class="headerlink" title="操作系统中维护了一组进程调度队列"></a>操作系统中维护了一组进程调度队列</h4><h5 id="作业队列：系统中所有进程的集合"><a href="#作业队列：系统中所有进程的集合" class="headerlink" title="作业队列：系统中所有进程的集合"></a>作业队列：系统中所有进程的集合</h5><ul>
-<li>作业Job：针对批处理系统的CPU活动而言</li>
-<li>用户程序&#x2F;任务Task：针对分时系统的CPU而言</li>
-</ul>
-<h5 id="就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。"><a href="#就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。" class="headerlink" title="就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。"></a>就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。</h5><h5 id="设备队列：等待某个I-O设备的进程集合"><a href="#设备队列：等待某个I-O设备的进程集合" class="headerlink" title="设备队列：等待某个I&#x2F;O设备的进程集合"></a>设备队列：等待某个I&#x2F;O设备的进程集合</h5><p>进程在整个生命周期中，会在各种调度队列之间迁移</p>
-<h3 id="2-调度的层次"><a href="#2-调度的层次" class="headerlink" title="2.调度的层次"></a>2.调度的层次</h3><h4 id="调度程序：负责挑选就绪进程的-内核-模块"><a href="#调度程序：负责挑选就绪进程的-内核-模块" class="headerlink" title="调度程序：负责挑选就绪进程的 内核 模块"></a>调度程序：负责挑选就绪进程的 <em>内核</em> 模块</h4><p>一个作业从提交到完成通常要经历多级调度</p>
-<h4 id="处理机的三层调度："><a href="#处理机的三层调度：" class="headerlink" title="处理机的三层调度："></a>处理机的三层调度：</h4><h5 id="高级调度："><a href="#高级调度：" class="headerlink" title="高级调度："></a>高级调度：</h5><p>作业级别的调度</p>
-<h5 id="低级调度："><a href="#低级调度：" class="headerlink" title="低级调度："></a>低级调度：</h5><p>进程级别的调度</p>
-<h5 id="中级调度："><a href="#中级调度：" class="headerlink" title="中级调度："></a>中级调度：</h5><p>交换调度</p>
-<h4 id="高级调度：-1"><a href="#高级调度：-1" class="headerlink" title="高级调度："></a>高级调度：</h4><ul>
-<li>主要任务：按照一定的规则，<strong>从外存中</strong>处于后备状态的作业中，选择一个或多个作业，决定哪些进程可以进入就绪队列。</li>
-<li>同时为这些选中的作业，I&#x2F;O设备提供必要资源，并建立相应地进程使该作业拥有获得竞争处理机的权利。</li>
-</ul>
-<h4 id="低级调度：-1"><a href="#低级调度：-1" class="headerlink" title="低级调度："></a>低级调度：</h4><ul>
-<li>按照某种原则，决定就绪队列里的哪个进程能够获得处理器，并且将处理机出让给它进行工作</li>
-<li>存在剥夺，抢占懂机制<br>进程可以分为：</li>
-<li>I&#x2F;O密集型 和 CPU密集型 为了资源重复利用，这两类经常应该混合搭配</li>
-</ul>
-<h4 id="中级调度：-1"><a href="#中级调度：-1" class="headerlink" title="中级调度："></a>中级调度：</h4><ul>
-<li>将内存中不用的信息移到外存，为内存中进程腾出空间</li>
-<li>将需要的信息从外存读入内存</li>
-<li>决定主存中能容纳的进程数，提高内存利用率和系统吞吐量</li>
-</ul>
-<h3 id="3-调度的性能评价指标："><a href="#3-调度的性能评价指标：" class="headerlink" title="3. 调度的性能评价指标："></a>3. 调度的性能评价指标：</h3><ol>
-<li>资源利用率<ul>
-<li>CPU利用率 &#x3D; CPU有效工作时间 &#x2F; CPU总运行时间 真实系统介于40% - 90%</li>
-</ul>
-</li>
-<li>响应时间<ul>
-<li>交互式进程，从提交一个请求到接收到第一个响应之间的时间间隔</li>
-</ul>
-</li>
-<li>周转时间<ul>
-<li>从作业提交到作业完成的时间间隔</li>
-<li>包括：等待进入内存，在就绪队列里等待，在CPU上执行和I&#x2F;O执行的时间</li>
-<li><strong>带权周转时间</strong>：作业周转时间与作业实际运行时间的比值，这里的作业实际运行时间指的是在CPU中的时间，不包括阻塞和挂起等时间</li>
-</ul>
-</li>
-<li>系统吞吐率<ul>
-<li>单位时间CPU完成作业的数量</li>
-</ul>
-</li>
-<li>公平性：<ul>
-<li>确保每个进程获得合理的CPU份额，不会出现饿死现象</li>
-</ul>
-</li>
-</ol>
-<h2 id="3-2作业，进程和线程的调度"><a href="#3-2作业，进程和线程的调度" class="headerlink" title="3.2作业，进程和线程的调度"></a>3.2作业，进程和线程的调度</h2><h4 id="1-作业和进程的关系："><a href="#1-作业和进程的关系：" class="headerlink" title="1.作业和进程的关系："></a>1.作业和进程的关系：</h4><p>作业是一个Job集合，是一个任务的实体<br>进程是完成这个任务的执行实体</p>
-<ul>
-<li>没有作业，进程无事可做</li>
-<li>没有进程，作业无法完成</li>
-</ul>
-<h4 id="2-作业从提交到完成经过四个状态："><a href="#2-作业从提交到完成经过四个状态：" class="headerlink" title="2.作业从提交到完成经过四个状态："></a>2.作业从提交到完成经过四个状态：</h4><ol>
-<li>提交状态：用户作业由输入设备，向<strong>系统外存</strong>输入作业所处的状态</li>
-<li>后备状态：系统为作业建立作业控制块，你并把它插入到后备作业队列里面等待调度</li>
-<li>执行状态：作业在<strong>内存中</strong>，包含占有CPU和没占有CPU</li>
-<li>完成状态：作业正常完成或者异常结束，但是作业占有的资源还没有被系统全部回收</li>
-</ol>
-<h4 id="3-作业进程调度："><a href="#3-作业进程调度：" class="headerlink" title="3.作业进程调度："></a>3.作业进程调度：</h4><ol>
-<li>记录进入系统的各作业情况</li>
-<li>从后备作业中挑一些投入执行</li>
-<li>为被选中的作业做好执行前的准备工作</li>
-<li>为执行完或异常结束的作业作收尾工作</li>
-</ol>
-<h4 id="4-资源控制块："><a href="#4-资源控制块：" class="headerlink" title="4.资源控制块："></a>4.资源控制块：</h4><p>包括：资源要求，资源使用情况，作业的控制方式（联机作业控制or脱机作业控制），类型（终端型，批量型），优先级等</p>
-<h4 id="5-进程调度的方式："><a href="#5-进程调度的方式：" class="headerlink" title="5.进程调度的方式："></a>5.进程调度的方式：</h4><ul>
-<li>抢占方式</li>
-<li>非抢占方式：一旦将处理机分配给某进程，便让该进程一直执行知道执行完or发生某事件进入阻塞。</li>
-</ul>
-<h5 id="抢占方式："><a href="#抢占方式：" class="headerlink" title="抢占方式："></a>抢占方式：</h5><p>运行调度程序根据某种原则去停止正在执行的进程，将其重新分配给其他进程</p>
-<h5 id="抢占原则由："><a href="#抢占原则由：" class="headerlink" title="抢占原则由："></a>抢占原则由：</h5><ul>
-<li>优先权：高优先级进程剥夺&#x2F;抢占低优先级</li>
-<li>时间片：时间片用完，剥夺CPU使用权</li>
-</ul>
-<h5 id="引起进程调度的原因："><a href="#引起进程调度的原因：" class="headerlink" title="引起进程调度的原因："></a>引起进程调度的原因：</h5><ul>
-<li>从运行态切换到等待状态：I&#x2F;O请求，调用wait等</li>
-<li>从运行态切换到等待态：如中断</li>
-<li>从等待态切换到就绪态：系统调用或中断返回等</li>
-<li>进程终止</li>
-</ul>
-<h5 id="分派器：将CPU分派给调度器选定的进程"><a href="#分派器：将CPU分派给调度器选定的进程" class="headerlink" title="分派器：将CPU分派给调度器选定的进程"></a>分派器：将CPU分派给调度器选定的进程</h5><h4 id="6-线程调度："><a href="#6-线程调度：" class="headerlink" title="6. 线程调度："></a>6. 线程调度：</h4><ul>
-<li>分为用户级线程和内核级线程</li>
-<li>当OS内核支持线程时，内核级线程由OS调度</li>
-<li>对于多对一和多对多模型，系统库负责调度用户级线程</li>
-</ul>
-<h2 id="3-3-调度算法"><a href="#3-3-调度算法" class="headerlink" title="3.3 调度算法"></a>3.3 调度算法</h2><h3 id="3-3-1-先来先服务算法（FCFS）："><a href="#3-3-1-先来先服务算法（FCFS）：" class="headerlink" title="3.3.1 先来先服务算法（FCFS）："></a>3.3.1 先来先服务算法（<code>FCFS</code>）：</h3><p>额，很容易理解，就是字面意思，不过多解释。</p>
-<h3 id="3-3-2-短作业有线调度算法："><a href="#3-3-2-短作业有线调度算法：" class="headerlink" title="3.3.2 短作业有线调度算法："></a>3.3.2 短作业有线调度算法：</h3><p>也很容易理解的字面意思，不过多解释。</p>
-<h3 id="3-3-3-优先级调度算法："><a href="#3-3-3-优先级调度算法：" class="headerlink" title="3.3.3 优先级调度算法："></a>3.3.3 优先级调度算法：</h3><p>也比较好理解，注意抢占</p>
-<ul>
-<li>静态优先级，在创建进程的时候就确定的</li>
-<li>动态优先级，优先数在进程运行过程中进行调整，如：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">优先数 = CPU使用时间 / 2 + 基本优先数</span><br></pre></td></tr></table></figure>
-<h3 id="3-3-4-时间片轮转调度（RR）"><a href="#3-3-4-时间片轮转调度（RR）" class="headerlink" title="3.3.4 时间片轮转调度（RR）"></a>3.3.4 时间片轮转调度（RR）</h3><h4 id="时间片轮转法（Round-robin）："><a href="#时间片轮转法（Round-robin）：" class="headerlink" title="时间片轮转法（Round-robin）："></a>时间片轮转法（Round-robin）：</h4><h5 id="核心思想：大家轮流来，每人一次只干一会"><a href="#核心思想：大家轮流来，每人一次只干一会" class="headerlink" title="核心思想：大家轮流来，每人一次只干一会"></a>核心思想：大家轮流来，每人一次只干一会</h5><p>所有就绪的进程按<strong>FIFO</strong>的顺序拍成一个队列，CPU每次都把执行权交给队首进程，但是这个进程最多执行一个固定时长（称为<strong>时间片</strong>）。</p>
-<ul>
-<li>时间片用完但是进程还没执行完，将CPU让给队首进程，自己排到队尾。</li>
-<li>如果提前执行完了，直接让出CPU。<br>举个例子：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>进程</th>
-<th>执行时间（ms）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>P1</td>
-<td>5</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>3</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>8</td>
-</tr>
-<tr>
-<td>调度过程：</td>
-<td></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>时刻</th>
-<th>执行进程</th>
-<th>剩余时间</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0-4</td>
-<td>P1</td>
-<td>P1剩1</td>
-<td>P1时间片用完，未做完，排队尾</td>
-</tr>
-<tr>
-<td>4-7</td>
-<td>P2</td>
-<td>P2完成</td>
-<td>P2执行3ms后完成，主动释放CPU</td>
-</tr>
-<tr>
-<td>7-11</td>
-<td>P3</td>
-<td>P3剩4</td>
-<td>P3时间片用完，排队尾</td>
-</tr>
-<tr>
-<td>11-12</td>
-<td>P1</td>
-<td>P1完成</td>
-<td>P1只剩1ms，做完</td>
-</tr>
-<tr>
-<td>12-16</td>
-<td>P3</td>
-<td>P3完成</td>
-<td>P3做完</td>
-</tr>
-</tbody></table>
-<h4 id="时间片大小的选择："><a href="#时间片大小的选择：" class="headerlink" title="时间片大小的选择："></a>时间片大小的选择：</h4><ul>
-<li>若时间片时间过大，所有进程都能在一个时间片内完成，则时间片轮转算法退化成先来先服务。</li>
-<li>若时间片太小，则进程调度频繁，会有大量时间用于上下文切换，系统开销增加。</li>
-</ul>
-<h3 id="3-3-5最高响应比优先调度算法-HRRN"><a href="#3-3-5最高响应比优先调度算法-HRRN" class="headerlink" title="3.3.5最高响应比优先调度算法(HRRN)"></a>3.3.5最高响应比优先调度算法(HRRN)</h3><h4 id="1-核心思想"><a href="#1-核心思想" class="headerlink" title="1. 核心思想"></a>1. 核心思想</h4><p>每次调度时，计算所有就绪程序的<strong>响应比</strong>，选最高的那个投入运行。</p>
-<h4 id="2-响应比的计算"><a href="#2-响应比的计算" class="headerlink" title="2. 响应比的计算"></a>2. 响应比的计算</h4><p>$$<br>响应比 &#x3D; 1 + 等待时间&#x2F;要求服务时间<br>$$</p>
-<h4 id="3-算法的优点"><a href="#3-算法的优点" class="headerlink" title="3.算法的优点"></a>3.算法的优点</h4><p>同时照顾了长作业和短作业。</p>
-<table>
-<thead>
-<tr>
-<th>场景</th>
-<th>响应比变化</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>等待时间越长</td>
-<td>响应比越大</td>
-<td>长作业等待久了，也能有调度的机会（防止饥饿）</td>
-</tr>
-<tr>
-<td>要求服务的时间越短</td>
-<td>响应比越大</td>
-<td>短作业有天然优势</td>
-</tr>
-<tr>
-<td>刚到达的短作业</td>
-<td>响应比 ≈ 1</td>
-<td>刚来的短作业，等待时间为0</td>
-</tr>
-<tr>
-<td>主要用于作业调度。</td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="3-3-6多级队列调度算法"><a href="#3-3-6多级队列调度算法" class="headerlink" title="3.3.6多级队列调度算法"></a>3.3.6多级队列调度算法</h3><p>“<strong>人以群分，队以类聚</strong>”</p>
-<h4 id="1-核心思想："><a href="#1-核心思想：" class="headerlink" title="1. 核心思想："></a>1. 核心思想：</h4><p>先把进程按照类型固定分进不同的队列，然后：</p>
-<ul>
-<li><strong>队列的内部</strong>：各自用适合自己的调度算法</li>
-<li><strong>队列之间</strong>：按照固定的优先级或者时间片比例进行调度</li>
-</ul>
-<h4 id="2-队列之间的两种调度的策略"><a href="#2-队列之间的两种调度的策略" class="headerlink" title="2. 队列之间的两种调度的策略"></a>2. 队列之间的两种调度的策略</h4><h5 id="策略A：固定优先级调度"><a href="#策略A：固定优先级调度" class="headerlink" title="策略A：固定优先级调度"></a>策略A：固定优先级调度</h5><p>   <strong>高优先级的队列只要有进程，低优先级的队列永远轮不到</strong></p>
-<ul>
-<li>优点：重点任务响应快</li>
-<li>缺点：低优先级队列可能会饿死</li>
-</ul>
-<h5 id="策略B：时间片比例分配"><a href="#策略B：时间片比例分配" class="headerlink" title="策略B：时间片比例分配"></a>策略B：时间片比例分配</h5><p>   <strong>给每个队列分配固定比例的CPU时间</strong></p>
-<ul>
-<li>例如：系统队列20%，交互队列50%，批处理30%</li>
-<li>优点：避免饿死，每个队列都有保底时间</li>
-<li>缺点：高优先级响应没那么极致</li>
-</ul>
-<h3 id="3-3-7-多级反馈队列调度算法（MLFQ）"><a href="#3-3-7-多级反馈队列调度算法（MLFQ）" class="headerlink" title="3.3.7 多级反馈队列调度算法（MLFQ）"></a>3.3.7 多级反馈队列调度算法（MLFQ）</h3><h4 id="1-和多级队列的区别"><a href="#1-和多级队列的区别" class="headerlink" title="1. 和多级队列的区别"></a>1. 和多级队列的区别</h4><table>
-<thead>
-<tr>
-<th>特性</th>
-<th>多级队列</th>
-<th>多级反馈队列</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>队列间移动</strong></td>
-<td>固定不动</td>
-<td>可以升降级</td>
-</tr>
-<tr>
-<td><strong>优先级变化</strong></td>
-<td>一成不变</td>
-<td>动态调整</td>
-</tr>
-<tr>
-<td><strong>灵活性</strong></td>
-<td>低</td>
-<td>高</td>
-</tr>
-<tr>
-<td><strong>饥饿问题</strong></td>
-<td>可能饿死</td>
-<td>通过反馈机制避免</td>
-</tr>
-</tbody></table>
-<h4 id="2-算法核心"><a href="#2-算法核心" class="headerlink" title="2. 算法核心"></a>2. 算法核心</h4><p>系统设置多个就绪队列，优先级由高到低，时间片由小到大：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Q0: 优先级最高,时间片最短（如8ms）  I/O密集型</span><br><span class="line">Q1: 优先级最高,时间片中等（如16ms）</span><br><span class="line">Q2: 优先级最高,时间片最长（如32ms）</span><br><span class="line">...</span><br><span class="line">Qn: 优先级最低,时间片最长      计算密集型</span><br></pre></td></tr></table></figure>
-<h4 id="3-调度规则（重点！！！）"><a href="#3-调度规则（重点！！！）" class="headerlink" title="3. 调度规则（重点！！！）"></a>3. 调度规则（重点！！！）</h4><p>MLFQ 依靠几条简单的规则实现智能调度：</p>
-<h5 id="规则1：新进程-最高优先级队列"><a href="#规则1：新进程-最高优先级队列" class="headerlink" title="规则1：新进程-&gt;最高优先级队列"></a>规则1：新进程-&gt;最高优先级队列</h5><h5 id="规则2：时间片用完，任务还没完成-降级"><a href="#规则2：时间片用完，任务还没完成-降级" class="headerlink" title="规则2：时间片用完，任务还没完成-&gt;降级"></a>规则2：时间片用完，任务还没完成-&gt;降级</h5><h5 id="规则3：主动放弃CPU-保持-升级"><a href="#规则3：主动放弃CPU-保持-升级" class="headerlink" title="规则3：主动放弃CPU-&gt;保持&#x2F;升级"></a>规则3：主动放弃CPU-&gt;保持&#x2F;升级</h5><ul>
-<li>如果进程在时间片用完之前主动放弃CPU（I&#x2F;O请求，调用wait），说明是I&#x2F;O密集型</li>
-</ul>
-<h5 id="规则4：高优先级队列有进程，低优先级队列永远轮不到"><a href="#规则4：高优先级队列有进程，低优先级队列永远轮不到" class="headerlink" title="规则4：高优先级队列有进程，低优先级队列永远轮不到"></a>规则4：高优先级队列有进程，低优先级队列永远轮不到</h5><h5 id="规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列"><a href="#规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列" class="headerlink" title="规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列"></a>规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列</h5><h4 id="4-一个例子"><a href="#4-一个例子" class="headerlink" title="4.一个例子"></a>4.一个例子</h4><p>假设有两个进程：</p>
-<ul>
-<li>P1：I&#x2F;O密集型</li>
-<li>P2：CPU密集型</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>时间</th>
-<th>发生的事情</th>
-<th>P1所在队列</th>
-<th>P2所在队列</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0</td>
-<td>两个进程都到达，进入Q0</td>
-<td>Q0</td>
-<td>Q0</td>
-</tr>
-<tr>
-<td>0-2</td>
-<td>P1用了2msCPU收到I&#x2F;O请求，主动放弃，留在Q0</td>
-<td>Q0</td>
-<td>-(不变)</td>
-</tr>
-<tr>
-<td>2-8</td>
-<td>P2狂算了8ms还没算完，降级</td>
-<td>-</td>
-<td>Q1</td>
-</tr>
-<tr>
-<td>8-10</td>
-<td>P1又是用了2ms后收到I&#x2F;O请求，主动放弃，留着Q0</td>
-<td>Q0</td>
-<td>-</td>
-</tr>
-<tr>
-<td>10-16</td>
-<td>P2依旧狂算6ms，仍然没算完，降级</td>
-<td>-</td>
-<td>Q2</td>
-</tr>
-<tr>
-<td>…</td>
-<td>P1每次都只用2ms，主动放弃留在Q0</td>
-<td>Q0</td>
-<td>-</td>
-</tr>
-<tr>
-<td>…</td>
-<td>P2一直算一直算，一直降级</td>
-<td>-</td>
-<td>Qn</td>
-</tr>
-</tbody></table>
+<hr>
+<p><em>最后更新：2026-05-03</em></p>
 
       
     </div>
@@ -579,9 +266,6 @@
 
 
 
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
 
 </div>
   </main>
