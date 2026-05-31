@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#faf5eb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#3d2b1f" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#faf5eb">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hickercf.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":24,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="实验1（8）前面根据流程完成后，直到第八步，导入两个样例数据库，导入完成后 1SHOW DATABASES;  看到数据库导入成功：![[Pasted image 20260505145039.png]]（9）根据要求进行四项完整性检查：![[Pasted image 20260505145632.png]]![[Pasted image 20260505145649.png]]![[Pasted">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库实验">
+<meta property="og:url" content="https://hickercf.github.io/2026/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="MuZZZFeng&#39;s Blog">
+<meta property="og:description" content="实验1（8）前面根据流程完成后，直到第八步，导入两个样例数据库，导入完成后 1SHOW DATABASES;  看到数据库导入成功：![[Pasted image 20260505145039.png]]（9）根据要求进行四项完整性检查：![[Pasted image 20260505145632.png]]![[Pasted image 20260505145649.png]]![[Pasted">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/37ba0e9b-d16e-4e82-9dc4-43e6ae7af0ef.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/d715227b-340e-480b-9629-ab023455de4e.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/bda5abe5-f8c3-4639-9936-ebc025d47603.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/67606e18-7f48-4e77-8657-5955a663cf74.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/7e29d65a-64d2-4699-a735-e20e98ad36f8.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/f452c9e1-13ce-4491-99e0-283d9d779590.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/3fb907a9-1a4c-4c08-b6b7-ec2eed2e7451.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/d0abd708-f4dc-46cd-820d-df39b48bdcd9.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/5f91654b-0ad2-4569-a599-5d96526509cb.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/ad7994b9-f6f9-4561-baab-364331e62ed9.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/b036fd0a-f408-4c6c-bb6f-dbd6e4b69b0f.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/4f945f84-3afa-4b20-b0ba-63a57536aac0.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/0843c2f1-915a-44d0-a878-211d04b06260.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/b5b6ed08-2543-4407-b7ad-9ac3d814e54f.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/67838616-39bd-4097-ae1d-0242a3821d6a.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/f1390f80-18b0-4bf9-8aa0-e0cee30df848.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/8bd87ddd-8164-4b56-9d42-dceee163db7e.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/5c8f23de-638f-4c88-98ab-93cb5e5743b6.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/e8747c7d-61e5-4e81-9d2b-e7da84c84bfc.png">
+<meta property="og:image" content="file:///C:/Users/qwert/Pictures/Typedown/2a0620b9-db96-4651-ae41-9cde3da19c0e.png">
+<meta property="article:published_time" content="2026-05-30T22:31:05.000Z">
+<meta property="article:modified_time" content="2026-05-31T06:31:31.397Z">
+<meta property="article:author" content="MuZZZFeng">
+<meta property="article:tag" content="AI, 学习笔记, 工具折腾, 生活随笔, 个人博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="file:///C:/Users/qwert/Pictures/Typedown/37ba0e9b-d16e-4e82-9dc4-43e6ae7af0ef.png">
+
+
+<link rel="canonical" href="https://hickercf.github.io/2026/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hickercf.github.io/2026/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C/","path":"2026/05/31/数据库实验/","title":"数据库实验"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据库实验 | MuZZZFeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<link rel="icon" type="image/png" href="/images/logo-muzzzfeng.png">
+<link rel="apple-touch-icon" href="/images/logo-muzzzfeng.png">
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+      <img class="custom-logo-image" src="/images/logo-muzzzfeng.png" alt="MuZZZFeng's Blog">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">MuZZZFeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录学习、思考、折腾和一些凌晨的碎碎念。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C1"><span class="nav-number">1.</span> <span class="nav-text">实验1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">复杂查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A17%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">任务7：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A18"><span class="nav-number">4.</span> <span class="nav-text">任务8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E4%BA%8C"><span class="nav-number">5.</span> <span class="nav-text">实验二</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C3%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">实验3：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E4%B8%BAmedium%E7%BA%A7%E5%88%AB"><span class="nav-number">6.1.</span> <span class="nav-text">改为medium级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#high%E7%BA%A7%E5%88%AB"><span class="nav-number">6.2.</span> <span class="nav-text">high级别</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MuZZZFeng</p>
+  <div class="site-description" itemprop="description">记录 AI 学习、课程笔记、工具折腾与生活碎片。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hickercf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hickercf" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hickercf.github.io/2026/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MuZZZFeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MuZZZFeng's Blog">
+      <meta itemprop="description" content="记录 AI 学习、课程笔记、工具折腾与生活碎片。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据库实验 | MuZZZFeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库实验
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-31 06:31:05 / 修改时间：14:31:31" itemprop="dateCreated datePublished" datetime="2026-05-31T06:31:05+08:00">2026-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">课程笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="实验1"><a href="#实验1" class="headerlink" title="实验1"></a>实验1</h2><p>（8）前面根据流程完成后，直到第八步，导入两个样例数据库，导入完成后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW DATABASES;</span><br></pre></td></tr></table></figure>
+
+<p>看到数据库导入成功：<br>![[Pasted image 20260505145039.png]]<br>（9）根据要求进行四项完整性检查：<br>![[Pasted image 20260505145632.png]]<br>![[Pasted image 20260505145649.png]]<br>![[Pasted image 20260505145713.png]]<br>![[Pasted image 20260505145726.png]]<br>（10）备份<br>![[Pasted image 20260505171930.png]]<br>（11）导出和导入<br>![[Pasted image 20260505174454.png]]<br>（12）编写DDL：<br>![[Pasted image 20260505213306.png]]<br>对表的结构进行修改：<br>![[Pasted image 20260505212542.png]]<br>展示表的结构：<br>![[Pasted image 20260505212627.png]]<br>创建索引：<br>![[Pasted image 20260505212734.png]]<br>![[Pasted image 20260505213127.png]]<br>创建成功。<br>删除索引![[Pasted image 20260505213148.png]]<br>删除之后：<br>![[Pasted image 20260505213212.png]]<br>插入数据的ddl<br>![[Pasted image 20260507144047.png]]<br>![[Pasted image 20260507144437.png]]<br>插入成功，同时展示查询操作<br>接下来是删除，修改<br>![[Pasted image 20260507144743.png]]<br>![[Pasted image 20260507144918.png]]<br>视图的操作<br>![[Pasted image 20260507145746.png]]<br>![[Pasted image 20260507145806.png]]<br>实验任务5：<br>（1）![[Pasted image 20260507215215.png]]<br>（2）![[Pasted image 20260507215838.png]]<br>（3）<br>![[Pasted image 20260507215952.png]]<br>（4）<br>![[Pasted image 20260507220251.png]]<br>（5）![[Pasted image 20260507222211.png]]<br>（6）<br>![[Pasted image 20260507222323.png]]<br>（7）<br>![[Pasted image 20260507222923.png]]<br>（8）<br>![[Pasted image 20260507223413.png]]<br>（9）![[Pasted image 20260507223921.png]]<br>（10）我的表造的不符合要求，我就直接贴代码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="keyword">DISTINCT</span> sno) </span><br><span class="line"><span class="keyword">FROM</span> course</span><br><span class="line"><span class="keyword">WHERE</span> teacher <span class="operator">=</span> <span class="string">&#x27;MARY&#x27;</span>; </span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>默认选课的记录都在course里面</span><br></pre></td></tr></table></figure>
+
+<p>![[Pasted image 20260507224941.png]]<br>(11)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> reason, sname</span><br><span class="line"><span class="keyword">FROM</span> rest</span><br><span class="line"><span class="keyword">WHERE</span> statu <span class="operator">=</span> <span class="string">&#x27;审核未通过&#x27;</span> <span class="keyword">AND</span> teacher <span class="operator">=</span> <span class="string">&#x27;XX&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>![[Pasted image 20260507225047.png]]<br>(12)![[Pasted image 20260507230011.png]]</p>
+<h2 id="复杂查询"><a href="#复杂查询" class="headerlink" title="复杂查询"></a>复杂查询</h2><p>（1）<br>![[Pasted image 20260508202501.png]]<br>（2）<br>![[Pasted image 20260508203527.png]]<br>（3）<br>![[Pasted image 20260508203725.png]]<br>（4）<br>![[Pasted image 20260508204907.png]]<br>（5）<br>![[Pasted image 20260508205406.png]]<br>（6）<br>![[Pasted image 20260508210419.png]]<br>（7）<br>左连接可以看到所有的学生<br>![[Pasted image 20260508210912.png]]<br>（8）<br>![[Pasted image 20260508210924.png]]<br>（9）<br>自然连接：根据重名的去找匹配，同名的列自动去重，不匹配的行直接丢弃<br>左连接：同名的列默认全保留，同时保留左表的全部，右表不匹配的为NULL</p>
+<h2 id="任务7："><a href="#任务7：" class="headerlink" title="任务7："></a>任务7：</h2><p>（1）![[Pasted image 20260509160406.png]]<br>![[Pasted image 20260509160418.png]]<br>（2）<br>![[Pasted image 20260509160857.png]]<br>（3）<br>![[Pasted image 20260509161712.png]]<br>修改前<br>![[Pasted image 20260509161746.png]]<br>设置触发器<br>![[Pasted image 20260509161831.png]]<br>触发条件<br>![[Pasted image 20260509161856.png]]<br>触发器生效</p>
+<h2 id="任务8"><a href="#任务8" class="headerlink" title="任务8"></a>任务8</h2><p>![[Pasted image 20260508215546.png]]</p>
+<h1 id="实验二"><a href="#实验二" class="headerlink" title="实验二"></a>实验二</h1><p><img src="file:///C:/Users/qwert/Pictures/Typedown/37ba0e9b-d16e-4e82-9dc4-43e6ae7af0ef.png" alt="37ba0e9b-d16e-4e82-9dc4-43e6ae7af0ef"></p>
+<p>ER图</p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/d715227b-340e-480b-9629-ab023455de4e.png" alt="d715227b-340e-480b-9629-ab023455de4e"></p>
+<p>生产sql脚本</p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/bda5abe5-f8c3-4639-9936-ebc025d47603.png" alt="bda5abe5-f8c3-4639-9936-ebc025d47603"></p>
+<p>导入成功</p>
+<h1 id="实验3："><a href="#实验3：" class="headerlink" title="实验3："></a>实验3：</h1><p><img src="file:///C:/Users/qwert/Pictures/Typedown/67606e18-7f48-4e77-8657-5955a663cf74.png" alt="67606e18-7f48-4e77-8657-5955a663cf74"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/7e29d65a-64d2-4699-a735-e20e98ad36f8.png" alt="7e29d65a-64d2-4699-a735-e20e98ad36f8"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/f452c9e1-13ce-4491-99e0-283d9d779590.png" alt="f452c9e1-13ce-4491-99e0-283d9d779590"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/3fb907a9-1a4c-4c08-b6b7-ec2eed2e7451.png" alt="3fb907a9-1a4c-4c08-b6b7-ec2eed2e7451"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/d0abd708-f4dc-46cd-820d-df39b48bdcd9.png" alt="d0abd708-f4dc-46cd-820d-df39b48bdcd9"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/5f91654b-0ad2-4569-a599-5d96526509cb.png" alt="5f91654b-0ad2-4569-a599-5d96526509cb"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/ad7994b9-f6f9-4561-baab-364331e62ed9.png" alt="ad7994b9-f6f9-4561-baab-364331e62ed9"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/b036fd0a-f408-4c6c-bb6f-dbd6e4b69b0f.png" alt="b036fd0a-f408-4c6c-bb6f-dbd6e4b69b0f"></p>
+<h3 id="改为medium级别"><a href="#改为medium级别" class="headerlink" title="改为medium级别"></a>改为medium级别</h3><p><img src="file:///C:/Users/qwert/Pictures/Typedown/4f945f84-3afa-4b20-b0ba-63a57536aac0.png" alt="4f945f84-3afa-4b20-b0ba-63a57536aac0"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/0843c2f1-915a-44d0-a878-211d04b06260.png" alt="0843c2f1-915a-44d0-a878-211d04b06260"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/b5b6ed08-2543-4407-b7ad-9ac3d814e54f.png" alt="b5b6ed08-2543-4407-b7ad-9ac3d814e54f"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/67838616-39bd-4097-ae1d-0242a3821d6a.png" alt="67838616-39bd-4097-ae1d-0242a3821d6a"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/f1390f80-18b0-4bf9-8aa0-e0cee30df848.png" alt="f1390f80-18b0-4bf9-8aa0-e0cee30df848"></p>
+<h3 id="high级别"><a href="#high级别" class="headerlink" title="high级别"></a>high级别</h3><p><img src="file:///C:/Users/qwert/Pictures/Typedown/8bd87ddd-8164-4b56-9d42-dceee163db7e.png" alt="8bd87ddd-8164-4b56-9d42-dceee163db7e"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/5c8f23de-638f-4c88-98ab-93cb5e5743b6.png" alt="5c8f23de-638f-4c88-98ab-93cb5e5743b6"></p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/e8747c7d-61e5-4e81-9d2b-e7da84c84bfc.png" alt="e8747c7d-61e5-4e81-9d2b-e7da84c84bfc"></p>
+<p>实验四：</p>
+<p><img src="file:///C:/Users/qwert/Pictures/Typedown/2a0620b9-db96-4651-ae41-9cde3da19c0e.png" alt="2a0620b9-db96-4651-ae41-9cde3da19c0e"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="prev" title="数据库">
+                  <i class="fa fa-angle-left"></i> 数据库
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">MuZZZFeng</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div><div class="footer-inner">
+  <div><strong>© 2026 木之风</strong> · Built with Hexo & NexT</div>
+  <div style="margin-top: 6px; opacity: 0.7;">记录学习、代码和一些凌晨的想法。</div>
+</div>
+
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+<script src="/js/autumn-leaves.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#faf5eb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#3d2b1f" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#faf5eb">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hickercf.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":24,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="第二章：进程与线程2.1 处理器概述2.1.1 单处理器和多处理器系统计算机系统的核心是CPU CPU的基本任务是： 1取指令 -&gt; 译码 -&gt; 取操作数 -&gt; 执行指令  处理器可以分为： 12- 单处理器系统- 多处理器系统  单处理器系统一个计算机系统只包括一个运算处理器。 注意：单处理器也可以有多个程序“看起来同时允许”。 这叫： 1**并发**    从微观上来看，一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS">
+<meta property="og:url" content="https://hickercf.github.io/2026/05/31/OS/index.html">
+<meta property="og:site_name" content="MuZZZFeng&#39;s Blog">
+<meta property="og:description" content="第二章：进程与线程2.1 处理器概述2.1.1 单处理器和多处理器系统计算机系统的核心是CPU CPU的基本任务是： 1取指令 -&gt; 译码 -&gt; 取操作数 -&gt; 执行指令  处理器可以分为： 12- 单处理器系统- 多处理器系统  单处理器系统一个计算机系统只包括一个运算处理器。 注意：单处理器也可以有多个程序“看起来同时允许”。 这叫： 1**并发**    从微观上来看，一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-30T22:31:05.000Z">
+<meta property="article:modified_time" content="2026-05-31T06:31:18.041Z">
+<meta property="article:author" content="MuZZZFeng">
+<meta property="article:tag" content="AI, 学习笔记, 工具折腾, 生活随笔, 个人博客">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hickercf.github.io/2026/05/31/OS/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hickercf.github.io/2026/05/31/OS/","path":"2026/05/31/OS/","title":"OS"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OS | MuZZZFeng's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<link rel="icon" type="image/png" href="/images/logo-muzzzfeng.png">
+<link rel="apple-touch-icon" href="/images/logo-muzzzfeng.png">
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+      <img class="custom-logo-image" src="/images/logo-muzzzfeng.png" alt="MuZZZFeng's Blog">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">MuZZZFeng's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录学习、思考、折腾和一些凌晨的碎碎念。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">第二章：进程与线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%A4%84%E7%90%86%E5%99%A8%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">2.1 处理器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-%E5%8D%95%E5%A4%84%E7%90%86%E5%99%A8%E5%92%8C%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.1.1.</span> <span class="nav-text">2.1.1 单处理器和多处理器系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E5%A4%84%E7%90%86%E5%99%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">单处理器系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">多处理器系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">计算机系统结构分类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-SISD%EF%BC%9A%E5%8D%95%E6%8C%87%E4%BB%A4%E6%B5%81%E5%8D%95%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">1.1.1.3.1.</span> <span class="nav-text">1. SISD：单指令流单数据流</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-SIMD%EF%BC%9A%E5%8D%95%E6%8C%87%E4%BB%A4%E6%B5%81%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">1.1.1.3.2.</span> <span class="nav-text">2. SIMD：单指令流多数据流</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-MISD%EF%BC%9A%E5%A4%9A%E6%8C%87%E4%BB%A4%E6%B5%81%E5%8D%95%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">1.1.1.3.3.</span> <span class="nav-text">3. MISD：多指令流单数据流</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-MIMD%EF%BC%9A%E5%A4%9A%E6%8C%87%E4%BB%A4%E6%B5%81%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">1.1.1.3.4.</span> <span class="nav-text">4. MIMD：多指令流多数据流</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8%E5%92%8C%E5%A4%9A%E6%A0%B8%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">多处理器和多核处理器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%9A"><span class="nav-number">1.1.1.4.1.</span> <span class="nav-text">多处理器：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%9A%E6%A0%B8%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%9A"><span class="nav-number">1.1.1.4.2.</span> <span class="nav-text">多核处理器：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.1.2 寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-%E7%89%B9%E6%9D%83%E6%8C%87%E4%BB%A4%E5%92%8C%E9%9D%9E%E7%89%B9%E6%9D%83%E6%8C%87%E4%BB%A4"><span class="nav-number">1.1.3.</span> <span class="nav-text">2.1.3 特权指令和非特权指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4-%E5%A4%84%E7%90%86%E5%99%A8%E7%8A%B6%E6%80%81"><span class="nav-number">1.1.4.</span> <span class="nav-text">2.1.4 处理器状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-5-%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E5%AD%97%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88PSW%EF%BC%89"><span class="nav-number">1.1.5.</span> <span class="nav-text">2.1.5 程序状态字寄存器（PSW）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-6-x86%E6%80%BB%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.6.</span> <span class="nav-text">2.1.6 x86总体架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">2.2 计算机的启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%EF%BC%88BIOS%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">传统启动流程（BIOS）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-OS%E4%B8%AD%E7%9A%84%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">2.3 OS中的中断处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-%E4%B8%AD%E6%96%AD%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.3.1 中断的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-%E4%B8%AD%E6%96%AD%E5%88%86%E7%B1%BB"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.3.2 中断分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-%E4%B8%AD%E6%96%AD%E3%80%81%E5%BC%82%E5%B8%B8%E5%92%8C%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">2.3.3 中断、异常和系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-4-%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">2.3.4 中断处理机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E6%80%A7%E5%92%8C%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">1.3.5.</span> <span class="nav-text">同步性和原子性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.4.</span> <span class="nav-text">2.4 进程的定义和描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="nav-number">1.4.1.</span> <span class="nav-text">2.4.1 程序的顺序执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.4.2 程序的并发执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-3-%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E7%9A%84%E6%9D%A1%E4%BB%B6%EF%BC%88Bernstein-%E6%9D%A1%E4%BB%B6%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">2.4.3 程序并发执行的条件（Bernstein 条件）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-4-%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%BC%95%E5%85%A5"><span class="nav-number">1.4.4.</span> <span class="nav-text">2.4.4 进程的引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-5-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%89%B9%E5%BE%81"><span class="nav-number">1.4.5.</span> <span class="nav-text">2.4.5 进程的特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-6-%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.4.6.</span> <span class="nav-text">2.4.6 进程的描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%8A%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.5.</span> <span class="nav-text">2.5 进程的状态及转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-1-%E4%B8%89%E6%80%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.1.</span> <span class="nav-text">2.5.1 三态模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-3-%E4%BA%94%E6%80%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.2.</span> <span class="nav-text">2.5.3 五态模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC2%E7%AB%A0-%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">第2章 进程与线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%A4%84%E7%90%86%E5%99%A8%E6%A6%82%E8%BF%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 处理器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-%E5%8D%95%E5%A4%84%E7%90%86%E5%99%A8%E4%B8%8E%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 单处理器与多处理器系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%88%86%E7%B1%BB%EF%BC%88Flynn-%E5%88%86%E7%B1%BB%E6%B3%95%EF%BC%89"><span class="nav-number">2.1.2.</span> <span class="nav-text">计算机系统结构分类（Flynn 分类法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8-vs-%E5%A4%9A%E6%A0%B8%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">2.1.3.</span> <span class="nav-text">多处理器 vs 多核处理器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-%E5%AF%84%E5%AD%98%E5%99%A8-1"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.2 寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-%E7%89%B9%E6%9D%83%E6%8C%87%E4%BB%A4%E4%B8%8E%E9%9D%9E%E7%89%B9%E6%9D%83%E6%8C%87%E4%BB%A4"><span class="nav-number">2.1.5.</span> <span class="nav-text">2.1.3 特权指令与非特权指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4-%E5%A4%84%E7%90%86%E5%99%A8%E7%8A%B6%E6%80%81-1"><span class="nav-number">2.1.6.</span> <span class="nav-text">2.1.4 处理器状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-5-%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E5%AD%97%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88PSW%EF%BC%89-1"><span class="nav-number">2.1.7.</span> <span class="nav-text">2.1.5 程序状态字寄存器（PSW）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-6-x86-%E6%80%BB%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.8.</span> <span class="nav-text">2.1.6 x86 总体架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%90%AF%E5%8A%A8-1"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 计算机的启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%EF%BC%88BIOS-%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">传统启动流程（BIOS 方式）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%B0%E8%A1%8C%E5%90%AF%E5%8A%A8%E8%A7%84%E8%8C%83"><span class="nav-number">2.2.2.</span> <span class="nav-text">现行启动规范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%BF%A1%E8%AE%A1%E7%AE%97%E5%90%AF%E5%8A%A8%E4%BF%A1%E4%BB%BB%E9%93%BE"><span class="nav-number">2.2.3.</span> <span class="nav-text">可信计算启动信任链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-OS-%E4%B8%AD%E7%9A%84%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 OS 中的中断处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-%E4%B8%AD%E6%96%AD%E7%9A%84%E6%A6%82%E5%BF%B5-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 中断的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-%E4%B8%AD%E6%96%AD%E5%88%86%E7%B1%BB-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 中断分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-%E4%B8%AD%E6%96%AD%E3%80%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-number">2.3.3.</span> <span class="nav-text">2.3.3 中断、异常与系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-4-%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6-1"><span class="nav-number">2.3.4.</span> <span class="nav-text">2.3.4 中断处理机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">2.3.5.</span> <span class="nav-text">同步与原子性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 进程的定义与描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C-1"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 程序的顺序执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C-1"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 程序的并发执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-3-%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E7%9A%84%E6%9D%A1%E4%BB%B6%EF%BC%88Bernstein-%E6%9D%A1%E4%BB%B6%EF%BC%89-1"><span class="nav-number">2.4.3.</span> <span class="nav-text">2.4.3 程序并发执行的条件（Bernstein 条件）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-4-%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%BC%95%E5%85%A5-1"><span class="nav-number">2.4.4.</span> <span class="nav-text">2.4.4 进程的引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-5-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%89%B9%E5%BE%81-1"><span class="nav-number">2.4.5.</span> <span class="nav-text">2.4.5 进程的特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-6-%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">2.4.6.</span> <span class="nav-text">2.4.6 进程的描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%8A%E8%BD%AC%E6%8D%A2-1"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 进程的状态及转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-1-%E4%B8%89%E6%80%81%E6%A8%A1%E5%9E%8B-1"><span class="nav-number">2.5.1.</span> <span class="nav-text">2.5.1 三态模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-2-%E4%BA%94%E6%80%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.5.2.</span> <span class="nav-text">2.5.2 五态模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-3-%E4%B8%83%E6%80%81%E6%A8%A1%E5%9E%8B%EF%BC%88%E5%90%AB%E6%8C%82%E8%B5%B7%E7%8A%B6%E6%80%81%EF%BC%89"><span class="nav-number">2.5.3.</span> <span class="nav-text">2.5.3 七态模型（含挂起状态）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E7%AE%A1%E7%90%86%E5%92%8C%E7%BB%84%E7%BB%87"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 进程控制管理和组织</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-1-%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA"><span class="nav-number">2.6.1.</span> <span class="nav-text">2.6.1 进程创建</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#POSIX%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">POSIX共享内存</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E8%B0%83%E5%BA%A6"><span class="nav-number">4.</span> <span class="nav-text">第三章：调度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E6%98%AF%E5%A4%9A%E9%81%93%E7%A8%8B%E5%BA%8F%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E7%A1%80"><span class="nav-number">4.1.</span> <span class="nav-text">调度是多道程序操作系统的基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E8%B0%83%E5%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">4.2.</span> <span class="nav-text">3.1 调度的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%B0%83%E5%BA%A6%E9%98%9F%E5%88%97"><span class="nav-number">4.2.1.</span> <span class="nav-text">1. 调度队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%BB%B4%E6%8A%A4%E4%BA%86%E4%B8%80%E7%BB%84%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E9%98%9F%E5%88%97"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">操作系统中维护了一组进程调度队列</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A%E9%98%9F%E5%88%97%EF%BC%9A%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%89%80%E6%9C%89%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%9B%86%E5%90%88"><span class="nav-number">4.2.1.1.1.</span> <span class="nav-text">作业队列：系统中所有进程的集合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%B1%E7%BB%AA%E9%98%9F%E5%88%97%EF%BC%9A%E6%89%80%E6%9C%89%E9%A9%BB%E7%95%99%E5%9C%A8%E5%86%85%E5%AD%98%EF%BC%8C%E5%A4%84%E4%BA%8E%E5%B0%B1%E7%BB%AA%E7%8A%B6%E6%80%81%EF%BC%8C%E7%AD%89%E5%BE%85%E8%B0%83%E5%BA%A6%E6%89%A7%E8%A1%8C%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%9B%86%E5%90%88%E3%80%82"><span class="nav-number">4.2.1.1.2.</span> <span class="nav-text">就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E9%98%9F%E5%88%97%EF%BC%9A%E7%AD%89%E5%BE%85%E6%9F%90%E4%B8%AAI-O%E8%AE%BE%E5%A4%87%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%9B%86%E5%90%88"><span class="nav-number">4.2.1.1.3.</span> <span class="nav-text">设备队列：等待某个I&#x2F;O设备的进程集合</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B0%83%E5%BA%A6%E7%9A%84%E5%B1%82%E6%AC%A1"><span class="nav-number">4.2.2.</span> <span class="nav-text">2.调度的层次</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E7%A8%8B%E5%BA%8F%EF%BC%9A%E8%B4%9F%E8%B4%A3%E6%8C%91%E9%80%89%E5%B0%B1%E7%BB%AA%E8%BF%9B%E7%A8%8B%E7%9A%84-%E5%86%85%E6%A0%B8-%E6%A8%A1%E5%9D%97"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">调度程序：负责挑选就绪进程的 内核 模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B1%82%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.2.2.2.</span> <span class="nav-text">处理机的三层调度：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.2.2.2.1.</span> <span class="nav-text">高级调度：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%8E%E7%BA%A7%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.2.2.2.2.</span> <span class="nav-text">低级调度：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%AD%E7%BA%A7%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.2.2.2.3.</span> <span class="nav-text">中级调度：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E8%B0%83%E5%BA%A6%EF%BC%9A-1"><span class="nav-number">4.2.2.3.</span> <span class="nav-text">高级调度：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%8E%E7%BA%A7%E8%B0%83%E5%BA%A6%EF%BC%9A-1"><span class="nav-number">4.2.2.4.</span> <span class="nav-text">低级调度：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%AD%E7%BA%A7%E8%B0%83%E5%BA%A6%EF%BC%9A-1"><span class="nav-number">4.2.2.5.</span> <span class="nav-text">中级调度：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%B0%83%E5%BA%A6%E7%9A%84%E6%80%A7%E8%83%BD%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87%EF%BC%9A"><span class="nav-number">4.2.3.</span> <span class="nav-text">3. 调度的性能评价指标：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2%E4%BD%9C%E4%B8%9A%EF%BC%8C%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6"><span class="nav-number">4.3.</span> <span class="nav-text">3.2作业，进程和线程的调度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BD%9C%E4%B8%9A%E5%92%8C%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="nav-number">4.3.1.</span> <span class="nav-text">1.作业和进程的关系：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BD%9C%E4%B8%9A%E4%BB%8E%E6%8F%90%E4%BA%A4%E5%88%B0%E5%AE%8C%E6%88%90%E7%BB%8F%E8%BF%87%E5%9B%9B%E4%B8%AA%E7%8A%B6%E6%80%81%EF%BC%9A"><span class="nav-number">4.3.2.</span> <span class="nav-text">2.作业从提交到完成经过四个状态：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%BD%9C%E4%B8%9A%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.3.3.</span> <span class="nav-text">3.作业进程调度：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E8%B5%84%E6%BA%90%E6%8E%A7%E5%88%B6%E5%9D%97%EF%BC%9A"><span class="nav-number">4.3.4.</span> <span class="nav-text">4.资源控制块：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%9A%84%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">4.3.5.</span> <span class="nav-text">5.进程调度的方式：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8A%A2%E5%8D%A0%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">4.3.5.1.</span> <span class="nav-text">抢占方式：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8A%A2%E5%8D%A0%E5%8E%9F%E5%88%99%E7%94%B1%EF%BC%9A"><span class="nav-number">4.3.5.2.</span> <span class="nav-text">抢占原则由：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%95%E8%B5%B7%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="nav-number">4.3.5.3.</span> <span class="nav-text">引起进程调度的原因：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%B4%BE%E5%99%A8%EF%BC%9A%E5%B0%86CPU%E5%88%86%E6%B4%BE%E7%BB%99%E8%B0%83%E5%BA%A6%E5%99%A8%E9%80%89%E5%AE%9A%E7%9A%84%E8%BF%9B%E7%A8%8B"><span class="nav-number">4.3.5.4.</span> <span class="nav-text">分派器：将CPU分派给调度器选定的进程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.3.6.</span> <span class="nav-text">6. 线程调度：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">4.4.</span> <span class="nav-text">3.3 调度算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-1-%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1%E7%AE%97%E6%B3%95%EF%BC%88FCFS%EF%BC%89%EF%BC%9A"><span class="nav-number">4.4.1.</span> <span class="nav-text">3.3.1 先来先服务算法（FCFS）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2-%E7%9F%AD%E4%BD%9C%E4%B8%9A%E6%9C%89%E7%BA%BF%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="nav-number">4.4.2.</span> <span class="nav-text">3.3.2 短作业有线调度算法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-3-%E4%BC%98%E5%85%88%E7%BA%A7%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="nav-number">4.4.3.</span> <span class="nav-text">3.3.3 优先级调度算法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-4-%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC%E8%B0%83%E5%BA%A6%EF%BC%88RR%EF%BC%89"><span class="nav-number">4.4.4.</span> <span class="nav-text">3.3.4 时间片轮转调度（RR）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC%E6%B3%95%EF%BC%88Round-robin%EF%BC%89%EF%BC%9A"><span class="nav-number">4.4.4.1.</span> <span class="nav-text">时间片轮转法（Round-robin）：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A%E5%A4%A7%E5%AE%B6%E8%BD%AE%E6%B5%81%E6%9D%A5%EF%BC%8C%E6%AF%8F%E4%BA%BA%E4%B8%80%E6%AC%A1%E5%8F%AA%E5%B9%B2%E4%B8%80%E4%BC%9A"><span class="nav-number">4.4.4.1.1.</span> <span class="nav-text">核心思想：大家轮流来，每人一次只干一会</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%87%E5%A4%A7%E5%B0%8F%E7%9A%84%E9%80%89%E6%8B%A9%EF%BC%9A"><span class="nav-number">4.4.4.2.</span> <span class="nav-text">时间片大小的选择：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-5%E6%9C%80%E9%AB%98%E5%93%8D%E5%BA%94%E6%AF%94%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95-HRRN"><span class="nav-number">4.4.5.</span> <span class="nav-text">3.3.5最高响应比优先调度算法(HRRN)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="nav-number">4.4.5.1.</span> <span class="nav-text">1. 核心思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%93%8D%E5%BA%94%E6%AF%94%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="nav-number">4.4.5.2.</span> <span class="nav-text">2. 响应比的计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E7%AE%97%E6%B3%95%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">4.4.5.3.</span> <span class="nav-text">3.算法的优点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-6%E5%A4%9A%E7%BA%A7%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">4.4.6.</span> <span class="nav-text">3.3.6多级队列调度算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A"><span class="nav-number">4.4.6.1.</span> <span class="nav-text">1. 核心思想：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%98%9F%E5%88%97%E4%B9%8B%E9%97%B4%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%B0%83%E5%BA%A6%E7%9A%84%E7%AD%96%E7%95%A5"><span class="nav-number">4.4.6.2.</span> <span class="nav-text">2. 队列之间的两种调度的策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AD%96%E7%95%A5A%EF%BC%9A%E5%9B%BA%E5%AE%9A%E4%BC%98%E5%85%88%E7%BA%A7%E8%B0%83%E5%BA%A6"><span class="nav-number">4.4.6.2.1.</span> <span class="nav-text">策略A：固定优先级调度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AD%96%E7%95%A5B%EF%BC%9A%E6%97%B6%E9%97%B4%E7%89%87%E6%AF%94%E4%BE%8B%E5%88%86%E9%85%8D"><span class="nav-number">4.4.6.2.2.</span> <span class="nav-text">策略B：时间片比例分配</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-7-%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%EF%BC%88MLFQ%EF%BC%89"><span class="nav-number">4.4.7.</span> <span class="nav-text">3.3.7 多级反馈队列调度算法（MLFQ）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%92%8C%E5%A4%9A%E7%BA%A7%E9%98%9F%E5%88%97%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.4.7.1.</span> <span class="nav-text">1. 和多级队列的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%AE%97%E6%B3%95%E6%A0%B8%E5%BF%83"><span class="nav-number">4.4.7.2.</span> <span class="nav-text">2. 算法核心</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%B0%83%E5%BA%A6%E8%A7%84%E5%88%99%EF%BC%88%E9%87%8D%E7%82%B9%EF%BC%81%EF%BC%81%EF%BC%81%EF%BC%89"><span class="nav-number">4.4.7.3.</span> <span class="nav-text">3. 调度规则（重点！！！）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%84%E5%88%991%EF%BC%9A%E6%96%B0%E8%BF%9B%E7%A8%8B-%E6%9C%80%E9%AB%98%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97"><span class="nav-number">4.4.7.3.1.</span> <span class="nav-text">规则1：新进程-&gt;最高优先级队列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%84%E5%88%992%EF%BC%9A%E6%97%B6%E9%97%B4%E7%89%87%E7%94%A8%E5%AE%8C%EF%BC%8C%E4%BB%BB%E5%8A%A1%E8%BF%98%E6%B2%A1%E5%AE%8C%E6%88%90-%E9%99%8D%E7%BA%A7"><span class="nav-number">4.4.7.3.2.</span> <span class="nav-text">规则2：时间片用完，任务还没完成-&gt;降级</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%84%E5%88%993%EF%BC%9A%E4%B8%BB%E5%8A%A8%E6%94%BE%E5%BC%83CPU-%E4%BF%9D%E6%8C%81-%E5%8D%87%E7%BA%A7"><span class="nav-number">4.4.7.3.3.</span> <span class="nav-text">规则3：主动放弃CPU-&gt;保持&#x2F;升级</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%84%E5%88%994%EF%BC%9A%E9%AB%98%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97%E6%9C%89%E8%BF%9B%E7%A8%8B%EF%BC%8C%E4%BD%8E%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97%E6%B0%B8%E8%BF%9C%E8%BD%AE%E4%B8%8D%E5%88%B0"><span class="nav-number">4.4.7.3.4.</span> <span class="nav-text">规则4：高优先级队列有进程，低优先级队列永远轮不到</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%84%E5%88%995%EF%BC%9A%E4%BD%8E%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97%E7%9A%84%E8%BF%9B%E7%A8%8B%E7%AD%89%E5%A4%AA%E4%B9%85%EF%BC%8C%E5%85%A8%E9%83%A8%E9%87%8D%E6%96%B0%E6%8F%90%E5%8D%87%E5%88%B0%E6%9C%80%E9%AB%98%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97"><span class="nav-number">4.4.7.3.5.</span> <span class="nav-text">规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number">4.4.7.4.</span> <span class="nav-text">4.一个例子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-8-%E5%85%AC%E5%B9%B3%E5%88%86%E4%BA%AB%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">4.4.8.</span> <span class="nav-text">3.3.8 公平分享调度算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A-1"><span class="nav-number">4.4.8.1.</span> <span class="nav-text">1. 核心思想：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="nav-number">4.4.8.2.</span> <span class="nav-text">2.核心机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%85%B7%E4%BD%93%E4%BE%8B%E5%AD%90"><span class="nav-number">4.4.8.3.</span> <span class="nav-text">3.具体例子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-9%E5%8D%95%E9%80%9F%E7%8E%87%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95RM"><span class="nav-number">4.4.9.</span> <span class="nav-text">3.3.9单速率调度算法RM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3-1"><span class="nav-number">4.4.9.1.</span> <span class="nav-text">1. 核心思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="nav-number">4.4.9.2.</span> <span class="nav-text">2. 例子：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%B0%83%E5%BA%A6%E8%BF%87%E7%A8%8B"><span class="nav-number">4.4.9.3.</span> <span class="nav-text">3. 调度过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-10-%E6%9C%80%E6%97%A9%E6%88%AA%E6%AD%A2%E6%97%B6%E9%97%B4%E4%BC%98%E5%85%88EDF"><span class="nav-number">4.4.10.</span> <span class="nav-text">3.3.10 最早截止时间优先EDF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="nav-number">4.4.10.1.</span> <span class="nav-text">核心思想</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">5.</span> <span class="nav-text">第四章：进程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98"><span class="nav-number">5.1.</span> <span class="nav-text">核心问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E5%90%8C%E6%AD%A5%E5%92%8C%E4%BA%92%E6%96%A5%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">5.2.</span> <span class="nav-text">4.1 同步和互斥的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-1-%E4%B8%A4%E4%B8%AA%E7%BB%8F%E5%85%B8%E6%A1%88%E4%BE%8B"><span class="nav-number">5.2.1.</span> <span class="nav-text">4.1.1 两个经典案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B1%EF%BC%9A%E7%BB%93%E6%9E%9C%E4%B8%8D%E5%94%AF%E4%B8%80"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">案例1：结果不唯一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B2%EF%BC%9A%E6%B0%B8%E8%BF%9C%E7%AD%89%E5%BE%85%EF%BC%9A"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">案例2：永远等待：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-2-%E4%B8%B4%E7%95%8C%E8%B5%84%E6%BA%90%E5%92%8C%E4%B8%B4%E7%95%8C%E5%8C%BA"><span class="nav-number">5.2.2.</span> <span class="nav-text">4.1.2 临界资源和临界区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%E8%AE%BF%E9%97%AE%E7%9A%84%E5%9B%9B%E6%9D%A1%E9%83%A8%E5%88%86%EF%BC%9A"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">临界区访问的四条部分：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%E8%AE%BF%E9%97%AE%E7%9A%84%E5%9B%9B%E6%9D%A1%E5%8E%9F%E5%88%99"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">临界区访问的四条原则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E4%BA%92%E6%96%A5%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.</span> <span class="nav-text">4.2 互斥的实现方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-1-%E8%BD%AF%E4%BB%B6%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.1.</span> <span class="nav-text">4.2.1 软件方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%951%EF%BC%9A%E8%BD%AE%E8%BD%AC%E6%B3%95%EF%BC%88turn%E5%8F%98%E9%87%8F%EF%BC%89"><span class="nav-number">5.3.1.1.</span> <span class="nav-text">算法1：轮转法（turn变量）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%952%EF%BC%9Aflag%E6%95%B0%E7%BB%84%E6%B3%95"><span class="nav-number">5.3.1.2.</span> <span class="nav-text">算法2：flag数组法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%953%EF%BC%9A%E5%85%88%E4%B8%8A%E9%94%81%E5%90%8E%E6%A3%80%E6%9F%A5"><span class="nav-number">5.3.1.3.</span> <span class="nav-text">算法3：先上锁后检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%954%EF%BC%9ADekker%E7%AE%97%E6%B3%95"><span class="nav-number">5.3.1.4.</span> <span class="nav-text">算法4：Dekker算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%955%EF%BC%9APeterson%E7%AE%97%E6%B3%95"><span class="nav-number">5.3.1.5.</span> <span class="nav-text">算法5：Peterson算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-2-%E7%A1%AC%E4%BB%B6%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.2.</span> <span class="nav-text">4.2.2 硬件方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951%EF%BC%9A%E5%85%B3%E4%B8%AD%E6%96%AD"><span class="nav-number">5.3.2.1.</span> <span class="nav-text">方法1：关中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952%EF%BC%9A%E5%8E%9F%E5%AD%90%E6%8C%87%E4%BB%A4-TS"><span class="nav-number">5.3.2.2.</span> <span class="nav-text">方法2：原子指令-TS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%953%EF%BC%9A%E5%8E%9F%E5%AD%90%E6%8C%87%E4%BB%A4Swap"><span class="nav-number">5.3.2.3.</span> <span class="nav-text">方法3：原子指令Swap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-3-%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%BA%E5%88%B6"><span class="nav-number">5.3.3.</span> <span class="nav-text">4.2.3 互斥锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BA%92%E6%96%A5%E9%94%81"><span class="nav-number">5.3.3.1.</span> <span class="nav-text">基本互斥锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-number">5.3.3.2.</span> <span class="nav-text">自旋锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">5.4.</span> <span class="nav-text">4.3 信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-1-%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">5.4.1.</span> <span class="nav-text">4.3.1 信号量的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-2-P-%E6%93%8D%E4%BD%9C%EF%BC%88wait-%E7%AD%89%E5%BE%85-%E8%AF%B7%E6%B1%82%E8%B5%84%E6%BA%90%EF%BC%89"><span class="nav-number">5.4.2.</span> <span class="nav-text">4.3.2 P 操作（wait&#x2F;等待&#x2F;请求资源）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-3-V%E6%93%8D%E4%BD%9C%EF%BC%88signal-%E4%BF%A1%E5%8F%B7-%E9%87%8A%E6%94%BE%E8%B5%84%E6%BA%90%EF%BC%89"><span class="nav-number">5.4.3.</span> <span class="nav-text">4.3.3 V操作（signal&#x2F;信号&#x2F;释放资源）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-4-%E6%A0%87%E5%87%86%E6%95%99%E6%9D%90%E7%89%88%E6%9C%AC"><span class="nav-number">5.4.4.</span> <span class="nav-text">4.3.4 标准教材版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-4-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E4%BA%92%E6%96%A5"><span class="nav-number">5.4.5.</span> <span class="nav-text">4.3.4 使用信号量实现互斥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-5-%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%89%8D%E9%A9%B1%E5%85%B3%E7%B3%BB"><span class="nav-number">5.4.6.</span> <span class="nav-text">4.3.5 利用信号量实现前驱关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-%E7%94%9F%E4%BA%A7%E8%80%85-%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98"><span class="nav-number">5.5.</span> <span class="nav-text">4.4 生产者-消费者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E5%87%BA%E7%8E%B0%E5%9C%A8%E5%93%AA"><span class="nav-number">5.6.</span> <span class="nav-text">1. 问题出现在哪</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%83%85%E5%86%B51%EF%BC%9A%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BB%A1%E4%BA%86%EF%BC%8C%E7%94%9F%E4%BA%A7%E8%80%85%E8%BF%98%E6%83%B3%E6%94%BE%EF%BC%9A"><span class="nav-number">5.6.1.</span> <span class="nav-text">情况1：缓冲区满了，生产者还想放：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%83%85%E5%86%B52%EF%BC%9A%E7%BC%93%E5%86%B2%E5%8C%BA%E7%A9%BA%E4%BA%86%EF%BC%8C%E6%B6%88%E8%B4%B9%E8%80%85%E8%BF%98%E6%83%B3%E5%8F%96"><span class="nav-number">5.6.2.</span> <span class="nav-text">情况2：缓冲区空了，消费者还想取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%83%85%E5%86%B53%EF%BC%9A%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%97%B6%E6%93%8D%E4%BD%9C%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-number">5.6.3.</span> <span class="nav-text">情况3：多个线程同时操作缓冲区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%9A%84%E6%A0%B8%E5%BF%83%EF%BC%9A"><span class="nav-number">5.7.</span> <span class="nav-text">2. 解决问题的核心：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%EF%BC%8C%E4%BA%92%E6%96%A5"><span class="nav-number">5.7.1.</span> <span class="nav-text">第一，互斥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%EF%BC%8C%E5%90%8C%E6%AD%A5"><span class="nav-number">5.7.2.</span> <span class="nav-text">第二，同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%80%8E%E4%B9%88%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E8%A7%A3%E5%86%B3%EF%BC%9F"><span class="nav-number">5.8.</span> <span class="nav-text">3. 怎么用信号量解决？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mutex-%E6%98%AF%E8%A1%A8%E7%A4%BA%E7%BC%93%E5%86%B2%E5%8C%BA%E7%9A%84%E9%94%81%EF%BC%8C1%E8%A1%A8%E7%A4%BA%E6%B2%A1%E4%B8%8A%E9%94%81%EF%BC%8C0%E8%A1%A8%E7%A4%BA%E4%B8%8A%E9%94%81%E4%BA%86"><span class="nav-number">5.8.1.</span> <span class="nav-text">mutex 是表示缓冲区的锁，1表示没上锁，0表示上锁了</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%94%9F%E4%BA%A7%E8%80%85%E7%9A%84%E4%BB%A3%E7%A0%81%E9%80%BB%E8%BE%91"><span class="nav-number">5.9.</span> <span class="nav-text">4. 生产者的代码逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%B6%88%E8%B4%B9%E8%80%85%E7%9A%84%E4%BB%A3%E7%A0%81%E9%80%BB%E8%BE%91"><span class="nav-number">5.10.</span> <span class="nav-text">5. 消费者的代码逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%A6%82%E6%9E%9C%E9%A1%BA%E5%BA%8F%E9%94%99%E8%AF%AF%EF%BC%9A"><span class="nav-number">5.11.</span> <span class="nav-text">6. 如果顺序错误：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5-%E8%AF%BB%E8%80%85-%E5%86%99%E8%80%85%E9%97%AE%E9%A2%98"><span class="nav-number">5.12.</span> <span class="nav-text">4.5 读者-写者问题:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E7%9A%84%E8%83%8C%E6%99%AF"><span class="nav-number">5.13.</span> <span class="nav-text">1. 问题的背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%B8%E5%BF%83%E8%A7%84%E5%88%99%EF%BC%9A"><span class="nav-number">5.13.1.</span> <span class="nav-text">2. 核心规则：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E3%80%81%E8%AF%BB%E8%80%85%E4%B8%8E%E8%AF%BB%E8%80%85%E5%8F%AF%E4%BB%A5%E5%90%8C%E6%97%B6%E8%AF%BB"><span class="nav-number">5.13.1.1.</span> <span class="nav-text">第一、读者与读者可以同时读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E3%80%81%E5%86%99%E8%80%85%E5%92%8C%E5%86%99%E8%80%85%E4%B8%8D%E8%83%BD%E5%90%8C%E6%97%B6%E5%86%99"><span class="nav-number">5.13.1.2.</span> <span class="nav-text">第二、写者和写者不能同时写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E3%80%81%E8%AF%BB%E8%80%85%E5%92%8C%E5%86%99%E8%80%85%E4%B8%8D%E8%83%BD%E5%90%8C%E6%97%B6%E8%AE%BF%E9%97%AE"><span class="nav-number">5.13.1.3.</span> <span class="nav-text">第三、读者和写者不能同时访问</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AC%AC%E4%B8%80%E7%B1%BB%E8%AF%BB%E8%80%85-%E5%86%99%E8%80%85%E9%97%AE%E9%A2%98%EF%BC%9A%E8%AF%BB%E8%80%85%E4%BC%98%E5%85%88"><span class="nav-number">5.13.2.</span> <span class="nav-text">3. 第一类读者-写者问题：读者优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%9C%80%E8%A6%81%E5%93%AA%E4%BA%9B%E5%8F%98%E9%87%8F%EF%BC%9F"><span class="nav-number">5.13.3.</span> <span class="nav-text">4. 需要哪些变量？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mutex"><span class="nav-number">5.13.3.1.</span> <span class="nav-text">mutex</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rw"><span class="nav-number">5.13.3.2.</span> <span class="nav-text">rw</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E8%AF%BB%E8%80%85%E4%BC%98%E5%85%88%EF%BC%9A%E8%AF%BB%E8%80%85%E4%BB%A3%E7%A0%81"><span class="nav-number">5.13.4.</span> <span class="nav-text">5. 读者优先：读者代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%AF%BB%E8%80%85%E4%BC%98%E5%85%88%EF%BC%9A%E5%86%99%E8%80%85%E4%BB%A3%E7%A0%81"><span class="nav-number">5.13.5.</span> <span class="nav-text">6. 读者优先：写者代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%AF%BB%E8%80%85%E4%BC%98%E5%85%88%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">5.13.6.</span> <span class="nav-text">7. 读者优先有什么问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E7%AC%AC%E4%BA%8C%E7%B1%BB%EF%BC%9A%E5%86%99%E8%80%85%E4%BC%98%E5%85%88"><span class="nav-number">5.13.7.</span> <span class="nav-text">8. 第二类：写者优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E7%AC%AC%E4%B8%89%E7%B1%BB%EF%BC%9A%E5%85%AC%E5%B9%B3%E8%AF%BB%E5%86%99"><span class="nav-number">5.13.8.</span> <span class="nav-text">9. 第三类：公平读写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E9%87%8D%E7%82%B9%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">5.13.9.</span> <span class="nav-text">10. 重点代码：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%99%E8%80%85%E4%BC%98%E5%85%88%EF%BC%9A"><span class="nav-number">5.13.9.1.</span> <span class="nav-text">写者优先：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E8%AF%BB%E5%86%99%EF%BC%9A%E8%AF%BB%E8%80%85%E5%92%8C%E5%86%99%E8%80%85%E9%83%BD%E5%85%88%E8%BF%87%E5%90%8C%E4%B8%80%E4%B8%AAqueue%EF%BC%8C%E8%B0%81%E5%85%88%E5%88%B0%E8%B0%81%E5%85%88%E6%8E%92%E3%80%82"><span class="nav-number">5.13.9.2.</span> <span class="nav-text">公平读写：读者和写者都先过同一个queue，谁先到谁先排。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6-%E7%9D%A1%E7%9C%A0%E7%90%86%E5%8F%91%E5%B8%88%E9%97%AE%E9%A2%98"><span class="nav-number">5.14.</span> <span class="nav-text">4.6 睡眠理发师问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80-%E7%9D%A1%E7%9C%A0%E7%90%86%E5%8F%91%E5%B8%88%E9%97%AE%E9%A2%98%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">5.14.1.</span> <span class="nav-text">一. 睡眠理发师问题是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C-%E9%97%AE%E9%A2%98%E7%9A%84%E6%A0%B8%E5%BF%83"><span class="nav-number">5.14.2.</span> <span class="nav-text">二. 问题的核心</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89-%E9%9C%80%E8%A6%81%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">5.14.3.</span> <span class="nav-text">三.需要的变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B-%E7%90%86%E5%8F%91%E5%B8%88%E4%BB%A3%E7%A0%81"><span class="nav-number">5.14.4.</span> <span class="nav-text">四.理发师代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94-%E9%A1%BE%E5%AE%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">5.14.5.</span> <span class="nav-text">五.顾客代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%AD%BB%E9%94%81"><span class="nav-number">6.</span> <span class="nav-text">第五章 死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E6%AD%BB%E9%94%81%E7%9A%84%E5%BC%95%E5%87%BA"><span class="nav-number">6.1.</span> <span class="nav-text">5.1 死锁的引出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E7%9A%84%E5%B8%B8%E8%A7%81%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">6.1.1.</span> <span class="nav-text">死锁的常见场景：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-%E6%AD%BB%E9%94%81%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0%E5%92%8C%E7%89%B9%E5%BE%81"><span class="nav-number">6.2.</span> <span class="nav-text">5.2 死锁产生原因和特征</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-1-%E6%8C%89%E7%85%A7%E8%B5%84%E6%BA%90%E5%88%86%E7%B1%BB"><span class="nav-number">6.2.1.</span> <span class="nav-text">5.2.1 按照资源分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8C%89%E7%85%A7%E5%89%A5%E5%A4%BA%E7%B1%BB%E5%9E%8B%E5%88%86%E7%B1%BB"><span class="nav-number">6.2.1.1.</span> <span class="nav-text">1. 按照剥夺类型分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8C%89%E7%85%A7%E4%BD%BF%E7%94%A8%E6%9C%9F%E9%99%90%E5%88%86%E7%B1%BB"><span class="nav-number">6.2.1.2.</span> <span class="nav-text">2. 按照使用期限分类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-2-%E6%AD%BB%E9%94%81%E4%BA%A7%E7%94%9F%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">6.2.2.</span> <span class="nav-text">5.2.2 死锁产生的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-3-%E6%AD%BB%E9%94%81%E4%BA%A7%E7%94%9F%E7%9A%84%E5%9B%9B%E4%B8%AA%E5%BF%85%E8%A6%81%E6%9D%A1%E4%BB%B6%EF%BC%88Coffman%E6%9D%A1%E4%BB%B6%EF%BC%8C1971%EF%BC%89"><span class="nav-number">6.2.3.</span> <span class="nav-text">5.2.3 死锁产生的四个必要条件（Coffman条件，1971）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-4-%E5%AD%97%E4%BD%93%E5%88%86%E9%85%8D%E5%9B%BE-RAG"><span class="nav-number">6.2.4.</span> <span class="nav-text">5.2.4 字体分配图 RAG</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%E5%A4%84%E7%90%86%E6%AD%BB%E9%94%81%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">6.3.</span> <span class="nav-text">5.3 处理死锁的基本方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-1-%E9%A2%84%E9%98%B2%E6%AD%BB%E9%94%81"><span class="nav-number">6.3.1.</span> <span class="nav-text">5.3.1 预防死锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-2-%E9%81%BF%E5%85%8D%E6%AD%BB%E9%94%81"><span class="nav-number">6.3.2.</span> <span class="nav-text">5.3.2 避免死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3-1"><span class="nav-number">6.3.2.1.</span> <span class="nav-text">核心思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%A6%82%E5%BF%B5"><span class="nav-number">6.3.2.2.</span> <span class="nav-text">关键概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%BF%E5%85%8D%E6%AD%BB%E9%94%81%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">6.3.2.3.</span> <span class="nav-text">避免死锁的算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E8%BE%B9%EF%BC%88Claim-Edge%EF%BC%89"><span class="nav-number">6.3.2.4.</span> <span class="nav-text">需求边（Claim Edge）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E8%A7%84%E5%88%99"><span class="nav-number">6.3.2.5.</span> <span class="nav-text">算法规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">6.3.2.6.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E7%AE%97%E6%B3%95%EF%BC%88Request-i%EF%BC%89"><span class="nav-number">6.3.2.7.</span> <span class="nav-text">资源请求算法（Request_i）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E7%AE%97%E6%B3%95"><span class="nav-number">6.3.2.8.</span> <span class="nav-text">安全性算法</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MuZZZFeng</p>
+  <div class="site-description" itemprop="description">记录 AI 学习、课程笔记、工具折腾与生活碎片。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hickercf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hickercf" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hickercf.github.io/2026/05/31/OS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MuZZZFeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MuZZZFeng's Blog">
+      <meta itemprop="description" content="记录 AI 学习、课程笔记、工具折腾与生活碎片。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="OS | MuZZZFeng's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-31 06:31:05 / 修改时间：14:31:18" itemprop="dateCreated datePublished" datetime="2026-05-31T06:31:05+08:00">2026-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">课程笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="第二章：进程与线程"><a href="#第二章：进程与线程" class="headerlink" title="第二章：进程与线程"></a>第二章：进程与线程</h1><h2 id="2-1-处理器概述"><a href="#2-1-处理器概述" class="headerlink" title="2.1 处理器概述"></a>2.1 处理器概述</h2><h3 id="2-1-1-单处理器和多处理器系统"><a href="#2-1-1-单处理器和多处理器系统" class="headerlink" title="2.1.1 单处理器和多处理器系统"></a>2.1.1 单处理器和多处理器系统</h3><p>计算机系统的核心是<strong>CPU</strong></p>
+<p>CPU的基本任务是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">取指令 -&gt; 译码 -&gt; 取操作数 -&gt; 执行指令</span><br></pre></td></tr></table></figure>
+
+<p>处理器可以分为：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> 单处理器系统</span><br><span class="line"><span class="bullet">-</span> 多处理器系统</span><br></pre></td></tr></table></figure>
+
+<h4 id="单处理器系统"><a href="#单处理器系统" class="headerlink" title="单处理器系统"></a>单处理器系统</h4><p>一个计算机系统只包括一个运算处理器。</p>
+<p><strong>注意</strong>：单处理器也可以有多个程序“看起来同时允许”。</p>
+<p>这叫：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**并发**</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>从微观上来看，一个时刻CPU只能执行一个程序片段。</p>
+<h4 id="多处理器系统"><a href="#多处理器系统" class="headerlink" title="多处理器系统"></a>多处理器系统</h4><p>一个计算机系统有多个运算处理器。</p>
+<p>多个处理器真的可以同时执行不同任务。</p>
+<p>这叫：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**并行**</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="计算机系统结构分类"><a href="#计算机系统结构分类" class="headerlink" title="计算机系统结构分类"></a>计算机系统结构分类</h4><p>PPT讲了四类：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1.</span> SISD</span><br><span class="line"><span class="bullet">2.</span> SIMD</span><br><span class="line"><span class="bullet">3.</span> MISD</span><br><span class="line"><span class="bullet">4.</span> MIMD</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-SISD：单指令流单数据流"><a href="#1-SISD：单指令流单数据流" class="headerlink" title="1. SISD：单指令流单数据流"></a>1. SISD：单指令流单数据流</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Single Instruction Single Data</span><br></pre></td></tr></table></figure>
+
+<p>意思是：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个处理器在一个存储器中的数据上执行单条指令流</span><br></pre></td></tr></table></figure>
+
+<p>可以理解为最传统的单核执行机器：</p>
+<p>一条指令 -&gt; 执行一个数据流</p>
+<h5 id="2-SIMD：单指令流多数据流"><a href="#2-SIMD：单指令流多数据流" class="headerlink" title="2. SIMD：单指令流多数据流"></a>2. SIMD：单指令流多数据流</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Single Instruction Multiple Data</span><br></pre></td></tr></table></figure>
+
+<p>意思是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一条指令控制多个数据单元，同时对不同数据做相同操作</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">向量机</span><br><span class="line">阵列机</span><br><span class="line">GPU中很多并行数据处理思想</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-MISD：多指令流单数据流"><a href="#3-MISD：多指令流单数据流" class="headerlink" title="3. MISD：多指令流单数据流"></a>3. MISD：多指令流单数据流</h5><pre><code>Multiple Instruction Single Data
+</code></pre>
+<p>意思是：<br>    一个数据流被送给一组处理器，不同处理器执行不同指令。</p>
+<p>这个现实中不常见，考试一般知道定义就够。 </p>
+<h5 id="4-MIMD：多指令流多数据流"><a href="#4-MIMD：多指令流多数据流" class="headerlink" title="4. MIMD：多指令流多数据流"></a>4. MIMD：多指令流多数据流</h5><pre><code>Multiple Instruction Multiple Data
+</code></pre>
+<p>意思是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">多个处理器对各自不同的数据集，同时执行不同的指令流。</span><br></pre></td></tr></table></figure>
+
+<p>现代多核、多处理器系统大多更接近这个模型。</p>
+<h4 id="多处理器和多核处理器"><a href="#多处理器和多核处理器" class="headerlink" title="多处理器和多核处理器"></a>多处理器和多核处理器</h4><h5 id="多处理器："><a href="#多处理器：" class="headerlink" title="多处理器："></a>多处理器：</h5><p>在一个体系结构上放置多个单核CPU芯片。</p>
+<h5 id="多核处理器："><a href="#多核处理器：" class="headerlink" title="多核处理器："></a>多核处理器：</h5><p>在同一块CPU芯片上放置多个核core。</p>
+<p>也就是一个CPU芯片里面有多个执行核心。</p>
+<p>                    <em>多核比多CPU更紧凑，成本更低，功耗更小</em></p>
+<h3 id="2-1-2-寄存器"><a href="#2-1-2-寄存器" class="headerlink" title="2.1.2 寄存器"></a>2.1.2 寄存器</h3><ul>
+<li><p>构成一级存储，容量小，访问速度快</p>
+</li>
+<li><p><strong>x86 寄存器分类</strong>：</p>
+<ul>
+<li><p>通用寄存器：<code>EAX</code>, <code>EBX</code>, <code>ECX</code>, <code>EDX</code></p>
+</li>
+<li><p>指针及变址寄存器：<code>ESP</code>, <code>EBP</code>, <code>ESI</code>, <code>EDI</code></p>
+</li>
+<li><p>段选择符寄存器：<code>CS</code>, <code>DS</code>, <code>SS</code>, <code>ES</code>, <code>FS</code>, <code>GS</code></p>
+</li>
+<li><p>指令指针和标志寄存器：<code>EIP</code>, <code>EFLAGS</code></p>
+</li>
+<li><p>控制寄存器：<code>CR0</code>, <code>CR1</code>, <code>CR2</code>, <code>CR3</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-3-特权指令和非特权指令"><a href="#2-1-3-特权指令和非特权指令" class="headerlink" title="2.1.3 特权指令和非特权指令"></a>2.1.3 特权指令和非特权指令</h3><ul>
+<li><p><strong>特权指令</strong>：仅供OS核心使用（设置定时器、读取时钟、清除内存、发起陷入、关中断、修改设备状态、访问I&#x2F;O等）</p>
+</li>
+<li><p><strong>非特权指令</strong>：普通功能指令（数据处理、转移、数据传送、移位、字符串、I&#x2F;O类）</p>
+</li>
+</ul>
+<h3 id="2-1-4-处理器状态"><a href="#2-1-4-处理器状态" class="headerlink" title="2.1.4 处理器状态"></a>2.1.4 处理器状态</h3><ul>
+<li><p><strong>管理状态（内核态&#x2F;管态&#x2F;Ring 0）</strong>：可执行全部的指令，使用所有资源</p>
+</li>
+<li><p><strong>用户状态（用户态&#x2F;目态&#x2F;Ring 3）</strong>：只能执行非特权指令</p>
+</li>
+<li><p><strong>状态切换途径</strong>：</p>
+<ul>
+<li><p>程序请求OS服务（系统调用）</p>
+</li>
+<li><p>程序运行过程中产生<strong>中断</strong>或<strong>异常</strong>事件</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Intel保护级别</strong>：Ring 0（内核） -&gt; Ring 1&#x2F;2（设备驱动）-&gt; Ring 3（应用程序）</p>
+</li>
+</ul>
+<h3 id="2-1-5-程序状态字寄存器（PSW）"><a href="#2-1-5-程序状态字寄存器（PSW）" class="headerlink" title="2.1.5 程序状态字寄存器（PSW）"></a>2.1.5 程序状态字寄存器（PSW）</h3><ul>
+<li><p>用于区别不同的处理器的工作状态</p>
+</li>
+<li><p><strong>包含内容</strong>：</p>
+<ul>
+<li><p>程序基本状态</p>
+</li>
+<li><p>中断码（保存当前发生的中断事件）</p>
+</li>
+<li><p>中断屏蔽位（指明是否响应中断）</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-6-x86总体架构"><a href="#2-1-6-x86总体架构" class="headerlink" title="2.1.6 x86总体架构"></a>2.1.6 x86总体架构</h3><ul>
+<li><p><strong>工作模式</strong>：实模式、保护模式、SMM模式</p>
+<ul>
+<li><p>实模式：没有任何保护机制，最原始的8086兼容模式</p>
+</li>
+<li><p>保护模式：现代OS运行的机制，通过硬件机制实现了内核态&#x2F;用户态的隔离。</p>
+</li>
+<li><p>SMM模式：主板&#x2F;固件的后门模式，执行一些比操作系统更底层、更紧急的硬件管理任务。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>关键控制寄存器</strong>：</p>
+<ul>
+<li><p>CR0：PE（保护模式）、PG（分页）</p>
+</li>
+<li><p>CR3：页目录基址</p>
+</li>
+</ul>
+</li>
+<li><p><strong>内存管理寄存器</strong>：<code>GDTR</code>（全局描述符）、<code>IDTR</code>（中断描述符）、<code>TR</code>（任务寄存器）</p>
+</li>
+</ul>
+<h2 id="2-2-计算机的启动"><a href="#2-2-计算机的启动" class="headerlink" title="2.2 计算机的启动"></a>2.2 计算机的启动</h2><h3 id="传统启动流程（BIOS）"><a href="#传统启动流程（BIOS）" class="headerlink" title="传统启动流程（BIOS）"></a>传统启动流程（BIOS）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">系统加电 -&gt; BIOS 初始化硬件 -&gt; BIOS读取主引导扇区(MBR)-&gt; 读取活动分区引导扇区 -&gt; 加载OS内核 -&gt; 跳转执行内核</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>启动时内存布局</strong></p>
+<ul>
+<li><code>CS: 0xF000</code>, <code>IP: 0xFFF0</code>，指向 BIOS ROM 最后的 16 字节</li>
+</ul>
+<ul>
+<li>主引导扇区（512 字节，以 <code>0x55AA</code> 结尾）被加载到 <code>0x7C00</code></li>
+</ul>
+</li>
+<li><p>Bootloader：完成系统初始化和OS内核加载，提供启动菜单</p>
+</li>
+</ul>
+<h2 id="2-3-OS中的中断处理"><a href="#2-3-OS中的中断处理" class="headerlink" title="2.3 OS中的中断处理"></a>2.3 OS中的中断处理</h2><h3 id="2-3-1-中断的概念"><a href="#2-3-1-中断的概念" class="headerlink" title="2.3.1 中断的概念"></a>2.3.1 中断的概念</h3><ul>
+<li><p><strong>中断</strong>：程序执行的过程中，因为发生某个事件而中止CPU现行程序，转去处理该事件的过程</p>
+</li>
+<li><p><strong>本质</strong>：能够改变CPU执行指令序列的事件；<strong>OS是由中断驱动的</strong></p>
+</li>
+</ul>
+<h3 id="2-3-2-中断分类"><a href="#2-3-2-中断分类" class="headerlink" title="2.3.2 中断分类"></a>2.3.2 中断分类</h3><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>名称</th>
+<th>特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>同步中断</strong></td>
+<td>异常</td>
+<td>由CPU控制单元产生，指令执行终止后才发出</td>
+</tr>
+<tr>
+<td><strong>异步中断</strong></td>
+<td>中断</td>
+<td>由其他硬件设备依据CPU时钟信号随机产生</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-3-中断、异常和系统调用"><a href="#2-3-3-中断、异常和系统调用" class="headerlink" title="2.3.3 中断、异常和系统调用"></a>2.3.3 中断、异常和系统调用</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>产生原因</th>
+<th>同步&#x2F;异步</th>
+<th>服务对象</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>中断</strong></td>
+<td>硬件设备请求</td>
+<td>异步</td>
+<td>不一定是当前进程</td>
+</tr>
+<tr>
+<td><strong>异常</strong></td>
+<td>程序错误、内核必须处理的异常条件</td>
+<td>同步</td>
+<td>当前进程</td>
+</tr>
+<tr>
+<td><strong>系统调用</strong></td>
+<td>应用程序主动请求OS服务</td>
+<td>同步（特殊的异常）</td>
+<td>当前进程</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>Fault</strong>：保存触发异常的那条指令地址，返回<strong>重新执行</strong>执行</p>
+</li>
+<li><p><strong>Trap</strong>：保护触发异常指令的<strong>下一条</strong>地址，返回时<strong>不重新执行</strong></p>
+</li>
+</ul>
+<h3 id="2-3-4-中断处理机制"><a href="#2-3-4-中断处理机制" class="headerlink" title="2.3.4 中断处理机制"></a>2.3.4 中断处理机制</h3><ul>
+<li><p><strong>定时器</strong>：OS回收控制的重要方式，避免死循环和恶意独占CPU</p>
+</li>
+<li><p><strong>中断装置</strong>：</p>
+<ul>
+<li><p>发现中断源</p>
+</li>
+<li><p>保护现场</p>
+</li>
+<li><p>启动中断处理程序</p>
+</li>
+</ul>
+</li>
+<li><p><strong>CPU响应中断的过程</strong>（略看）：</p>
+<ul>
+<li><p>自动保存CPU状态</p>
+</li>
+<li><p>根据TR定位当前进程内存空间</p>
+</li>
+<li><p>根据IDTR定位IDT，检索中断向量号对应处理程序</p>
+</li>
+<li><p>跳转执行</p>
+</li>
+</ul>
+</li>
+<li><p><strong>中断处理程序工作</strong>：</p>
+<ul>
+<li><p>保护未被硬件保存的必需状态</p>
+</li>
+<li><p>识别中断源，分析原因</p>
+</li>
+<li><p>处理中断事件</p>
+</li>
+<li><p>恢复正常操作</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="同步性和原子性"><a href="#同步性和原子性" class="headerlink" title="同步性和原子性"></a>同步性和原子性</h3><ul>
+<li><p>中断随时发生，OS必须保证<strong>现场保护的原子性</strong></p>
+</li>
+<li><p>方法：关中断、原子指令</p>
+</li>
+</ul>
+<h2 id="2-4-进程的定义和描述"><a href="#2-4-进程的定义和描述" class="headerlink" title="2.4 进程的定义和描述"></a>2.4 进程的定义和描述</h2><h3 id="2-4-1-程序的顺序执行"><a href="#2-4-1-程序的顺序执行" class="headerlink" title="2.4.1 程序的顺序执行"></a>2.4.1 程序的顺序执行</h3><ul>
+<li><p><strong>特征</strong>：</p>
+<ol>
+<li><p><strong>顺序性</strong>：严格按照程序规定顺序执行</p>
+</li>
+<li><p><strong>封闭性</strong>：执行结果不受外界因素影响</p>
+</li>
+<li><p><strong>可再现性</strong>：初始条件相同，重复执行结果相同</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-4-2-程序的并发执行"><a href="#2-4-2-程序的并发执行" class="headerlink" title="2.4.2 程序的并发执行"></a>2.4.2 程序的并发执行</h3><ul>
+<li><p><strong>定义</strong>：若干个程序（段）同时在系统中运行，执行时间重叠</p>
+</li>
+<li><p><strong>特征</strong>：</p>
+<ol>
+<li><p><strong>间断性</strong>：执行—暂停—执行</p>
+</li>
+<li><p><strong>失去封闭性</strong>：资源共享，相互影响</p>
+</li>
+<li><p><strong>不可再现性</strong>：结果依赖于执行次序</p>
+</li>
+</ol>
+</li>
+<li><p><strong>与时间有关的错误</strong>：并发读写共享变量导致结果不确定</p>
+</li>
+</ul>
+<h3 id="2-4-3-程序并发执行的条件（Bernstein-条件）"><a href="#2-4-3-程序并发执行的条件（Bernstein-条件）" class="headerlink" title="2.4.3 程序并发执行的条件（Bernstein 条件）"></a>2.4.3 程序并发执行的条件（Bernstein 条件）</h3><p>设 <code>R(S)</code> 为读集，<code>W(S)</code> 为写集，两程序段 Si​ 与 Sj​ 可并发执行当且仅当：</p>
+<ol>
+<li><p>R(Si​)∩W(Sj​)&#x3D;∅</p>
+</li>
+<li><p>R(Sj​)∩W(Si​)&#x3D;∅</p>
+</li>
+<li><p>W(Si​)∩W(Sj​)&#x3D;∅</p>
+</li>
+</ol>
+<h3 id="2-4-4-进程的引入"><a href="#2-4-4-进程的引入" class="headerlink" title="2.4.4 进程的引入"></a>2.4.4 进程的引入</h3><ul>
+<li><p><strong>定义</strong>：进程是可并发执行的具有独立功能的程序关于某个数据集合的一次执行过程，是 OS 进行<strong>资源分配和保护的基本单位</strong></p>
+</li>
+<li><p><strong>引入原因</strong>：</p>
+<ul>
+<li><p>刻画系统动态性，发挥并发性，提高资源利用率</p>
+</li>
+<li><p>解决共享性，正确描述程序执行状态</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-4-5-进程的特征"><a href="#2-4-5-进程的特征" class="headerlink" title="2.4.5 进程的特征"></a>2.4.5 进程的特征</h3><ol>
+<li><p><strong>动态性</strong>：因创建而生，因调度而执行，因撤销而消亡</p>
+</li>
+<li><p><strong>并发性</strong>：多个进程实体同时存在于内存中</p>
+</li>
+<li><p><strong>独立性</strong>：独立运行的基本单位，系统分配资源和调度的基本单位</p>
+</li>
+<li><p><strong>异步性（制约性）</strong>：各自以不可预知的速度推进</p>
+</li>
+<li><p><strong>结构性</strong>：程序段 + 数据段 + <strong>PCB</strong></p>
+</li>
+<li><p><strong>共享性</strong>：同一程序运行于不同数据集合构成不同进程</p>
+</li>
+</ol>
+<h3 id="2-4-6-进程的描述"><a href="#2-4-6-进程的描述" class="headerlink" title="2.4.6 进程的描述"></a>2.4.6 进程的描述</h3><ul>
+<li><p><strong>进程映像</strong>：某时刻进程的内容及其状态的集合</p>
+<ul>
+<li>组成：<strong>PCB</strong> + 程序块 + 核心栈 + 数据块</li>
+</ul>
+</li>
+<li><p><strong>进程上下文</strong>：进程物理实体 + 支持进程运行的环境</p>
+<ul>
+<li><p><strong>用户级上下文</strong>：正文、数据、共享存储区、用户栈</p>
+</li>
+<li><p><strong>寄存器级上下文</strong>：PSW、指令计数器、栈指针、控制&#x2F;通用寄存器</p>
+</li>
+<li><p><strong>系统级上下文</strong>：PCB、主存管理信息、核心栈</p>
+</li>
+</ul>
+</li>
+<li><p><strong>进程控制块（PCB）</strong>：进程存在的<strong>唯一标志</strong></p>
+<ul>
+<li><p><strong>标识信息</strong>：进程标识符、家族关系、用户标识符</p>
+</li>
+<li><p><strong>现场信息</strong>：通用寄存器、控制寄存器、栈指针等</p>
+</li>
+<li><p><strong>控制信息</strong>：进程状态、队列指针、优先级、通信信息、程序&#x2F;数据地址、资源清单</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Linux 进程表示</strong>：<code>task_struct</code></p>
+</li>
+</ul>
+<h2 id="2-5-进程的状态及转换"><a href="#2-5-进程的状态及转换" class="headerlink" title="2.5 进程的状态及转换"></a>2.5 进程的状态及转换</h2><h3 id="2-5-1-三态模型"><a href="#2-5-1-三态模型" class="headerlink" title="2.5.1 三态模型"></a>2.5.1 三态模型</h3><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>就绪（Ready）</strong></td>
+<td>有资源，一旦分配CPU就可以执行</td>
+</tr>
+<tr>
+<td><strong>执行（Running）</strong></td>
+<td>正在CPU上执行</td>
+</tr>
+<tr>
+<td><strong>阻塞（Blocked）</strong></td>
+<td>因等待某事件，如I&#x2F;O而暂停，即使分配CPU也无法运行</td>
+</tr>
+</tbody></table>
+<p><strong>状态转换</strong>：</p>
+<ul>
+<li><p>就绪 -&gt; 执行：进程调度</p>
+</li>
+<li><p>执行 -&gt; 就绪：时间片用完了</p>
+</li>
+<li><p>执行 -&gt; 阻塞：等待事件（主动请求I&#x2F;O等）</p>
+</li>
+<li><p>阻塞 -&gt; 就绪：事件发生</p>
+</li>
+</ul>
+<p>思考题：1个处理器，N个进程 -&gt; 运行态最多1个；就绪态最多N - 1个；阻塞态最多N个</p>
+<h3 id="2-5-3-五态模型"><a href="#2-5-3-五态模型" class="headerlink" title="2.5.3 五态模型"></a>2.5.3 五态模型</h3><p>在三态模型的基础上新增：</p>
+<ul>
+<li><p>新建（New）：进程刚建立，未进入就绪队列</p>
+</li>
+<li><p>终止（Terminated）：进程结束，资源已释放但是尚未撤销</p>
+</li>
+</ul>
+<p>Java线程与隐蔽通道侧信道攻击</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>以下是根据 PPT 整理的 <strong>进程与线程</strong> 完整学习笔记，采用 Markdown 格式，方便你直接复制到笔记软件（如 Typora、Obsidian、Notion）中使用。</p>
+<hr>
+<h1 id="第2章-进程与线程"><a href="#第2章-进程与线程" class="headerlink" title="第2章 进程与线程"></a>第2章 进程与线程</h1><h2 id="2-1-处理器概述-1"><a href="#2-1-处理器概述-1" class="headerlink" title="2.1 处理器概述"></a>2.1 处理器概述</h2><h3 id="2-1-1-单处理器与多处理器系统"><a href="#2-1-1-单处理器与多处理器系统" class="headerlink" title="2.1.1 单处理器与多处理器系统"></a>2.1.1 单处理器与多处理器系统</h3><ul>
+<li><p><strong>CPU 核心任务</strong>：取指 → 译码 → 取操作数 → 执行指令</p>
+</li>
+<li><p><strong>单处理器系统</strong>：仅包含一个运算处理器</p>
+</li>
+<li><p><strong>多处理器系统</strong>：包含多个运算处理器</p>
+</li>
+</ul>
+<h3 id="计算机系统结构分类（Flynn-分类法）"><a href="#计算机系统结构分类（Flynn-分类法）" class="headerlink" title="计算机系统结构分类（Flynn 分类法）"></a>计算机系统结构分类（Flynn 分类法）</h3><p>表格</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SISD</strong></td>
+<td>单指令流单数据流</td>
+<td>一个处理器在一个存储器的数据上执行单条指令流</td>
+</tr>
+<tr>
+<td><strong>SIMD</strong></td>
+<td>单指令流多数据流</td>
+<td>单条指令控制多个处理单元同时对不同数据操作（向量机、阵列机）</td>
+</tr>
+<tr>
+<td><strong>MISD</strong></td>
+<td>多指令流单数据流</td>
+<td>一个数据流传送给一组处理器，通过不同指令操作得到结果</td>
+</tr>
+<tr>
+<td><strong>MIMD</strong></td>
+<td>多指令流多数据流</td>
+<td>多个处理器对各自不同的数据集同时执行不同的指令流；分为<strong>共享内存紧密耦合</strong>与<strong>内存分布松散耦合</strong></td>
+</tr>
+</tbody></table>
+<h3 id="多处理器-vs-多核处理器"><a href="#多处理器-vs-多核处理器" class="headerlink" title="多处理器 vs 多核处理器"></a>多处理器 vs 多核处理器</h3><ul>
+<li><p><strong>多处理器</strong>：一个体系结构上放置多个（单核）CPU 芯片</p>
+</li>
+<li><p><strong>多核处理器</strong>：同一块 CPU 芯片上放置多个核（Core&#x2F;执行单元）</p>
+</li>
+<li><p><strong>区别</strong>：多核更加紧凑、成本更低、功耗更小</p>
+</li>
+<li><p><strong>结构演进</strong>：多处理器 → 超线程 → 多核 → 多核超线程</p>
+</li>
+</ul>
+<h3 id="2-1-2-寄存器-1"><a href="#2-1-2-寄存器-1" class="headerlink" title="2.1.2 寄存器"></a>2.1.2 寄存器</h3><ul>
+<li><p>构成一级存储，容量小、访问速度快</p>
+</li>
+<li><p><strong>x86 寄存器分类</strong>：</p>
+<ul>
+<li><p>通用寄存器：<code>EAX</code>, <code>EBX</code>, <code>ECX</code>, <code>EDX</code></p>
+</li>
+<li><p>指针及变址寄存器：<code>ESP</code>, <code>EBP</code>, <code>ESI</code>, <code>EDI</code></p>
+</li>
+<li><p>段选择符寄存器：<code>CS</code>, <code>DS</code>, <code>SS</code>, <code>ES</code>, <code>FS</code>, <code>GS</code></p>
+</li>
+<li><p>指令指针和标志寄存器：<code>EIP</code>, <code>EFLAGS</code></p>
+</li>
+<li><p>控制寄存器：<code>CR0</code>, <code>CR1</code>, <code>CR2</code>, <code>CR3</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-3-特权指令与非特权指令"><a href="#2-1-3-特权指令与非特权指令" class="headerlink" title="2.1.3 特权指令与非特权指令"></a>2.1.3 特权指令与非特权指令</h3><ul>
+<li><p><strong>特权指令</strong>：仅供 OS 核心使用（设置定时器、读取时钟、清除内存、发起陷入、关中断、修改设备状态、访问 I&#x2F;O 等）</p>
+</li>
+<li><p><strong>非特权指令</strong>：普通功能指令（数据处理、转移、数据传送、移位、字符串、I&#x2F;O 类）</p>
+</li>
+</ul>
+<h3 id="2-1-4-处理器状态-1"><a href="#2-1-4-处理器状态-1" class="headerlink" title="2.1.4 处理器状态"></a>2.1.4 处理器状态</h3><ul>
+<li><p><strong>管理状态（内核态&#x2F;管态&#x2F;Ring 0）</strong>：可执行全部指令，使用所有资源</p>
+</li>
+<li><p><strong>用户状态（用户态&#x2F;目态&#x2F;Ring 3）</strong>：只能执行非特权指令</p>
+</li>
+<li><p><strong>状态切换途径</strong>：</p>
+<ol>
+<li><p>程序请求 OS 服务（系统调用）</p>
+</li>
+<li><p>程序运行产生中断或异常事件</p>
+</li>
+</ol>
+</li>
+<li><p><strong>Intel 保护级别</strong>：Ring 0（内核）→ Ring 1&#x2F;2（设备驱动）→ Ring 3（应用程序）</p>
+</li>
+</ul>
+<h3 id="2-1-5-程序状态字寄存器（PSW）-1"><a href="#2-1-5-程序状态字寄存器（PSW）-1" class="headerlink" title="2.1.5 程序状态字寄存器（PSW）"></a>2.1.5 程序状态字寄存器（PSW）</h3><ul>
+<li><p>用于区别不同的处理器工作状态</p>
+</li>
+<li><p><strong>包含内容</strong>：</p>
+<ul>
+<li><p>程序基本状态（程序计数器、条件码、处理器状态位）</p>
+</li>
+<li><p>中断码（保存当前发生的中断事件）</p>
+</li>
+<li><p>中断屏蔽位（指明是否响应中断）</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-6-x86-总体架构"><a href="#2-1-6-x86-总体架构" class="headerlink" title="2.1.6 x86 总体架构"></a>2.1.6 x86 总体架构</h3><ul>
+<li><p><strong>工作模式</strong>：实模式、保护模式、SMM 模式</p>
+</li>
+<li><p><strong>关键控制寄存器</strong>：</p>
+<ul>
+<li><p><code>CR0</code>：<code>PE</code>（保护模式）、<code>PG</code>（分页）</p>
+</li>
+<li><p><code>CR3</code>：页目录基址（<code>PDBR</code>）</p>
+</li>
+</ul>
+</li>
+<li><p><strong>内存管理寄存器</strong>：<code>GDTR</code>（全局描述符）、<code>IDTR</code>（中断描述符）、<code>TR</code>（任务寄存器）</p>
+</li>
+</ul>
+<hr>
+<h2 id="2-2-计算机的启动-1"><a href="#2-2-计算机的启动-1" class="headerlink" title="2.2 计算机的启动"></a>2.2 计算机的启动</h2><h3 id="传统启动流程（BIOS-方式）"><a href="#传统启动流程（BIOS-方式）" class="headerlink" title="传统启动流程（BIOS 方式）"></a>传统启动流程（BIOS 方式）</h3><p>plain</p>
+<p>复制<br>    系统加电 → BIOS 初始化硬件 → BIOS 读取主引导扇区(MBR)<br>    → 读取活动分区引导扇区 → 加载 OS 内核 → 跳转执行内核</p>
+<ul>
+<li><p><strong>启动时内存布局</strong>（实模式，20 位地址空间，1MB）：</p>
+<ul>
+<li><p><code>CS: 0xF000</code>, <code>IP: 0xFFF0</code>，指向 BIOS ROM 最后的 16 字节</p>
+</li>
+<li><p>主引导扇区（512 字节，以 <code>0x55AA</code> 结尾）被加载到 <code>0x7C00</code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Bootloader</strong>：完成系统初始化与 OS 内核加载，提供启动菜单</p>
+</li>
+</ul>
+<h3 id="现行启动规范"><a href="#现行启动规范" class="headerlink" title="现行启动规范"></a>现行启动规范</h3><p>表格</p>
+<table>
+<thead>
+<tr>
+<th>规范</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Legacy BIOS</strong></td>
+<td>固化到主板，支持传统 MBR，不支持 2TB 以上硬盘</td>
+</tr>
+<tr>
+<td><strong>UEFI</strong></td>
+<td>统一可扩展固件接口，提供一致的启动服务，支持大硬盘</td>
+</tr>
+</tbody></table>
+<h3 id="可信计算启动信任链"><a href="#可信计算启动信任链" class="headerlink" title="可信计算启动信任链"></a>可信计算启动信任链</h3><ul>
+<li><p>从 <strong>BIOS boot block</strong> 开始建立信任根</p>
+</li>
+<li><p>逐级度量：BIOS → OS loader → OS → Application</p>
+</li>
+<li><p><strong>TPM</strong>：可信平台模块，负责存储度量值与报告</p>
+</li>
+</ul>
+<hr>
+<h2 id="2-3-OS-中的中断处理"><a href="#2-3-OS-中的中断处理" class="headerlink" title="2.3 OS 中的中断处理"></a>2.3 OS 中的中断处理</h2><h3 id="2-3-1-中断的概念-1"><a href="#2-3-1-中断的概念-1" class="headerlink" title="2.3.1 中断的概念"></a>2.3.1 中断的概念</h3><ul>
+<li><p><strong>中断</strong>：程序执行过程中，因发生某个事件而中止 CPU 现行程序，转去处理该事件的过程</p>
+</li>
+<li><p><strong>本质</strong>：能够改变 CPU 执行指令序列的事件；<strong>OS 是由中断（事件）驱动的</strong></p>
+</li>
+</ul>
+<h3 id="2-3-2-中断分类-1"><a href="#2-3-2-中断分类-1" class="headerlink" title="2.3.2 中断分类"></a>2.3.2 中断分类</h3><p>表格</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>名称</th>
+<th>特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>同步中断</strong></td>
+<td>异常（Exception）</td>
+<td>由 CPU 控制单元产生，指令执行终止后才发出</td>
+</tr>
+<tr>
+<td><strong>异步中断</strong></td>
+<td>中断（Interrupt）</td>
+<td>由其他硬件设备依据 CPU 时钟信号随机产生</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-3-中断、异常与系统调用"><a href="#2-3-3-中断、异常与系统调用" class="headerlink" title="2.3.3 中断、异常与系统调用"></a>2.3.3 中断、异常与系统调用</h3><p>表格</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>产生原因</th>
+<th>同步&#x2F;异步</th>
+<th>服务对象</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>中断</strong></td>
+<td>硬件设备请求</td>
+<td>异步</td>
+<td>不一定是当前进程</td>
+</tr>
+<tr>
+<td><strong>异常</strong></td>
+<td>程序错误、内核必须处理的异常条件</td>
+<td>同步</td>
+<td>当前进程</td>
+</tr>
+<tr>
+<td><strong>系统调用</strong></td>
+<td>应用程序主动请求 OS 服务</td>
+<td>同步（特殊异常）</td>
+<td>当前进程</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>Fault（出错）</strong>：保存触发异常的那条指令地址，返回时<strong>重新执行</strong></p>
+</li>
+<li><p><strong>Trap（陷入）</strong>：保存触发异常指令的<strong>下一条</strong>地址，返回时<strong>不重新执行</strong>（用于调试）</p>
+</li>
+</ul>
+<h3 id="2-3-4-中断处理机制-1"><a href="#2-3-4-中断处理机制-1" class="headerlink" title="2.3.4 中断处理机制"></a>2.3.4 中断处理机制</h3><ul>
+<li><p><strong>定时器</strong>：OS 回收控制的重要方式，避免死循环与恶意独占 CPU</p>
+</li>
+<li><p><strong>中断装置（如 8259A）</strong>：</p>
+<ol>
+<li><p>发现中断源（按优先级响应）</p>
+</li>
+<li><p>保护现场（PSW 保存至核心栈）</p>
+</li>
+<li><p>启动中断处理程序</p>
+</li>
+</ol>
+</li>
+<li><p><strong>CPU 响应中断过程</strong>：</p>
+<ol>
+<li><p>自动保存 CPU 状态（<code>EIP</code>, <code>EFLAGS</code>, <code>ESP</code>, <code>SS</code>, <code>CS</code>）</p>
+</li>
+<li><p>依据 <code>TR</code> 定位当前进程内存空间</p>
+</li>
+<li><p>依据 <code>IDTR</code> 定位 IDT，检索中断向量号对应处理程序</p>
+</li>
+<li><p>跳转执行</p>
+</li>
+</ol>
+</li>
+<li><p><strong>中断处理程序工作</strong>：</p>
+<ol>
+<li><p>保护未被硬件保存的必需状态</p>
+</li>
+<li><p>识别中断源，分析原因</p>
+</li>
+<li><p>处理中断事件</p>
+</li>
+<li><p>恢复正常操作</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="同步与原子性"><a href="#同步与原子性" class="headerlink" title="同步与原子性"></a>同步与原子性</h3><ul>
+<li><p>中断随时发生，OS 必须保证<strong>现场保护的原子性</strong></p>
+</li>
+<li><p>方法：<strong>关中断</strong>、<strong>原子指令</strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="2-4-进程的定义与描述"><a href="#2-4-进程的定义与描述" class="headerlink" title="2.4 进程的定义与描述"></a>2.4 进程的定义与描述</h2><h3 id="2-4-1-程序的顺序执行-1"><a href="#2-4-1-程序的顺序执行-1" class="headerlink" title="2.4.1 程序的顺序执行"></a>2.4.1 程序的顺序执行</h3><ul>
+<li><p><strong>特征</strong>：</p>
+<ol>
+<li><p><strong>顺序性</strong>：严格按照程序规定顺序执行</p>
+</li>
+<li><p><strong>封闭性</strong>：执行结果不受外界因素影响</p>
+</li>
+<li><p><strong>可再现性</strong>：初始条件相同，重复执行结果相同</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-4-2-程序的并发执行-1"><a href="#2-4-2-程序的并发执行-1" class="headerlink" title="2.4.2 程序的并发执行"></a>2.4.2 程序的并发执行</h3><ul>
+<li><p><strong>定义</strong>：若干个程序（段）同时在系统中运行，执行时间重叠</p>
+</li>
+<li><p><strong>特征</strong>：</p>
+<ol>
+<li><p><strong>间断性</strong>：执行—暂停—执行</p>
+</li>
+<li><p><strong>失去封闭性</strong>：资源共享，相互影响</p>
+</li>
+<li><p><strong>不可再现性</strong>：结果依赖于执行次序</p>
+</li>
+</ol>
+</li>
+<li><p><strong>与时间有关的错误</strong>：并发读写共享变量导致结果不确定</p>
+</li>
+</ul>
+<h3 id="2-4-3-程序并发执行的条件（Bernstein-条件）-1"><a href="#2-4-3-程序并发执行的条件（Bernstein-条件）-1" class="headerlink" title="2.4.3 程序并发执行的条件（Bernstein 条件）"></a>2.4.3 程序并发执行的条件（Bernstein 条件）</h3><p>设 <code>R(S)</code> 为读集，<code>W(S)</code> 为写集，两程序段 Si​ 与 Sj​ 可并发执行当且仅当：</p>
+<ol>
+<li><p>R(Si​)∩W(Sj​)&#x3D;∅</p>
+</li>
+<li><p>R(Sj​)∩W(Si​)&#x3D;∅</p>
+</li>
+<li><p>W(Si​)∩W(Sj​)&#x3D;∅</p>
+</li>
+</ol>
+<h3 id="2-4-4-进程的引入-1"><a href="#2-4-4-进程的引入-1" class="headerlink" title="2.4.4 进程的引入"></a>2.4.4 进程的引入</h3><ul>
+<li><p><strong>定义</strong>：进程是可并发执行的具有独立功能的程序关于某个数据集合的一次执行过程，是 OS 进行<strong>资源分配和保护的基本单位</strong></p>
+</li>
+<li><p><strong>引入原因</strong>：</p>
+<ul>
+<li><p>刻画系统动态性，发挥并发性，提高资源利用率</p>
+</li>
+<li><p>解决共享性，正确描述程序执行状态</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-4-5-进程的特征-1"><a href="#2-4-5-进程的特征-1" class="headerlink" title="2.4.5 进程的特征"></a>2.4.5 进程的特征</h3><ol>
+<li><p><strong>动态性</strong>：因创建而生，因调度而执行，因撤销而消亡</p>
+</li>
+<li><p><strong>并发性</strong>：多个进程实体同时存在于内存中</p>
+</li>
+<li><p><strong>独立性</strong>：独立运行的基本单位，系统分配资源和调度的基本单位</p>
+</li>
+<li><p><strong>异步性（制约性）</strong>：各自以不可预知的速度推进</p>
+</li>
+<li><p><strong>结构性</strong>：程序段 + 数据段 + <strong>PCB</strong></p>
+</li>
+<li><p><strong>共享性</strong>：同一程序运行于不同数据集合构成不同进程</p>
+</li>
+</ol>
+<h3 id="2-4-6-进程的描述-1"><a href="#2-4-6-进程的描述-1" class="headerlink" title="2.4.6 进程的描述"></a>2.4.6 进程的描述</h3><ul>
+<li><p><strong>进程映像</strong>：某时刻进程的内容及其状态的集合</p>
+<ul>
+<li>组成：<strong>PCB</strong> + 程序块 + 核心栈 + 数据块</li>
+</ul>
+</li>
+<li><p><strong>进程上下文</strong>：进程物理实体 + 支持进程运行的环境</p>
+<ul>
+<li><p><strong>用户级上下文</strong>：正文、数据、共享存储区、用户栈</p>
+</li>
+<li><p><strong>寄存器级上下文</strong>：PSW、指令计数器、栈指针、控制&#x2F;通用寄存器</p>
+</li>
+<li><p><strong>系统级上下文</strong>：PCB、主存管理信息、核心栈</p>
+</li>
+</ul>
+</li>
+<li><p><strong>进程控制块（PCB）</strong>：进程存在的<strong>唯一标志</strong></p>
+<ul>
+<li><p><strong>标识信息</strong>：进程标识符、家族关系、用户标识符</p>
+</li>
+<li><p><strong>现场信息</strong>：通用寄存器、控制寄存器、栈指针等</p>
+</li>
+<li><p><strong>控制信息</strong>：进程状态、队列指针、优先级、通信信息、程序&#x2F;数据地址、资源清单</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Linux 进程表示</strong>：<code>task_struct</code></p>
+</li>
+</ul>
+<hr>
+<h2 id="2-5-进程的状态及转换-1"><a href="#2-5-进程的状态及转换-1" class="headerlink" title="2.5 进程的状态及转换"></a>2.5 进程的状态及转换</h2><h3 id="2-5-1-三态模型-1"><a href="#2-5-1-三态模型-1" class="headerlink" title="2.5.1 三态模型"></a>2.5.1 三态模型</h3><p>表格</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>就绪（Ready）</strong></td>
+<td>有资源，一旦分配 CPU 即可执行</td>
+</tr>
+<tr>
+<td><strong>执行（Running）</strong></td>
+<td>正在 CPU 上执行</td>
+</tr>
+<tr>
+<td><strong>阻塞（Blocked）</strong></td>
+<td>因等待某事件（如 I&#x2F;O）而暂停，即使分配 CPU 也无法运行</td>
+</tr>
+</tbody></table>
+<p><strong>状态转换</strong>：</p>
+<ul>
+<li><p>就绪 → 执行：<strong>进程调度</strong></p>
+</li>
+<li><p>执行 → 就绪：<strong>时间片用完</strong></p>
+</li>
+<li><p>执行 → 阻塞：<strong>等待事件</strong>（主动请求 I&#x2F;O 等）</p>
+</li>
+<li><p>阻塞 → 就绪：<strong>事件发生</strong>（被动唤醒）</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>思考题</strong>：1 个处理器，N 个进程 → 运行态最多 1 个；就绪态最多 N-1 个；阻塞态最多 N 个。</p>
+</blockquote>
+<h3 id="2-5-2-五态模型"><a href="#2-5-2-五态模型" class="headerlink" title="2.5.2 五态模型"></a>2.5.2 五态模型</h3><p>在三态基础上增加：</p>
+<ul>
+<li><p><strong>新建（New）</strong>：进程刚建立，未进入就绪队列</p>
+</li>
+<li><p><strong>终止（Terminated）</strong>：进程结束，资源已释放但尚未撤销</p>
+</li>
+</ul>
+<h3 id="2-5-3-七态模型（含挂起状态）"><a href="#2-5-3-七态模型（含挂起状态）" class="headerlink" title="2.5.3 七态模型（含挂起状态）"></a>2.5.3 七态模型（含挂起状态）</h3><p>引入<strong>挂起Suspend</strong>状态，将进程对换到磁盘镜像区，暂时不参与调度：</p>
+<p>表格</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>活动就绪</strong></td>
+<td>在内存中，可被调度</td>
+</tr>
+<tr>
+<td><strong>挂起就绪</strong></td>
+<td>在外存中，需激活后才能调度</td>
+</tr>
+<tr>
+<td><strong>活动阻塞</strong></td>
+<td>在内存中等待事件</td>
+</tr>
+<tr>
+<td><strong>挂起阻塞</strong></td>
+<td>在外存中等待事件</td>
+</tr>
+</tbody></table>
+<p><strong>挂起原因</strong>：内存不足、调试、父进程要求、系统故障排除、定期进程对换等</p>
+<h2 id="2-6-进程控制管理和组织"><a href="#2-6-进程控制管理和组织" class="headerlink" title="2.6 进程控制管理和组织"></a>2.6 进程控制管理和组织</h2><h3 id="2-6-1-进程创建"><a href="#2-6-1-进程创建" class="headerlink" title="2.6.1 进程创建"></a>2.6.1 进程创建</h3><ul>
+<li><p><strong>进程树</strong>：描述进程家族关系的有向树（如Linux中的<code>init</code>为根，pid &#x3D; 1）</p>
+</li>
+<li><p><strong>创建事件</strong>：用户登录、作业调度、OS服务等</p>
+</li>
+<li><p><strong>创建原语流程</strong>：</p>
+<ul>
+<li><p>申请空闲PCB</p>
+</li>
+<li><p>分配内存空间等资源</p>
+</li>
+<li><p>初始化PCB</p>
+</li>
+<li><p>插入就绪队列</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Linux相关系统调用</strong>：</p>
+<ul>
+<li><p><code>fork()</code>：创建子进程，复制父进程<strong>全部</strong>资源</p>
+</li>
+<li><p><code>exec()</code>：用新程序填充进程空间</p>
+</li>
+<li><p><code>vfork()</code>：子进程与父进程共享数据段，子进程先运行</p>
+</li>
+<li><p><code>clone()</code>：有选择地共享父进程资源</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="POSIX共享内存"><a href="#POSIX共享内存" class="headerlink" title="POSIX共享内存"></a><code>POSIX</code>共享内存</h1><ol>
+<li><p>进程通过系统调用<code>shm_open()</code>创建共享内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">shm_fd = shm_open(name, O_CREAT | O_RDRW, <span class="number">0666</span>);</span><br><span class="line"><span class="comment">//name: 共享内存对象的名称, </span></span><br><span class="line"><span class="comment">//当name 不存在时，创建共享内存(O_CREAT)  对象需要打开以便读写(O_RDRW),</span></span><br><span class="line"><span class="comment">//0666设定共享内存对象的目录权限</span></span><br></pre></td></tr></table></figure>
+
+<p><code>shm_open</code> 返回共享内存对象的一个文件描述符</p>
+</li>
+<li><p><code>ftruncate()</code>函数配置对象的大小</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ftruncate(shm_fd, <span class="number">4096</span>);</span><br><span class="line"><span class="comment">//将对象的大小分配为4096字节</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后<code>mmap()</code>函数创建内存映射文件，以便包含共享内存对象，返回一个指向内存映射文件的指针，以便用于访问共享内存对象</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mmap(<span class="number">0</span>, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, <span class="number">0</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="第三章：调度"><a href="#第三章：调度" class="headerlink" title="第三章：调度"></a>第三章：调度</h1><h4 id="调度是多道程序操作系统的基础"><a href="#调度是多道程序操作系统的基础" class="headerlink" title="调度是多道程序操作系统的基础"></a>调度是多道程序操作系统的基础</h4><ul>
+<li><p><strong>多道程序的目标</strong>：无论何时都有进程在运行，从而最大化操作系统的利用率。</p>
+</li>
+<li><p><strong>分时系统的目的</strong>：在进程之间快速切换CPU，以方便多个用户在程序运行时能与其进行交互。</p>
+</li>
+<li><p><strong>进程调度器</strong>：(可能从多个可用进程中)选择一个可用进程，装入到CPU上执行。</p>
+<h2 id="3-1-调度的基本概念"><a href="#3-1-调度的基本概念" class="headerlink" title="3.1 调度的基本概念"></a>3.1 调度的基本概念</h2><h3 id="1-调度队列"><a href="#1-调度队列" class="headerlink" title="1. 调度队列"></a>1. 调度队列</h3><h4 id="操作系统中维护了一组进程调度队列"><a href="#操作系统中维护了一组进程调度队列" class="headerlink" title="操作系统中维护了一组进程调度队列"></a>操作系统中维护了一组进程调度队列</h4><h5 id="作业队列：系统中所有进程的集合"><a href="#作业队列：系统中所有进程的集合" class="headerlink" title="作业队列：系统中所有进程的集合"></a>作业队列：系统中所有进程的集合</h5></li>
+<li><p>作业Job：针对批处理系统的CPU活动而言</p>
+</li>
+<li><p>用户程序&#x2F;任务Task：针对分时系统的CPU而言</p>
+<h5 id="就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。"><a href="#就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。" class="headerlink" title="就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。"></a>就绪队列：所有驻留在内存，处于就绪状态，等待调度执行的进程集合。</h5><h5 id="设备队列：等待某个I-O设备的进程集合"><a href="#设备队列：等待某个I-O设备的进程集合" class="headerlink" title="设备队列：等待某个I&#x2F;O设备的进程集合"></a>设备队列：等待某个I&#x2F;O设备的进程集合</h5></li>
+</ul>
+<p>进程在整个生命周期中，会在各种调度队列之间迁移</p>
+<h3 id="2-调度的层次"><a href="#2-调度的层次" class="headerlink" title="2.调度的层次"></a>2.调度的层次</h3><h4 id="调度程序：负责挑选就绪进程的-内核-模块"><a href="#调度程序：负责挑选就绪进程的-内核-模块" class="headerlink" title="调度程序：负责挑选就绪进程的 内核 模块"></a>调度程序：负责挑选就绪进程的 <em>内核</em> 模块</h4><p>一个作业从提交到完成通常要经历多级调度</p>
+<h4 id="处理机的三层调度："><a href="#处理机的三层调度：" class="headerlink" title="处理机的三层调度："></a>处理机的三层调度：</h4><h5 id="高级调度："><a href="#高级调度：" class="headerlink" title="高级调度："></a>高级调度：</h5><p>作业级别的调度</p>
+<h5 id="低级调度："><a href="#低级调度：" class="headerlink" title="低级调度："></a>低级调度：</h5><p>进程级别的调度</p>
+<h5 id="中级调度："><a href="#中级调度：" class="headerlink" title="中级调度："></a>中级调度：</h5><p>交换调度</p>
+<h4 id="高级调度：-1"><a href="#高级调度：-1" class="headerlink" title="高级调度："></a>高级调度：</h4><ul>
+<li><p>主要任务：按照一定的规则，<strong>从外存中</strong>处于后备状态的作业中，选择一个或多个作业，决定哪些进程可以进入就绪队列。</p>
+</li>
+<li><p>同时为这些选中的作业，I&#x2F;O设备提供必要资源，并建立相应地进程使该作业拥有获得竞争处理机的权利。</p>
+<h4 id="低级调度：-1"><a href="#低级调度：-1" class="headerlink" title="低级调度："></a>低级调度：</h4></li>
+<li><p>按照某种原则，决定就绪队列里的哪个进程能够获得处理器，并且将处理机出让给它进行工作</p>
+</li>
+<li><p>存在剥夺，抢占懂机制<br>进程可以分为：</p>
+<ul>
+<li><p>I&#x2F;O密集型 和 CPU密集型 为了资源重复利用，这两类经常应该混合搭配</p>
+<h4 id="中级调度：-1"><a href="#中级调度：-1" class="headerlink" title="中级调度："></a>中级调度：</h4></li>
+</ul>
+</li>
+<li><p>将内存中不用的信息移到外存，为内存中进程腾出空间</p>
+</li>
+<li><p>将需要的信息从外存读入内存</p>
+</li>
+<li><p>决定主存中能容纳的进程数，提高内存利用率和系统吞吐量</p>
+</li>
+</ul>
+<h3 id="3-调度的性能评价指标："><a href="#3-调度的性能评价指标：" class="headerlink" title="3. 调度的性能评价指标："></a>3. 调度的性能评价指标：</h3><ol>
+<li>资源利用率<ul>
+<li>CPU利用率 &#x3D; CPU有效工作时间 &#x2F; CPU总运行时间 真实系统介于40% - 90%</li>
+</ul>
+</li>
+<li>响应时间<ul>
+<li>交互式进程，从提交一个请求到接收到第一个响应之间的时间间隔</li>
+</ul>
+</li>
+<li>周转时间<ul>
+<li>从作业提交到作业完成的时间间隔</li>
+<li>包括：等待进入内存，在就绪队列里等待，在CPU上执行和I&#x2F;O执行的时间</li>
+<li><strong>带权周转时间</strong>：作业周转时间与作业实际运行时间的比值，这里的作业实际运行时间指的是在CPU中的时间，不包括阻塞和挂起等时间</li>
+</ul>
+</li>
+<li>系统吞吐率<ul>
+<li>单位时间CPU完成作业的数量</li>
+</ul>
+</li>
+<li>公平性：<ul>
+<li>确保每个进程获得合理的CPU份额，不会出现饿死现象</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-2作业，进程和线程的调度"><a href="#3-2作业，进程和线程的调度" class="headerlink" title="3.2作业，进程和线程的调度"></a>3.2作业，进程和线程的调度</h2><h4 id="1-作业和进程的关系："><a href="#1-作业和进程的关系：" class="headerlink" title="1.作业和进程的关系："></a>1.作业和进程的关系：</h4><p>作业是一个Job集合，是一个任务的实体<br>进程是完成这个任务的执行实体</p>
+<ul>
+<li>没有作业，进程无事可做</li>
+<li>没有进程，作业无法完成</li>
+</ul>
+<h4 id="2-作业从提交到完成经过四个状态："><a href="#2-作业从提交到完成经过四个状态：" class="headerlink" title="2.作业从提交到完成经过四个状态："></a>2.作业从提交到完成经过四个状态：</h4><ol>
+<li>提交状态：用户作业由输入设备，向<strong>系统外存</strong>输入作业所处的状态</li>
+<li>后备状态：系统为作业建立作业控制块，你并把它插入到后备作业队列里面等待调度</li>
+<li>执行状态：作业在<strong>内存中</strong>，包含占有CPU和没占有CPU</li>
+<li>完成状态：作业正常完成或者异常结束，但是作业占有的资源还没有被系统全部回收</li>
+</ol>
+<h4 id="3-作业进程调度："><a href="#3-作业进程调度：" class="headerlink" title="3.作业进程调度："></a>3.作业进程调度：</h4><ol>
+<li><p>记录进入系统的各作业情况</p>
+</li>
+<li><p>从后备作业中挑一些投入执行</p>
+</li>
+<li><p>为被选中的作业做好执行前的准备工作</p>
+</li>
+<li><p>为执行完或异常结束的作业作收尾工作</p>
+<h4 id="4-资源控制块："><a href="#4-资源控制块：" class="headerlink" title="4.资源控制块："></a>4.资源控制块：</h4><p>包括：资源要求，资源使用情况，作业的控制方式（联机作业控制or脱机作业控制），类型（终端型，批量型），优先级等</p>
+</li>
+</ol>
+<h4 id="5-进程调度的方式："><a href="#5-进程调度的方式：" class="headerlink" title="5.进程调度的方式："></a>5.进程调度的方式：</h4><ul>
+<li><p>抢占方式</p>
+</li>
+<li><p>非抢占方式：一旦将处理机分配给某进程，便让该进程一直执行知道执行完or发生某事件进入阻塞。</p>
+<h5 id="抢占方式："><a href="#抢占方式：" class="headerlink" title="抢占方式："></a>抢占方式：</h5><p>运行调度程序根据某种原则去停止正在执行的进程，将其重新分配给其他进程</p>
+<h5 id="抢占原则由："><a href="#抢占原则由：" class="headerlink" title="抢占原则由："></a>抢占原则由：</h5></li>
+<li><p>优先权：高优先级进程剥夺&#x2F;抢占低优先级</p>
+</li>
+<li><p>时间片：时间片用完，剥夺CPU使用权</p>
+<h5 id="引起进程调度的原因："><a href="#引起进程调度的原因：" class="headerlink" title="引起进程调度的原因："></a>引起进程调度的原因：</h5></li>
+<li><p>从运行态切换到等待状态：I&#x2F;O请求，调用wait等</p>
+</li>
+<li><p>从运行态切换到等待态：如中断</p>
+</li>
+<li><p>从等待态切换到就绪态：系统调用或中断返回等</p>
+</li>
+<li><p>进程终止</p>
+<h5 id="分派器：将CPU分派给调度器选定的进程"><a href="#分派器：将CPU分派给调度器选定的进程" class="headerlink" title="分派器：将CPU分派给调度器选定的进程"></a>分派器：将CPU分派给调度器选定的进程</h5></li>
+</ul>
+<h4 id="6-线程调度："><a href="#6-线程调度：" class="headerlink" title="6. 线程调度："></a>6. 线程调度：</h4><ul>
+<li>分为用户级线程和内核级线程</li>
+<li>当OS内核支持线程时，内核级线程由OS调度</li>
+<li>对于多对一和多对多模型，系统库负责调度用户级线程</li>
+</ul>
+<h2 id="3-3-调度算法"><a href="#3-3-调度算法" class="headerlink" title="3.3 调度算法"></a>3.3 调度算法</h2><h3 id="3-3-1-先来先服务算法（FCFS）："><a href="#3-3-1-先来先服务算法（FCFS）：" class="headerlink" title="3.3.1 先来先服务算法（FCFS）："></a>3.3.1 先来先服务算法（<code>FCFS</code>）：</h3><p>额，很容易理解，就是字面意思，不过多解释。</p>
+<h3 id="3-3-2-短作业有线调度算法："><a href="#3-3-2-短作业有线调度算法：" class="headerlink" title="3.3.2 短作业有线调度算法："></a>3.3.2 短作业有线调度算法：</h3><p>也很容易理解的字面意思，不过多解释。</p>
+<h3 id="3-3-3-优先级调度算法："><a href="#3-3-3-优先级调度算法：" class="headerlink" title="3.3.3 优先级调度算法："></a>3.3.3 优先级调度算法：</h3><p>也比较好理解，注意抢占</p>
+<ul>
+<li><p>静态优先级，在创建进程的时候就确定的</p>
+</li>
+<li><p>动态优先级，优先数在进程运行过程中进行调整，如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">优先数 = CPU使用时间 / 2 + 基本优先数</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-4-时间片轮转调度（RR）"><a href="#3-3-4-时间片轮转调度（RR）" class="headerlink" title="3.3.4 时间片轮转调度（RR）"></a>3.3.4 时间片轮转调度（RR）</h3></li>
+</ul>
+<h4 id="时间片轮转法（Round-robin）："><a href="#时间片轮转法（Round-robin）：" class="headerlink" title="时间片轮转法（Round-robin）："></a>时间片轮转法（Round-robin）：</h4><h5 id="核心思想：大家轮流来，每人一次只干一会"><a href="#核心思想：大家轮流来，每人一次只干一会" class="headerlink" title="核心思想：大家轮流来，每人一次只干一会"></a>核心思想：大家轮流来，每人一次只干一会</h5><p>所有就绪的进程按<strong>FIFO</strong>的顺序拍成一个队列，CPU每次都把执行权交给队首进程，但是这个进程最多执行一个固定时长（称为<strong>时间片</strong>）。</p>
+<ul>
+<li>时间片用完但是进程还没执行完，将CPU让给队首进程，自己排到队尾。</li>
+<li>如果提前执行完了，直接让出CPU。<br>举个例子：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th>执行时间（ms）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<p>调度过程：</p>
+<table>
+<thead>
+<tr>
+<th>时刻</th>
+<th>执行进程</th>
+<th>剩余时间</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0-4</td>
+<td>P1</td>
+<td>P1剩1</td>
+<td>P1时间片用完，未做完，排队尾</td>
+</tr>
+<tr>
+<td>4-7</td>
+<td>P2</td>
+<td>P2完成</td>
+<td>P2执行3ms后完成，主动释放CPU</td>
+</tr>
+<tr>
+<td>7-11</td>
+<td>P3</td>
+<td>P3剩4</td>
+<td>P3时间片用完，排队尾</td>
+</tr>
+<tr>
+<td>11-12</td>
+<td>P1</td>
+<td>P1完成</td>
+<td>P1只剩1ms，做完</td>
+</tr>
+<tr>
+<td>12-16</td>
+<td>P3</td>
+<td>P3完成</td>
+<td>P3做完</td>
+</tr>
+</tbody></table>
+<h4 id="时间片大小的选择："><a href="#时间片大小的选择：" class="headerlink" title="时间片大小的选择："></a>时间片大小的选择：</h4><ul>
+<li>若时间片时间过大，所有进程都能在一个时间片内完成，则时间片轮转算法退化成先来先服务。</li>
+<li>若时间片太小，则进程调度频繁，会有大量时间用于上下文切换，系统开销增加。</li>
+</ul>
+<h3 id="3-3-5最高响应比优先调度算法-HRRN"><a href="#3-3-5最高响应比优先调度算法-HRRN" class="headerlink" title="3.3.5最高响应比优先调度算法(HRRN)"></a>3.3.5最高响应比优先调度算法(HRRN)</h3><h4 id="1-核心思想"><a href="#1-核心思想" class="headerlink" title="1. 核心思想"></a>1. 核心思想</h4><p>每次调度时，计算所有就绪程序的<strong>响应比</strong>，选最高的那个投入运行。</p>
+<h4 id="2-响应比的计算"><a href="#2-响应比的计算" class="headerlink" title="2. 响应比的计算"></a>2. 响应比的计算</h4><p>$$<br>响应比 &#x3D; 1 + 等待时间&#x2F;要求服务时间<br>$$</p>
+<h4 id="3-算法的优点"><a href="#3-算法的优点" class="headerlink" title="3.算法的优点"></a>3.算法的优点</h4><p>同时照顾了长作业和短作业。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>响应比变化</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>等待时间越长</td>
+<td>响应比越大</td>
+<td>长作业等待久了，也能有调度的机会（防止饥饿）</td>
+</tr>
+<tr>
+<td>要求服务的时间越短</td>
+<td>响应比越大</td>
+<td>短作业有天然优势</td>
+</tr>
+<tr>
+<td>刚到达的短作业</td>
+<td>响应比 ≈ 1</td>
+<td>刚来的短作业，等待时间为0</td>
+</tr>
+</tbody></table>
+<p>主要用于作业调度。</p>
+<h3 id="3-3-6多级队列调度算法"><a href="#3-3-6多级队列调度算法" class="headerlink" title="3.3.6多级队列调度算法"></a>3.3.6多级队列调度算法</h3><p>“<strong>人以群分，队以类聚</strong>”</p>
+<h4 id="1-核心思想："><a href="#1-核心思想：" class="headerlink" title="1. 核心思想："></a>1. 核心思想：</h4><p>先把进程按照类型固定分进不同的队列，然后：</p>
+<ul>
+<li><p><strong>队列的内部</strong>：各自用适合自己的调度算法</p>
+</li>
+<li><p><strong>队列之间</strong>：按照固定的优先级或者时间片比例进行调度</p>
+<h4 id="2-队列之间的两种调度的策略"><a href="#2-队列之间的两种调度的策略" class="headerlink" title="2. 队列之间的两种调度的策略"></a>2. 队列之间的两种调度的策略</h4><h5 id="策略A：固定优先级调度"><a href="#策略A：固定优先级调度" class="headerlink" title="策略A：固定优先级调度"></a>策略A：固定优先级调度</h5><p> <strong>高优先级的队列只要有进程，低优先级的队列永远轮不到</strong></p>
+</li>
+<li><p>优点：重点任务响应快</p>
+</li>
+<li><p>缺点：低优先级队列可能会饿死</p>
+<h5 id="策略B：时间片比例分配"><a href="#策略B：时间片比例分配" class="headerlink" title="策略B：时间片比例分配"></a>策略B：时间片比例分配</h5><p> <strong>给每个队列分配固定比例的CPU时间</strong></p>
+</li>
+<li><p>例如：系统队列20%，交互队列50%，批处理30%</p>
+</li>
+<li><p>优点：避免饿死，每个队列都有保底时间</p>
+</li>
+<li><p>缺点：高优先级响应没那么极致</p>
+</li>
+</ul>
+<h3 id="3-3-7-多级反馈队列调度算法（MLFQ）"><a href="#3-3-7-多级反馈队列调度算法（MLFQ）" class="headerlink" title="3.3.7 多级反馈队列调度算法（MLFQ）"></a>3.3.7 多级反馈队列调度算法（MLFQ）</h3><h4 id="1-和多级队列的区别"><a href="#1-和多级队列的区别" class="headerlink" title="1. 和多级队列的区别"></a>1. 和多级队列的区别</h4><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>多级队列</th>
+<th>多级反馈队列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>队列间移动</strong></td>
+<td>固定不动</td>
+<td>可以升降级</td>
+</tr>
+<tr>
+<td><strong>优先级变化</strong></td>
+<td>一成不变</td>
+<td>动态调整</td>
+</tr>
+<tr>
+<td><strong>灵活性</strong></td>
+<td>低</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>饥饿问题</strong></td>
+<td>可能饿死</td>
+<td>通过反馈机制避免</td>
+</tr>
+</tbody></table>
+<h4 id="2-算法核心"><a href="#2-算法核心" class="headerlink" title="2. 算法核心"></a>2. 算法核心</h4><p>系统设置多个就绪队列，优先级由高到低，时间片由小到大：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Q0: 优先级最高,时间片最短（如8ms）  I/O密集型</span><br><span class="line">Q1: 优先级最高,时间片中等（如16ms）</span><br><span class="line">Q2: 优先级最高,时间片最长（如32ms）</span><br><span class="line">...</span><br><span class="line">Qn: 优先级最低,时间片最长      计算密集型</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-调度规则（重点！！！）"><a href="#3-调度规则（重点！！！）" class="headerlink" title="3. 调度规则（重点！！！）"></a>3. 调度规则（重点！！！）</h4><p>MLFQ 依靠几条简单的规则实现智能调度：</p>
+<h5 id="规则1：新进程-最高优先级队列"><a href="#规则1：新进程-最高优先级队列" class="headerlink" title="规则1：新进程-&gt;最高优先级队列"></a>规则1：新进程-&gt;最高优先级队列</h5><h5 id="规则2：时间片用完，任务还没完成-降级"><a href="#规则2：时间片用完，任务还没完成-降级" class="headerlink" title="规则2：时间片用完，任务还没完成-&gt;降级"></a>规则2：时间片用完，任务还没完成-&gt;降级</h5><h5 id="规则3：主动放弃CPU-保持-升级"><a href="#规则3：主动放弃CPU-保持-升级" class="headerlink" title="规则3：主动放弃CPU-&gt;保持&#x2F;升级"></a>规则3：主动放弃CPU-&gt;保持&#x2F;升级</h5><ul>
+<li><p>如果进程在时间片用完之前主动放弃CPU（I&#x2F;O请求，调用wait），说明是I&#x2F;O密集型</p>
+<h5 id="规则4：高优先级队列有进程，低优先级队列永远轮不到"><a href="#规则4：高优先级队列有进程，低优先级队列永远轮不到" class="headerlink" title="规则4：高优先级队列有进程，低优先级队列永远轮不到"></a>规则4：高优先级队列有进程，低优先级队列永远轮不到</h5><h5 id="规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列"><a href="#规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列" class="headerlink" title="规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列"></a>规则5：低优先级队列的进程等太久，全部重新提升到最高优先级队列</h5></li>
+</ul>
+<h4 id="4-一个例子"><a href="#4-一个例子" class="headerlink" title="4.一个例子"></a>4.一个例子</h4><p>假设有两个进程：</p>
+<ul>
+<li>P1：I&#x2F;O密集型</li>
+<li>P2：CPU密集型</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>发生的事情</th>
+<th>P1所在队列</th>
+<th>P2所在队列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>两个进程都到达，进入Q0</td>
+<td>Q0</td>
+<td>Q0</td>
+</tr>
+<tr>
+<td>0-2</td>
+<td>P1用了2msCPU收到I&#x2F;O请求，主动放弃，留在Q0</td>
+<td>Q0</td>
+<td>-(不变)</td>
+</tr>
+<tr>
+<td>2-8</td>
+<td>P2狂算了8ms还没算完，降级</td>
+<td>-</td>
+<td>Q1</td>
+</tr>
+<tr>
+<td>8-10</td>
+<td>P1又是用了2ms后收到I&#x2F;O请求，主动放弃，留着Q0</td>
+<td>Q0</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-16</td>
+<td>P2依旧狂算6ms，仍然没算完，降级</td>
+<td>-</td>
+<td>Q2</td>
+</tr>
+<tr>
+<td>…</td>
+<td>P1每次都只用2ms，主动放弃留在Q0</td>
+<td>Q0</td>
+<td>-</td>
+</tr>
+<tr>
+<td>…</td>
+<td>P2一直算一直算，一直降级</td>
+<td>-</td>
+<td>Qn</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-8-公平分享调度算法"><a href="#3-3-8-公平分享调度算法" class="headerlink" title="3.3.8 公平分享调度算法"></a>3.3.8 公平分享调度算法</h3><p>   <strong>公平不是进程之间的公平，而是用户&#x2F;组之间的公平</strong></p>
+<h4 id="1-核心思想：-1"><a href="#1-核心思想：-1" class="headerlink" title="1. 核心思想："></a>1. 核心思想：</h4><p>传统调度算法：只考虑进程本身；公平分享调度算法：不管用户开多少个进程，每个用户获得相等的CPU份额。</p>
+<h4 id="2-核心机制"><a href="#2-核心机制" class="headerlink" title="2.核心机制"></a>2.核心机制</h4><ul>
+<li><p>两层调度：<br>  外层：按照权重，给每个用户分配CPU份额<br>  内层：在用户内部，用传统算法调度用户进程</p>
+</li>
+<li><p>关键指标：CPU利用率<br>  系统记录每个用户&#x2F;组的CPU使用时间，优先调度<strong>用的少</strong>的用户<br>  用户用的越多，优先级越低</p>
+<h4 id="3-具体例子"><a href="#3-具体例子" class="headerlink" title="3.具体例子"></a>3.具体例子</h4><table>
+<thead>
+<tr>
+<th>用户</th>
+<th>进程数</th>
+<th>传统 RR 占比</th>
+<th>公平分享占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户 A</td>
+<td>1 个进程</td>
+<td>10%</td>
+<td><strong>50%</strong></td>
+</tr>
+<tr>
+<td>用户 B</td>
+<td>9 个进程</td>
+<td>90%</td>
+<td><strong>50%</strong></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>公平分享调度算法的做法：</p>
+<ul>
+<li><p>每个用户获得相同的CPU份额，50%</p>
+</li>
+<li><p>A的一个进程独占A的百分之50</p>
+</li>
+<li><p>B的9个进程平分百分之50</p>
+<h3 id="3-3-9单速率调度算法RM"><a href="#3-3-9单速率调度算法RM" class="headerlink" title="3.3.9单速率调度算法RM"></a>3.3.9单速率调度算法RM</h3><h4 id="1-核心思想-1"><a href="#1-核心思想-1" class="headerlink" title="1. 核心思想"></a>1. 核心思想</h4><p>优先级与周期成反比：周期越短的任务，优先级越高</p>
+</li>
+<li><p>任务每T毫秒到来一次，每次需要C毫秒CPU时间</p>
+</li>
+<li><p>周期越短 -&gt; 频率越高 -&gt; 优先级越高</p>
+</li>
+</ul>
+<h4 id="2-例子："><a href="#2-例子：" class="headerlink" title="2. 例子："></a>2. 例子：</h4><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>周期T</th>
+<th>执行时间C</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>50ms</td>
+<td>20ms</td>
+<td>高</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>100ms</td>
+<td>35ms</td>
+<td>低</td>
+</tr>
+</tbody></table>
+<h4 id="3-调度过程"><a href="#3-调度过程" class="headerlink" title="3. 调度过程"></a>3. 调度过程</h4><ul>
+<li>0ms：P1和P2同时到达，P1优先级高，先执行20ms</li>
+<li>20ms：P1完成，P2开始执行</li>
+<li>50ms：P1第二次到达，抢占P2，执行20ms</li>
+<li>70ms：P1完成，P2执行剩余的5s</li>
+<li>100ms：P1，P2再次到达….</li>
+</ul>
+<h3 id="3-3-10-最早截止时间优先EDF"><a href="#3-3-10-最早截止时间优先EDF" class="headerlink" title="3.3.10 最早截止时间优先EDF"></a>3.3.10 最早截止时间优先EDF</h3><h4 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h4><p>每次调度的时候，看谁的截止时间最先到，就先执行谁</p>
+<ul>
+<li>不固定优先级，每个周期同时算</li>
+<li>截止时间越接近，优先级越高</li>
+</ul>
+<p>还是上面的例子，调度过程如下</p>
+<ul>
+<li>0ms：P1截止时间50，P2截止时间1000，先执行P1 20ms</li>
+<li>20ms：P1执行完了，只剩P2，开始执行（20ms - 55ms）</li>
+<li>50ms：P1第二次到达（截止100），此时P2还剩5ms，截止时间也是20ms</li>
+<li>50ms-70ms：P1和P2截止时间相同，后续规则看具体实现</li>
+</ul>
+<p><strong>EDF的利用率可能达到很高，但是系统可能会超载</strong></p>
+<h1 id="第四章：进程同步"><a href="#第四章：进程同步" class="headerlink" title="第四章：进程同步"></a>第四章：进程同步</h1><h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>多个并发进程共享资源时，如何保证执行顺序正确，避免资源状态不一致？<br>进程之间制约关系分为两种：</p>
+<ul>
+<li><p>同步：合作进程的直接制约（协作）</p>
+</li>
+<li><p>互斥：共享资源产生的间接制约（竞争）</p>
+</li>
+</ul>
+<h2 id="4-1-同步和互斥的概念"><a href="#4-1-同步和互斥的概念" class="headerlink" title="4.1 同步和互斥的概念"></a>4.1 同步和互斥的概念</h2><h3 id="4-1-1-两个经典案例"><a href="#4-1-1-两个经典案例" class="headerlink" title="4.1.1 两个经典案例"></a>4.1.1 两个经典案例</h3><h4 id="案例1：结果不唯一"><a href="#案例1：结果不唯一" class="headerlink" title="案例1：结果不唯一"></a>案例1：结果不唯一</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">进程A:</span><br><span class="line">R1 = x;</span><br><span class="line"><span class="keyword">if</span>(R1&gt;=<span class="number">1</span>)&#123;</span><br><span class="line">  R1--;</span><br><span class="line">  x = R1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>进程B：<br>R2 &#x3D; x;<br>if(R2&gt;&#x3D;1){<br>    R2–;<br>    x &#x3D; R2;<br>}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">假设 x=1：</span><br><span class="line">- 如果先执行完A再执行B，x最终减少2 -- 正确</span><br><span class="line">- 如果A读到R1 = x，在进程1对x修改之前，B读到R2 = x, 最后的结果是x减少1</span><br><span class="line">原因：没有互斥使用共享变量</span><br></pre></td></tr></table></figure>
+
+<h4 id="案例2：永远等待："><a href="#案例2：永远等待：" class="headerlink" title="案例2：永远等待："></a>案例2：永远等待：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">进程A(alloc):</span><br><span class="line"><span class="keyword">while</span>(B&gt;x)</span><br><span class="line">等待;</span><br><span class="line">x=x-B;</span><br><span class="line"></span><br><span class="line">进程B(<span class="built_in">free</span>):</span><br><span class="line">x=x+B;</span><br></pre></td></tr></table></figure>
+
+<p>如果在A执行完while(B&gt;x)之后，还没有进入等待队列之前，B恰好进行了free，则A进入等待队列后再没人将他幻想–永远等待</p>
+<h3 id="4-1-2-临界资源和临界区"><a href="#4-1-2-临界资源和临界区" class="headerlink" title="4.1.2 临界资源和临界区"></a>4.1.2 临界资源和临界区</h3><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>临界资源</td>
+<td>一段时间内仅允许一个进程使用的资源</td>
+</tr>
+<tr>
+<td>临界区</td>
+<td>进程中访问临界资源的那段代码</td>
+</tr>
+<tr>
+<td>同类临界区</td>
+<td>所有与同一临界资源相关联的临界区</td>
+</tr>
+</tbody></table>
+<h4 id="临界区访问的四条部分："><a href="#临界区访问的四条部分：" class="headerlink" title="临界区访问的四条部分："></a>临界区访问的四条部分：</h4><ol>
+<li>进入区：检查是否可以访问，若可以则设置访问状态</li>
+<li>临界区：实际访问临界资源的代码</li>
+<li>退出区：清除访问状态</li>
+<li>剩余区：其余代码</li>
+</ol>
+<h4 id="临界区访问的四条原则"><a href="#临界区访问的四条原则" class="headerlink" title="临界区访问的四条原则"></a>临界区访问的四条原则</h4><ul>
+<li>空闲让进：无人在临界区时，允许一个进程进入</li>
+<li>忙则等待：有人在临界区内，其他人等待</li>
+<li>有限等待：保证有限实际内能够进入，不会饥饿</li>
+<li>让权等待：进不去的时候应该释放CPU</li>
+</ul>
+<h2 id="4-2-互斥的实现方法"><a href="#4-2-互斥的实现方法" class="headerlink" title="4.2 互斥的实现方法"></a>4.2 互斥的实现方法</h2><h3 id="4-2-1-软件方法"><a href="#4-2-1-软件方法" class="headerlink" title="4.2.1 软件方法"></a>4.2.1 软件方法</h3><h4 id="算法1：轮转法（turn变量）"><a href="#算法1：轮转法（turn变量）" class="headerlink" title="算法1：轮转法（turn变量）"></a>算法1：轮转法（turn变量）</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> turn = <span class="number">0</span>;</span><br><span class="line">P0() &#123;</span><br><span class="line">    <span class="keyword">do</span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (turn != <span class="number">0</span>);<span class="comment">//turn = 1循环等待</span></span><br><span class="line">        <span class="comment">//临界区CS0</span></span><br><span class="line">        turn = <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">while</span> (<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br><span class="line">P1() &#123;</span><br><span class="line">    <span class="keyword">do</span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (turn != <span class="number">1</span>);<span class="comment">//turn = 0循环等待</span></span><br><span class="line">        <span class="comment">//临界区CS0</span></span><br><span class="line">        turn = <span class="number">0</span>;</span><br><span class="line">    &#125;<span class="keyword">while</span> (<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>问题： 必须严格交替执行；不满足空闲让进</p>
+<h4 id="算法2：flag数组法"><a href="#算法2：flag数组法" class="headerlink" title="算法2：flag数组法"></a>算法2：flag数组法</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">bool</span> &#123;</span><span class="literal">false</span>, <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="type">bool</span> flag[<span class="number">2</span>] = &#123;<span class="literal">false</span>, <span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line">P0()&#123;               P1()&#123;</span><br><span class="line">  <span class="keyword">do</span> &#123;               <span class="keyword">do</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (flag[<span class="number">1</span>]);    <span class="keyword">while</span> (flag[<span class="number">0</span>]);</span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">true</span>;     flag[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">// 临界区 CS0        // 临界区 CS1</span></span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">false</span>;    flag[<span class="number">1</span>] = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 其他代码          // 其他代码</span></span><br><span class="line">  &#125; <span class="keyword">while</span>(<span class="literal">true</span>);     &#125; <span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="算法3：先上锁后检查"><a href="#算法3：先上锁后检查" class="headerlink" title="算法3：先上锁后检查"></a>算法3：先上锁后检查</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">bool</span> &#123;</span><span class="literal">false</span>, <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="type">bool</span> flag[<span class="number">2</span>] = &#123;<span class="literal">false</span>, <span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line">P0()&#123;               P1()&#123;</span><br><span class="line">  <span class="keyword">do</span> &#123;               <span class="keyword">do</span> &#123;</span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">true</span>;     flag[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (flag[<span class="number">1</span>]);    <span class="keyword">while</span> (flag[<span class="number">0</span>]);</span><br><span class="line">    <span class="comment">// 临界区 CS0        // 临界区 CS1</span></span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">false</span>;    flag[<span class="number">1</span>] = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 其他代码          // 其他代码</span></span><br><span class="line">  &#125; <span class="keyword">while</span>(<span class="literal">true</span>);     &#125; <span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="算法4：Dekker算法"><a href="#算法4：Dekker算法" class="headerlink" title="算法4：Dekker算法"></a>算法4：Dekker算法</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">bool</span> &#123;</span><span class="literal">false</span>, <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="type">bool</span> flag[<span class="number">2</span>] = &#123;<span class="literal">false</span>, <span class="literal">false</span>&#125;;</span><br><span class="line"><span class="type">int</span> turn = <span class="number">0</span>;  <span class="comment">// 或 1</span></span><br><span class="line"></span><br><span class="line">P0 &#123;                          P1 &#123;</span><br><span class="line">  <span class="keyword">do</span> &#123;                          <span class="keyword">do</span> &#123;</span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">true</span>;               flag[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (flag[<span class="number">1</span>]) &#123;             <span class="keyword">while</span> (flag[<span class="number">0</span>]) &#123;</span><br><span class="line">      <span class="keyword">if</span> (turn != <span class="number">0</span>) &#123;              <span class="keyword">if</span> (turn != <span class="number">1</span>) &#123;</span><br><span class="line">        flag[<span class="number">0</span>] = <span class="literal">false</span>;              flag[<span class="number">1</span>] = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">while</span> (turn != <span class="number">0</span>);            <span class="keyword">while</span> (turn != <span class="number">1</span>);</span><br><span class="line">        flag[<span class="number">0</span>] = <span class="literal">true</span>;               flag[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">      &#125;                             &#125;</span><br><span class="line">    &#125;                             &#125;</span><br><span class="line">    <span class="comment">// 临界区 CS0                   // 临界区 CS1</span></span><br><span class="line">    turn = <span class="number">1</span>;                     turn = <span class="number">0</span>;</span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">false</span>;              flag[<span class="number">1</span>] = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 其他代码                     // 其他代码</span></span><br><span class="line">  &#125; <span class="keyword">while</span>(<span class="literal">true</span>);                &#125; <span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键机制：当P0和P1遇到算法2，3的，同时想要进入缓冲区的问题的时候，turn的值决定P0和P1的优先级，决定谁先进入</p>
+<h4 id="算法5：Peterson算法"><a href="#算法5：Peterson算法" class="headerlink" title="算法5：Peterson算法"></a>算法5：Peterson算法</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">bool</span> &#123;</span><span class="literal">false</span>, <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="type">bool</span> flag[<span class="number">2</span>] = &#123;<span class="literal">false</span>, <span class="literal">false</span>&#125;;</span><br><span class="line"><span class="type">int</span> turn;</span><br><span class="line"></span><br><span class="line">P0 &#123;                          P1 &#123;</span><br><span class="line">  <span class="keyword">do</span> &#123;                          <span class="keyword">do</span> &#123;</span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">true</span>;               flag[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">    turn = <span class="number">1</span>;                     turn = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (flag[<span class="number">1</span>] &amp;&amp; turn == <span class="number">1</span>); <span class="keyword">while</span> (flag[<span class="number">0</span>] &amp;&amp; turn == <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 临界区 CS0                   // 临界区 CS1</span></span><br><span class="line">    flag[<span class="number">0</span>] = <span class="literal">false</span>;              flag[<span class="number">1</span>] = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 其他代码                     // 其他代码</span></span><br><span class="line">  &#125; <span class="keyword">while</span>(<span class="literal">true</span>);                &#125; <span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">flag[me] = <span class="literal">true</span>;<span class="comment">//如果我想进入缓冲区</span></span><br><span class="line">turn = other;<span class="comment">//谦让给对面优先;</span></span><br><span class="line"><span class="keyword">while</span>(flag[other] &amp;&amp; turn = other);<span class="comment">//如果对面也想进入，则让对方进入</span></span><br><span class="line"><span class="comment">//否则我自己进入</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-2-硬件方法"><a href="#4-2-2-硬件方法" class="headerlink" title="4.2.2 硬件方法"></a>4.2.2 硬件方法</h3><p><strong>核心思想</strong>：把“检测+设置”封装成一条硬件指令，保证原子性。</p>
+<h4 id="方法1：关中断"><a href="#方法1：关中断" class="headerlink" title="方法1：关中断"></a>方法1：关中断</h4><p>原理：进程进入到临界区的时候，禁止中断的发生。<br><em>因为进程之间的切换是通过中断引起的</em>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">关中断;</span><br><span class="line">临界区;</span><br><span class="line">开中断;</span><br></pre></td></tr></table></figure>
+
+<p>缺点：</p>
+<ul>
+<li>如果临界区很长，系统收到的其他I&#x2F;O请求无法响应；</li>
+<li>多处理器无效：一个CPU上关中断，其他CPU不受影响，其他CPU的进程仍可进入临界区；</li>
+<li>安全问题</li>
+</ul>
+<h4 id="方法2：原子指令-TS"><a href="#方法2：原子指令-TS" class="headerlink" title="方法2：原子指令-TS"></a>方法2：原子指令-TS</h4><p>原理：硬件提供一条原子指令，在一条指令内完成“读取旧值＋设置新值”</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">boolean <span class="title function_">TS</span><span class="params">(boolean *lock)</span> &#123;</span><br><span class="line">    boolean old = *lock;</span><br><span class="line">    *lock = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">return</span> old;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用方式</span></span><br><span class="line">boolean lock = <span class="literal">false</span>; <span class="comment">//共享变量，false表示空闲</span></span><br><span class="line"><span class="comment">// 每个进程:</span></span><br><span class="line"><span class="keyword">while</span> (TS(&amp;lock));</span><br><span class="line"><span class="comment">//临界区</span></span><br><span class="line">lock = <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="方法3：原子指令Swap"><a href="#方法3：原子指令Swap" class="headerlink" title="方法3：原子指令Swap"></a>方法3：原子指令Swap</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">swap</span><span class="params">(boolean* a, boolean* b)</span>&#123;</span><br><span class="line">    boolean temp = *a;</span><br><span class="line">    *a = *b;</span><br><span class="line">    *b = temp;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用方式</span></span><br><span class="line">boolean lock = <span class="literal">false</span>;  <span class="comment">// 共享锁变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个进程：</span></span><br><span class="line">boolean key = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">while</span> (key != <span class="literal">false</span>)   <span class="comment">// 只要key还是true，就说明没拿到锁</span></span><br><span class="line">    Swap(&amp;lock, &amp;key);  <span class="comment">// 把lock和key交换</span></span><br><span class="line"><span class="comment">// 临界区</span></span><br><span class="line">lock = <span class="literal">false</span>;          <span class="comment">// 释放</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-3-互斥锁机制"><a href="#4-2-3-互斥锁机制" class="headerlink" title="4.2.3 互斥锁机制"></a>4.2.3 互斥锁机制</h3><h4 id="基本互斥锁"><a href="#基本互斥锁" class="headerlink" title="基本互斥锁"></a>基本互斥锁</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 上锁</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">lock</span><span class="params">(<span class="type">int</span> w)</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (w == <span class="number">1</span>);  <span class="comment">// 等待锁被释放（忙等）</span></span><br><span class="line">    w = <span class="number">1</span>;           <span class="comment">// 加锁</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开锁</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">unlock</span><span class="params">(<span class="type">int</span> w)</span> &#123;</span><br><span class="line">    w = <span class="number">0</span>;           <span class="comment">// 释放锁</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line"><span class="comment">// 进程P1          // 进程P2</span></span><br><span class="line">lock(w);          lock(w);</span><br><span class="line">临界区;           临界区;</span><br><span class="line">unlock(w);        unlock(w);</span><br></pre></td></tr></table></figure>
+
+<h4 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">spinlock</span><span class="params">(lock)</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (test_and_set(lock) == <span class="number">1</span>);  <span class="comment">// 忙等</span></span><br><span class="line">    <span class="comment">// 获得锁，进入临界区</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">spinunlock</span><span class="params">(lock)</span> &#123;</span><br><span class="line">    lock = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-3-信号量"><a href="#4-3-信号量" class="headerlink" title="4.3 信号量"></a>4.3 信号量</h2><h3 id="4-3-1-信号量的定义"><a href="#4-3-1-信号量的定义" class="headerlink" title="4.3.1 信号量的定义"></a>4.3.1 信号量的定义</h3><p>信号量是一个二元组：S &#x3D; (s, q)</p>
+<ul>
+<li>s：整型变量，表示系统中某类资源的可用数量<ul>
+<li>s ≥ 0时：表示还有s个资源可用</li>
+<li>s &lt; 0时：表示|s|个进程正在等待</li>
+</ul>
+</li>
+<li>q：等待队列，存放因等待该资源而阻塞的进程<br>重要规则：信号量的值只能提供P操作和V操作来改变，不能直接s++或者s–</li>
+</ul>
+<h3 id="4-3-2-P-操作（wait-等待-请求资源）"><a href="#4-3-2-P-操作（wait-等待-请求资源）" class="headerlink" title="4.3.2 P 操作（wait&#x2F;等待&#x2F;请求资源）"></a>4.3.2 P 操作（wait&#x2F;等待&#x2F;请求资源）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">P(S) &#123;</span><br><span class="line">    s = s - <span class="number">1</span>; <span class="comment">//先减1，表示请求一个资源</span></span><br><span class="line">    <span class="keyword">if</span> (s &lt; <span class="number">0</span>) &#123; <span class="comment">//如果减完小于0表示没资源了</span></span><br><span class="line">        设置进程状态为等待；</span><br><span class="line">        讲进程放入信号量等待队列q；</span><br><span class="line">        转调度程序；<span class="comment">//阻塞自己，让出cpu</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-3-V操作（signal-信号-释放资源）"><a href="#4-3-3-V操作（signal-信号-释放资源）" class="headerlink" title="4.3.3 V操作（signal&#x2F;信号&#x2F;释放资源）"></a>4.3.3 V操作（signal&#x2F;信号&#x2F;释放资源）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">V(S) &#123;</span><br><span class="line">    s = s + <span class="number">1</span>; <span class="comment">//释放一个进程</span></span><br><span class="line">    <span class="keyword">if</span> (s &lt;= <span class="number">0</span>)&#123; <span class="comment">//如果加完后仍&lt;=0，说明有进程在等待</span></span><br><span class="line">        取队列q的队首进程；</span><br><span class="line">        设置状态为就绪；</span><br><span class="line">        插入就绪队列；</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-4-标准教材版本"><a href="#4-3-4-标准教材版本" class="headerlink" title="4.3.4 标准教材版本"></a>4.3.4 标准教材版本</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> value;              <span class="comment">// 资源计数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">process</span> *<span class="title">list</span>;</span>   <span class="comment">// 等待队列</span></span><br><span class="line">&#125; semaphore;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">wait</span><span class="params">(semaphore *S)</span> &#123;</span><br><span class="line">    S-&gt;value--;</span><br><span class="line">    <span class="keyword">if</span> (S-&gt;value &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        将当前进程加入 S-&gt;<span class="built_in">list</span>;</span><br><span class="line">        block();            <span class="comment">// 阻塞自己</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">signal</span><span class="params">(semaphore *S)</span> &#123;</span><br><span class="line">    S-&gt;value++;</span><br><span class="line">    <span class="keyword">if</span> (S-&gt;value &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        从 S-&gt;<span class="built_in">list</span> 取出一个进程 P;</span><br><span class="line">        wakeup(P);          <span class="comment">// 唤醒进程P</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-4-使用信号量实现互斥"><a href="#4-3-4-使用信号量实现互斥" class="headerlink" title="4.3.4 使用信号量实现互斥"></a>4.3.4 使用信号量实现互斥</h3><p>为临界资源设置一个互斥信号量，初始值为1（表示资源可用数为1)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">semaphore mutex = <span class="number">1</span>;   <span class="comment">// 互斥信号量</span></span><br><span class="line"></span><br><span class="line">进程P1 &#123;              进程P2 &#123;</span><br><span class="line">    P(mutex);           P(mutex);</span><br><span class="line">    临界区;             临界区;</span><br><span class="line">    V(mutex);           V(mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>互斥信号量的取值范围：N个进程共享一个资源</p>
+<ul>
+<li>最大：1（无人在临界区）</li>
+<li>最小：-（N-1)（1人在临界区，N-1人在等待）</li>
+</ul>
+<h3 id="4-3-5-利用信号量实现前驱关系"><a href="#4-3-5-利用信号量实现前驱关系" class="headerlink" title="4.3.5 利用信号量实现前驱关系"></a>4.3.5 利用信号量实现前驱关系</h3><p>前驱关系：P1必须在P2之前执行完成。<br>方法：设置一个同步信号量，初值为0</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">semaphore a = <span class="number">0</span>;   <span class="comment">// 同步信号量</span></span><br><span class="line"></span><br><span class="line">P1() &#123;             P2() &#123;</span><br><span class="line">    ...               P(a);      <span class="comment">// 等待P1完成</span></span><br><span class="line">    ...               ...</span><br><span class="line">    V(a);             <span class="comment">// 通知P1已完成</span></span><br><span class="line">&#125;                 &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-4-生产者-消费者问题"><a href="#4-4-生产者-消费者问题" class="headerlink" title="4.4 生产者-消费者问题"></a>4.4 生产者-消费者问题</h2><p>生产者-消费者问题是一个很经典的”仓库协作”问题</p>
+<p>有两类线程：</p>
+<p><strong>生产者</strong>：生产数据，送入缓冲区</p>
+<p><strong>消费者</strong>：负责从缓冲区中获取数据，进行处理</p>
+<p>中间有一个共享的缓冲区：</p>
+<p><code>生产者线程 -&gt; 缓冲区 -&gt; 消费者线程</code></p>
+<h2 id="1-问题出现在哪"><a href="#1-问题出现在哪" class="headerlink" title="1. 问题出现在哪"></a>1. 问题出现在哪</h2><p>缓冲区是共享资源，多个线程可能同时访问它。</p>
+<p>假设缓冲区只能放5个产品，会出现以下这几个问题：</p>
+<h3 id="情况1：缓冲区满了，生产者还想放："><a href="#情况1：缓冲区满了，生产者还想放：" class="headerlink" title="情况1：缓冲区满了，生产者还想放："></a>情况1：缓冲区满了，生产者还想放：</h3><p><code>缓冲区：[A, B, C, D, E]</code></p>
+<p>这个时候生产者不能继续放，否则会溢出。</p>
+<p>所有生产者应该：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if buffer full：</span><br><span class="line">    wait</span><br><span class="line">util 消费者 get</span><br></pre></td></tr></table></figure>
+
+<h3 id="情况2：缓冲区空了，消费者还想取"><a href="#情况2：缓冲区空了，消费者还想取" class="headerlink" title="情况2：缓冲区空了，消费者还想取"></a>情况2：缓冲区空了，消费者还想取</h3><p><code>缓冲区：[]</code></p>
+<p>这时候消费者不能继续取，否则取不到东西。</p>
+<p>所以消费者应该：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if buffer empty:</span><br><span class="line">    wait</span><br><span class="line">util 生产者 input</span><br></pre></td></tr></table></figure>
+
+<h3 id="情况3：多个线程同时操作缓冲区"><a href="#情况3：多个线程同时操作缓冲区" class="headerlink" title="情况3：多个线程同时操作缓冲区"></a>情况3：多个线程同时操作缓冲区</h3><p>比如：两个生产者同时判断：</p>
+<p>   <code>缓冲区内容是否小于等于4个</code></p>
+<p>然后两个生产者同时往缓冲区放一个产品，缓冲区就超出容量了</p>
+<p>消费者同理…</p>
+<p>所以必须保证：同一时刻只能有一个线程真正的修改缓冲区。</p>
+<p>这就需要<strong>互斥</strong></p>
+<h2 id="2-解决问题的核心："><a href="#2-解决问题的核心：" class="headerlink" title="2. 解决问题的核心："></a>2. 解决问题的核心：</h2><h4 id="第一，互斥"><a href="#第一，互斥" class="headerlink" title="第一，互斥"></a>第一，互斥</h4><p>也就是说：取产品，放产品这些操作，在进入缓冲区的时候，需要对缓冲区上锁。</p>
+<p><strong>有锁，其他取&#x2F;放操作就无法真正的访问缓冲区</strong></p>
+<h4 id="第二，同步"><a href="#第二，同步" class="headerlink" title="第二，同步"></a>第二，同步</h4><p>生产者和消费者之间需要配合：</p>
+<ul>
+<li><p>缓冲区满了，生产者等待</p>
+</li>
+<li><p>缓冲区空了，消费者等待</p>
+</li>
+</ul>
+<p>等条件满足了之后，再取唤醒对方</p>
+<h2 id="3-怎么用信号量解决？"><a href="#3-怎么用信号量解决？" class="headerlink" title="3. 怎么用信号量解决？"></a>3. 怎么用信号量解决？</h2><p>经典解发会使用三个信号量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nutex = 1 //互斥信号量，保护缓冲区</span><br><span class="line">empty = n //空位的数量，初始的缓冲区的大小为n</span><br><span class="line">full = 0  //产品的数量，初始为0</span><br></pre></td></tr></table></figure>
+
+<h4 id="mutex-是表示缓冲区的锁，1表示没上锁，0表示上锁了"><a href="#mutex-是表示缓冲区的锁，1表示没上锁，0表示上锁了" class="headerlink" title="mutex 是表示缓冲区的锁，1表示没上锁，0表示上锁了"></a>mutex 是表示缓冲区的锁，1表示没上锁，0表示上锁了</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">进入缓冲区之前：P(mutex)</span><br><span class="line">离开缓冲区之后：V(mutex)</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-生产者的代码逻辑"><a href="#4-生产者的代码逻辑" class="headerlink" title="4. 生产者的代码逻辑"></a>4. 生产者的代码逻辑</h2><p>伪代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">while true:</span><br><span class="line">    生产一个产品</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    P(empty)     // 申请一个空位，如果没有空位就wait</span><br><span class="line">    P(mutex)     // 有空位的话（走过了上一步），锁住缓冲区</span><br><span class="line">    </span><br><span class="line">    把产品放入缓冲区</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    V(mutex)      // 离开临界区，解锁</span><br><span class="line">    V(full)      // V(full) 产品数量加1，通知消费者可以</span><br></pre></td></tr></table></figure>
+
+<p>顺序很重要，一定会要先申请空位，再进入缓冲区</p>
+<h2 id="5-消费者的代码逻辑"><a href="#5-消费者的代码逻辑" class="headerlink" title="5. 消费者的代码逻辑"></a>5. 消费者的代码逻辑</h2><p>伪代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">while true:</span><br><span class="line">    P(full)      // 申请一个产品，如果没有产品就等待</span><br><span class="line">    P(mutex)     // 进入临界区，锁住缓冲区</span><br><span class="line"></span><br><span class="line">    从缓冲区取出产品</span><br><span class="line"></span><br><span class="line">    V(mutex)     // 离开临界区，释放锁</span><br><span class="line">    V(empty)     // 空位数量 +1，通知生产者可以放</span><br><span class="line"></span><br><span class="line">    消费这个产品</span><br></pre></td></tr></table></figure>
+
+<p>先确认有产品，再进入缓冲区取</p>
+<h2 id="6-如果顺序错误："><a href="#6-如果顺序错误：" class="headerlink" title="6. 如果顺序错误："></a>6. 如果顺序错误：</h2><p>以生产者为例：先P(mutex)再P(empty)</p>
+<p>假设缓冲区已经满了：</p>
+<p>生产者拿到mutex，进入临界区，然后执行：P(empty)</p>
+<p>因为此时empty &#x3D; 0所以生产者阻塞了</p>
+<p><strong>但是</strong>生产者阻塞的时候，还拿着mutex，于是消费者要取产品，就要等待mutex</p>
+<p>消费者取不走产品，empty永远不会增加，生产者等待empty增加，永远无法醒来</p>
+<p>这就死锁了！！！</p>
+<p>                <em>消费者在缓冲区为空的时候，同理</em></p>
+<p>一句话总结：</p>
+<p><strong>先申请资源数量，再申请互斥锁；操作完共享缓冲区后，先释放互斥锁，再通知对方</strong></p>
+<h2 id="4-5-读者-写者问题"><a href="#4-5-读者-写者问题" class="headerlink" title="4.5 读者-写者问题:"></a>4.5 读者-写者问题:</h2><h2 id="1-问题的背景"><a href="#1-问题的背景" class="headerlink" title="1. 问题的背景"></a>1. 问题的背景</h2><p>假设有一个共享的文件</p>
+<p><code>共享数据区</code></p>
+<p>有两类进程&#x2F;线程：</p>
+<ul>
+<li><p>读者：只读取数据，不修改数据</p>
+</li>
+<li><p>写者：会修改数据</p>
+</li>
+</ul>
+<h3 id="2-核心规则："><a href="#2-核心规则：" class="headerlink" title="2. 核心规则："></a>2. 核心规则：</h3><h4 id="第一、读者与读者可以同时读"><a href="#第一、读者与读者可以同时读" class="headerlink" title="第一、读者与读者可以同时读"></a>第一、读者与读者可以同时读</h4><h4 id="第二、写者和写者不能同时写"><a href="#第二、写者和写者不能同时写" class="headerlink" title="第二、写者和写者不能同时写"></a>第二、写者和写者不能同时写</h4><h4 id="第三、读者和写者不能同时访问"><a href="#第三、读者和写者不能同时访问" class="headerlink" title="第三、读者和写者不能同时访问"></a>第三、读者和写者不能同时访问</h4><h3 id="3-第一类读者-写者问题：读者优先"><a href="#3-第一类读者-写者问题：读者优先" class="headerlink" title="3. 第一类读者-写者问题：读者优先"></a>3. 第一类读者-写者问题：读者优先</h3><p>它的思想是：</p>
+<p>只要有读者在读，后来的读者也可以继续进入。</p>
+<p>写者必须等所有读者全部离开后才能写。</p>
+<p><em>读者优先，写者可能饿死</em></p>
+<h3 id="4-需要哪些变量？"><a href="#4-需要哪些变量？" class="headerlink" title="4. 需要哪些变量？"></a>4. 需要哪些变量？</h3><p>经典读者优先解法优先使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> readcount = <span class="number">0</span>; <span class="comment">//当前正在访问的读者数量</span></span><br><span class="line"></span><br><span class="line">semaphore mutex = <span class="number">1</span>; <span class="comment">// 保护readcount</span></span><br><span class="line">semaphore rw = <span class="number">1</span>; <span class="comment">//保护共享数据区的访问</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="mutex"><a href="#mutex" class="headerlink" title="mutex"></a>mutex</h5><p>保护<code>readcount</code></p>
+<p>因为多个读者可能同时修改<code>readcount</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">readcount++</span><br><span class="line">readcount--</span><br></pre></td></tr></table></figure>
+
+<p>这些操作也要互斥</p>
+<h4 id="rw"><a href="#rw" class="headerlink" title="rw"></a>rw</h4><p>控制共享数据区</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">读者整体 和 写者之间互斥</span><br><span class="line">写者 和 写者之间互斥</span><br></pre></td></tr></table></figure>
+
+<p>谁拿到<code>rw</code>谁就能访问共享数据区</p>
+<h3 id="5-读者优先：读者代码"><a href="#5-读者优先：读者代码" class="headerlink" title="5. 读者优先：读者代码"></a>5. 读者优先：读者代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">reader:</span><br><span class="line">    P(mutex)            //有读者到来，锁住readcount</span><br><span class="line">    readcount++</span><br><span class="line">    if readcount == 1:       //第一个读者，帮其他读者锁住数据共享区</span><br><span class="line">        P(rw)</span><br><span class="line">    V(mutex)                //readcount的验证结束，解锁mutex</span><br><span class="line"></span><br><span class="line">    reading the data</span><br><span class="line"></span><br><span class="line">    P(mutex)</span><br><span class="line">    readcount--</span><br><span class="line">    if readcount == 0        //直到最后一个读者离开，才释放共享数据区</span><br><span class="line">        V(rw)</span><br><span class="line">    V(mutex)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-读者优先：写者代码"><a href="#6-读者优先：写者代码" class="headerlink" title="6. 读者优先：写者代码"></a>6. 读者优先：写者代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">writer:</span><br><span class="line">    P(rw)</span><br><span class="line">    </span><br><span class="line">    写数据</span><br><span class="line"></span><br><span class="line">    V(rw)</span><br></pre></td></tr></table></figure>
+
+<p>写者必须独享数据共享数据区</p>
+<p>如果读者正在读，rw已经被拿走了，写者就等</p>
+<p>如果有写者在写，写者也等</p>
+<h3 id="7-读者优先有什么问题？"><a href="#7-读者优先有什么问题？" class="headerlink" title="7. 读者优先有什么问题？"></a>7. 读者优先有什么问题？</h3><p>最大的问题是：</p>
+<p><code>写者可能饥饿</code></p>
+<p>只要读者不断的来，<code>readcount</code>就一直不变成0。</p>
+<p>写者一直拿不到<code>rw</code></p>
+<h3 id="8-第二类：写者优先"><a href="#8-第二类：写者优先" class="headerlink" title="8. 第二类：写者优先"></a>8. 第二类：写者优先</h3><p>写者优先的思想是：</p>
+<p><code>一旦有写者等待，后面的读者就不能再插队</code></p>
+<p>已经在读的读者可以读完，但新的读者要等写者写完。</p>
+<h3 id="9-第三类：公平读写"><a href="#9-第三类：公平读写" class="headerlink" title="9. 第三类：公平读写"></a>9. 第三类：公平读写</h3><p>公平读写的思想是：</p>
+<p><code>按照请求到达的顺序排队</code></p>
+<p>谁先来谁访问</p>
+<h3 id="10-重点代码："><a href="#10-重点代码：" class="headerlink" title="10. 重点代码："></a>10. 重点代码：</h3><p>读者优先上面有了</p>
+<h5 id="写者优先："><a href="#写者优先：" class="headerlink" title="写者优先："></a>写者优先：</h5><p>通常要用这些变量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> readcount = <span class="number">0</span>;     <span class="comment">//正在读的读者数量</span></span><br><span class="line"><span class="type">int</span> writecount = <span class="number">0</span>;    <span class="comment">//正在写或者正在等待的写者数量</span></span><br><span class="line"></span><br><span class="line">semaphore readmutex = <span class="number">1</span>;   <span class="comment">//protect readcount</span></span><br><span class="line">semaphore writemutex = <span class="number">1</span>;    <span class="comment">//protect writecount</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">semaphore rw = <span class="number">1</span>;        <span class="comment">//控制共享数据区，读者群体和写者互斥</span></span><br><span class="line">semaphore r = <span class="number">1</span>;         <span class="comment">//控制读者入口，写者优先的关键</span></span><br></pre></td></tr></table></figure>
+
+<p>完整代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">reader:</span><br><span class="line">    P(r);    <span class="comment">//关门，堵上后面来的读者</span></span><br><span class="line">    P(readmutex);</span><br><span class="line">    readcount++;</span><br><span class="line">    <span class="keyword">if</span> (readcount == <span class="number">1</span>)</span><br><span class="line">       P(rw);              </span><br><span class="line">    V(readmutex);</span><br><span class="line">    V(r);</span><br><span class="line"></span><br><span class="line">    reading the data</span><br><span class="line"></span><br><span class="line">    <span class="title function_">P</span><span class="params">(readmutex)</span>;</span><br><span class="line">    readmutex--;</span><br><span class="line">    <span class="keyword">if</span> (readmutex == <span class="number">0</span>)</span><br><span class="line">        V(rw);</span><br><span class="line">    V(readmutex);</span><br></pre></td></tr></table></figure>
+
+<p>写者：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">P(writemutex);</span><br><span class="line">writecount++;</span><br><span class="line"><span class="keyword">if</span> (writecount == <span class="number">1</span>)&#123;</span><br><span class="line">    P(r);</span><br><span class="line">&#125;</span><br><span class="line">V(writemutex);</span><br><span class="line">P(rw);</span><br><span class="line"></span><br><span class="line">写数据;</span><br><span class="line"></span><br><span class="line">V(rw);</span><br><span class="line">P(writemutex);</span><br><span class="line">writecount--;</span><br><span class="line"><span class="keyword">if</span> (writecount == <span class="number">0</span>)&#123;</span><br><span class="line">    V(r);</span><br><span class="line">&#125;</span><br><span class="line">V(writemutex);</span><br></pre></td></tr></table></figure>
+
+<p><strong>写者优先</strong>：第一个写者关读者入口，最后一个写者开读者入口。</p>
+<h5 id="公平读写：读者和写者都先过同一个queue，谁先到谁先排。"><a href="#公平读写：读者和写者都先过同一个queue，谁先到谁先排。" class="headerlink" title="公平读写：读者和写者都先过同一个queue，谁先到谁先排。"></a>公平读写：读者和写者都先过同一个queue，谁先到谁先排。</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> readcount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">semaphore mutex = <span class="number">1</span>;</span><br><span class="line">semaphore rw = <span class="number">1</span>;</span><br><span class="line">semaphore <span class="built_in">queue</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>读者：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">P(<span class="built_in">queue</span>);</span><br><span class="line">P(mutex);</span><br><span class="line">readcount++;</span><br><span class="line"><span class="keyword">if</span> (readcount == <span class="number">1</span>)&#123;</span><br><span class="line">    P(rw);</span><br><span class="line">&#125;</span><br><span class="line">V(mutexl);</span><br><span class="line">V(<span class="built_in">queue</span>);</span><br><span class="line"></span><br><span class="line">读数据;</span><br><span class="line"></span><br><span class="line">P(mutex);</span><br><span class="line">readcount--;</span><br><span class="line"><span class="keyword">if</span> (readcount == <span class="number">0</span>)&#123;</span><br><span class="line">    V(rw);</span><br><span class="line">&#125;</span><br><span class="line">V(mutex);</span><br></pre></td></tr></table></figure>
+
+<p>写者：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">P(<span class="built_in">queue</span>);</span><br><span class="line">P(rw);</span><br><span class="line">V(<span class="built_in">queue</span>);</span><br><span class="line"></span><br><span class="line">write data;</span><br><span class="line"></span><br><span class="line">V(rw);</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-6-睡眠理发师问题"><a href="#4-6-睡眠理发师问题" class="headerlink" title="4.6 睡眠理发师问题"></a>4.6 睡眠理发师问题</h2><h4 id="一-睡眠理发师问题是什么？"><a href="#一-睡眠理发师问题是什么？" class="headerlink" title="一. 睡眠理发师问题是什么？"></a>一. 睡眠理发师问题是什么？</h4><p>想象一个理发店：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1个理发师</span><br><span class="line">1把理发椅</span><br><span class="line">n把等待椅</span><br><span class="line">若干顾客</span><br></pre></td></tr></table></figure>
+
+<h4 id="二-问题的核心"><a href="#二-问题的核心" class="headerlink" title="二. 问题的核心"></a>二. 问题的核心</h4><p>它要解决三个问题：</p>
+<p><strong>1.客户来了要不要等？</strong></p>
+<p>如果有空等待椅，客户坐下等待。</p>
+<p>如果没空等待椅，顾客离开。</p>
+<p><strong>2.理发师没顾客时怎么办？</strong></p>
+<p>不能一直空转检查：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ture:</span><br><span class="line">    看看有没有顾客</span><br></pre></td></tr></table></figure>
+
+<p>这样是浪费CPU，所以应该：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">没有顾客时，理发师阻塞/睡眠</span><br></pre></td></tr></table></figure>
+
+<p><strong>3.多个顾客同时进店怎么办？</strong></p>
+<p>等待椅数量是共享变量，比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">waiting</span><br></pre></td></tr></table></figure>
+
+<p>多个顾客可能同时修改它，所以必须加锁。</p>
+<h4 id="三-需要的变量"><a href="#三-需要的变量" class="headerlink" title="三.需要的变量"></a>三.需要的变量</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> waiting = <span class="number">0</span>;    <span class="comment">//当前等待的顾客数量</span></span><br><span class="line"><span class="type">int</span> chairs = n;    <span class="comment">//等待椅数量</span></span><br><span class="line"></span><br><span class="line">semaphore mutex = <span class="number">1</span>;    <span class="comment">//保护waiting</span></span><br><span class="line">semaphore customers = <span class="number">0</span>;    <span class="comment">//等待顾客的数量</span></span><br><span class="line">semaphore barber = <span class="number">0</span>;    <span class="comment">//理发师是否准备好</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="四-理发师代码"><a href="#四-理发师代码" class="headerlink" title="四.理发师代码"></a>四.理发师代码</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    P(customers); <span class="comment">// 没有顾客就睡觉</span></span><br><span class="line"></span><br><span class="line">    P(mutex);</span><br><span class="line">    waiting--;    <span class="comment">//在等待队列中叫一个顾客</span></span><br><span class="line">    V(barber);    <span class="comment">//通知某个顾客：理发师准备好了</span></span><br><span class="line">    V(mutex);</span><br><span class="line"></span><br><span class="line">    理发;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="五-顾客代码"><a href="#五-顾客代码" class="headerlink" title="五.顾客代码"></a>五.顾客代码</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">P(mutex);</span><br><span class="line"><span class="keyword">if</span> (waiting &lt; chairs) &#123;</span><br><span class="line">    waiting++;        <span class="comment">//坐到等待椅上</span></span><br><span class="line">    V(customers);    <span class="comment">//通知理发师:来了一个顾客</span></span><br><span class="line">    V(mutex);</span><br><span class="line"></span><br><span class="line">    P(barber);        <span class="comment">//等待理发师叫自己</span></span><br><span class="line"></span><br><span class="line">    接受理发;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    V(mutex);</span><br><span class="line">    离开;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="第五章-死锁"><a href="#第五章-死锁" class="headerlink" title="第五章 死锁"></a>第五章 死锁</h1><h3 id="5-1-死锁的引出"><a href="#5-1-死锁的引出" class="headerlink" title="5.1 死锁的引出"></a>5.1 死锁的引出</h3><p><strong>什么是死锁？</strong></p>
+<p><strong>定义</strong>：一个进程集合中，每个进程都在等待<strong>只能由该集合中其他一个进程才能引发的事件</strong></p>
+<h4 id="死锁的常见场景："><a href="#死锁的常见场景：" class="headerlink" title="死锁的常见场景："></a>死锁的常见场景：</h4><ul>
+<li><p><strong>进程推荐顺序不当：</strong> P、Q共享打印机、读卡机。P先申请打卡机再申请打印机，Q先申请打印机再申请打卡机。当执行到P、Q一人持有其中一种等待另一种的时候，发生死锁</p>
+</li>
+<li><p><strong>PV操作不当：</strong> 不同进程执行到各自持有一个信号量，等另一个，死锁。</p>
+</li>
+<li><p><strong>资源分配不当：</strong> m个资源被n个进程共享，每个进程需要K个，m  &lt; n * K</p>
+</li>
+<li><p><strong>临时性资源(信箱)：</strong> P1等P3的信件S3，然后发S1给P2；P2等S1，发S2给P3；P3等S2，发S3给P1。循环等待，死锁</p>
+</li>
+</ul>
+<h2 id="5-2-死锁产生原因和特征"><a href="#5-2-死锁产生原因和特征" class="headerlink" title="5.2 死锁产生原因和特征"></a>5.2 死锁产生原因和特征</h2><h3 id="5-2-1-按照资源分类"><a href="#5-2-1-按照资源分类" class="headerlink" title="5.2.1 按照资源分类"></a>5.2.1 按照资源分类</h3><h4 id="1-按照剥夺类型分类"><a href="#1-按照剥夺类型分类" class="headerlink" title="1. 按照剥夺类型分类"></a>1. 按照剥夺类型分类</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>可剥夺资源</strong></td>
+<td>获取后可被系统&#x2F;其他进程强行剥夺</td>
+<td>CPU&#x2F;内存</td>
+</tr>
+<tr>
+<td><strong>非剥夺资源</strong></td>
+<td>分配后只能又进程主动释放</td>
+<td>打印机、读卡机</td>
+</tr>
+</tbody></table>
+<p><strong>注意：</strong> CPU不会死锁，CPU可以强行收回CPU，而进程不会霸占CPU</p>
+<h4 id="2-按照使用期限分类"><a href="#2-按照使用期限分类" class="headerlink" title="2. 按照使用期限分类"></a>2. 按照使用期限分类</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>永久性资源</strong></td>
+<td>可顺序重复使用</td>
+<td>打印机、文件</td>
+</tr>
+<tr>
+<td><strong>消耗性资源（临时性资源）</strong></td>
+<td>由一个进程产生，被另一个使用短暂时间</td>
+<td>信息、信号、I&#x2F;O缓冲区数据</td>
+</tr>
+</tbody></table>
+<p><strong>注意：</strong> 竞争永久性资源和临时性资源都可能导致死锁。</p>
+<h3 id="5-2-2-死锁产生的原因"><a href="#5-2-2-死锁产生的原因" class="headerlink" title="5.2.2 死锁产生的原因"></a>5.2.2 死锁产生的原因</h3><p>根本原因两条：</p>
+<ol>
+<li><p><strong>资源竞争</strong>：多个进程竞争有限资源，资源数量不能满足所有进程同时需求。</p>
+</li>
+<li><p><strong>进程推进顺序不当</strong>：进程申请和释放资源的顺序不合适。</p>
+</li>
+</ol>
+<h3 id="5-2-3-死锁产生的四个必要条件（Coffman条件，1971）"><a href="#5-2-3-死锁产生的四个必要条件（Coffman条件，1971）" class="headerlink" title="5.2.3 死锁产生的四个必要条件（Coffman条件，1971）"></a>5.2.3 死锁产生的四个必要条件（Coffman条件，1971）</h3><p>死锁产生必须<strong>同时满足</strong>以下四个条件，缺一不可：</p>
+<p>表格</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>含义</th>
+<th>破坏策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>① 互斥条件</strong></td>
+<td>资源在某段时间内仅能被一个进程占用</td>
+<td>使资源可共享（如只读文件）</td>
+</tr>
+<tr>
+<td><strong>② 请求和保持条件（占有并等待）</strong></td>
+<td>进程因请求新资源被阻塞时，已占有的资源保持不放</td>
+<td>一次性申请所有资源；或申请新资源前释放已有资源</td>
+</tr>
+<tr>
+<td><strong>③ 不剥夺条件（非抢占）</strong></td>
+<td>进程获得的资源在未使用完前不能被强行夺走</td>
+<td>允许抢占（如CPU、内存）</td>
+</tr>
+<tr>
+<td><strong>④ 循环等待条件</strong></td>
+<td>存在进程-资源的循环等待链</td>
+<td>按序分配资源（层次分配）</td>
+</tr>
+</tbody></table>
+<p> <strong>重要</strong>：这四个条件是<strong>必要条件</strong>（必须同时满足才会死锁），不是充分条件。即使四个条件都满足，也不一定立即死锁（还要看推进顺序）。</p>
+<h3 id="5-2-4-字体分配图-RAG"><a href="#5-2-4-字体分配图-RAG" class="headerlink" title="5.2.4 字体分配图 RAG"></a>5.2.4 字体分配图 RAG</h3><p><strong>图的组成：</strong> </p>
+<ul>
+<li><p>进程节点：圆圈；</p>
+</li>
+<li><p>资源节点：方框，方框中的黑点表示该资源的实例数量；</p>
+</li>
+<li><p>分配边：资源 -&gt; 进程（实线）；</p>
+</li>
+<li><p>请求边：进程 -&gt; 资源（虚线）。</p>
+</li>
+</ul>
+<p><strong>死锁结论相关结论：</strong></p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>资源分配图<strong>无环</strong></td>
+<td><strong>一定没有死锁</strong></td>
+</tr>
+<tr>
+<td>有环，且<strong>每个资源类只有1个实例</strong></td>
+<td><strong>一定死锁</strong>（环是充要条件）</td>
+</tr>
+<tr>
+<td>有环，但<strong>某些资源类有多个实例</strong></td>
+<td><strong>可能死锁</strong>，也可能不死锁（环只是必要条件）</td>
+</tr>
+</tbody></table>
+<h2 id="5-3-处理死锁的基本方法"><a href="#5-3-处理死锁的基本方法" class="headerlink" title="5.3 处理死锁的基本方法"></a>5.3 处理死锁的基本方法</h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>思想</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>忽略死锁（鸵鸟算法）</strong></td>
+<td>对死锁视而不见</td>
+<td>大多数OS采用，死锁概率低，处理代价小</td>
+</tr>
+<tr>
+<td><strong>预防死锁</strong></td>
+<td>破坏四个必要条件之一</td>
+<td>限制严格，并发性低，资源利用率低</td>
+</tr>
+<tr>
+<td><strong>避免死锁</strong></td>
+<td>动态分配时防止进入不安全状态</td>
+<td>限制较弱，并发现好，实现复杂</td>
+</tr>
+<tr>
+<td><strong>检测和解除</strong></td>
+<td>定时检测，发现后解除</td>
+<td>利用率高，但是检测和解除有开销</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-1-预防死锁"><a href="#5-3-1-预防死锁" class="headerlink" title="5.3.1 预防死锁"></a>5.3.1 预防死锁</h3><p>通过破坏四个必要条件来预防：</p>
+<p><strong>（1）破坏互斥条件：</strong></p>
+<ul>
+<li><p>思路：使资源可同时访问</p>
+</li>
+<li><p>可行情况：只读文件、可重入代码、时钟</p>
+</li>
+<li><p>不可行情况：打印机、互斥锁等固有互斥资源</p>
+</li>
+<li><p>很多时候不可行</p>
+</li>
+</ul>
+<p><strong>（2）破坏请求和保持条件</strong></p>
+<p>两种方法：</p>
+<p><strong>方法一：静态资源分配（一次性申请）</strong></p>
+<ul>
+<li><p>进程运行前一次性申请需要的全部资源</p>
+</li>
+<li><p><strong>缺点：</strong> 资源利用率低，前面的进程不用某些资源，一直占着，后面的进程申请不到资源，饥饿。</p>
+</li>
+</ul>
+<p><strong>方法二：申请新资源前释放已有资源</strong></p>
+<ul>
+<li><p>进程申请更多资源时，必须先释放已占有的全部资源，然后再重新申请。</p>
+</li>
+<li><p><strong>缺点</strong>：反复申请释放开销大。</p>
+</li>
+</ul>
+<p><strong>（3）破坏不剥夺条件</strong></p>
+<ul>
+<li><p>思路：若进程申请新资源失败，则其已占有的资源可以强行剥夺。</p>
+</li>
+<li><p>例子：CPU、内存可以被抢占</p>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li><p>已做的（已做一部分）的工作失效</p>
+</li>
+<li><p>剥夺资源有系统开销</p>
+</li>
+</ul>
+</li>
+<li><p>适用于状态易于恢复和保存的资源（CPU寄存器、内存），部不适用于打印机信号量等。</p>
+</li>
+</ul>
+<p><strong>（4）破坏循环等待条件</strong></p>
+<p><strong>层次分配策略&#x2F;有序资源分配法</strong></p>
+<ul>
+<li><p>给所有资源编号</p>
+</li>
+<li><p>进程在占有<code>ri</code>后，只能申请比编号i更大的资源</p>
+</li>
+<li><p>释放资源的时候先释放编号大的，再释放小的</p>
+</li>
+</ul>
+<p><strong>为什么能防止死锁？（反证法）</strong></p>
+<ul>
+<li><p>假设死锁发生，则存在循环等待链：P1等P2的资源，P2等P3的资源…Pn等P1的资源。</p>
+</li>
+<li><p>按有序分配，若P1等的是rk1，则P1一定占有编号更小的资源；P2占有rk1，等待rk2，则 <code>k1 &lt; k2</code>。</p>
+</li>
+<li><p>推下去：<code>k1 &lt; k2 &lt; k3 &lt; ... &lt; kn</code>。</p>
+</li>
+<li><p>但Pn占有rkn等待P1的资源，则必须有 <code>kn &lt; k1</code>，矛盾！</p>
+</li>
+<li><p>所以不可能形成循环等待。</p>
+</li>
+</ul>
+<h3 id="5-3-2-避免死锁"><a href="#5-3-2-避免死锁" class="headerlink" title="5.3.2 避免死锁"></a>5.3.2 避免死锁</h3><h4 id="核心思想-1"><a href="#核心思想-1" class="headerlink" title="核心思想"></a>核心思想</h4><ul>
+<li><p>不破坏四个必要条件，在资源动态分配的过程中，用算法判断这次分配是否会让系统进入不安全状态。</p>
+</li>
+<li><p>若安全则分配；若不安全则拒绝</p>
+</li>
+</ul>
+<h4 id="关键概念"><a href="#关键概念" class="headerlink" title="关键概念"></a>关键概念</h4><p><strong>安全状态</strong> ：系统能按照某顺序为每个进程分配其所需的最大需求资源，使每个进程可以顺利完成。这样的顺序称为安全序列。</p>
+<p><strong>不安全状态</strong>： </p>
+<p>系统中不存在任何一个安全序列</p>
+<ul>
+<li><p>不安全状态可能导致死锁，但不是必然（进程可能不会真的申请到最大需求）</p>
+</li>
+<li><p>避免死锁的本质：让系统始终保持在安全状态</p>
+</li>
+</ul>
+<p>安全序列可能不唯一，但是只要存在一个，系统就是安全的。</p>
+<h4 id="避免死锁的算法"><a href="#避免死锁的算法" class="headerlink" title="避免死锁的算法"></a><strong>避免死锁的算法</strong></h4><p><strong>（1）资源分配图机制（单实例资源）</strong></p>
+<h4 id="需求边（Claim-Edge）"><a href="#需求边（Claim-Edge）" class="headerlink" title="需求边（Claim Edge）"></a>需求边（Claim Edge）</h4><ul>
+<li><p>进程 <code>Pi → Rj</code> 的<strong>虚线</strong>，表示进程将来可能申请该资源。</p>
+</li>
+<li><p>需求边在进程创建时就声明（系统需要事先知道进程可能需要的所有资源）。</p>
+</li>
+</ul>
+<h4 id="算法规则"><a href="#算法规则" class="headerlink" title="算法规则"></a>算法规则</h4><p>当进程 <code>Pi</code> 请求资源 <code>Rj</code> 时：</p>
+<ol>
+<li><p>将请求边转换为分配边。</p>
+</li>
+<li><p><strong>检查转换后的资源分配图是否存在环</strong>。</p>
+</li>
+<li><p><strong>若不存在环</strong>，则分配是安全的，允许分配。</p>
+</li>
+<li><p><strong>若存在环</strong>，则分配会导致死锁，拒绝分配。</p>
+</li>
+</ol>
+<p><strong>（2）银行家算法（多实例资源）</strong></p>
+<p>由Dijkstra提出，类比银行放贷：银行资金有限，客户有信用额度，银行要确保放贷后还能满足其他客户的提款需求，避免资金链断裂。</p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><table>
+<thead>
+<tr>
+<th>数据结构</th>
+<th>维度</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Available</code></td>
+<td>向量，m个元素</td>
+<td>每类资源的<strong>可用</strong>数量</td>
+</tr>
+<tr>
+<td><code>Max</code></td>
+<td>n×m 矩阵</td>
+<td>每个进程对每类资源的<strong>最大需求</strong></td>
+</tr>
+<tr>
+<td><code>Allocation</code></td>
+<td>n×m 矩阵</td>
+<td>每个进程当前<strong>已分配</strong>的资源数</td>
+</tr>
+<tr>
+<td><code>Need</code></td>
+<td>n×m 矩阵</td>
+<td>每个进程还<strong>需要</strong>的资源数</td>
+</tr>
+</tbody></table>
+<p><strong>核心公式</strong>：<br>    Need[i][j] &#x3D; Max[i][j] - Allocation[i][j]</p>
+<h4 id="资源请求算法（Request-i）"><a href="#资源请求算法（Request-i）" class="headerlink" title="资源请求算法（Request_i）"></a>资源请求算法（Request_i）</h4><p>当进程 <code>Pi</code> 发出请求向量 <code>Request_i</code>：</p>
+<p><strong>步骤1</strong>：检查 <code>Request_i ≤ Need_i</code></p>
+<ul>
+<li>若否，出错（进程请求超出其声明的最大需求）。</li>
+</ul>
+<p><strong>步骤2</strong>：检查 <code>Request_i ≤ Available</code></p>
+<ul>
+<li>若否，<code>Pi</code> 必须等待（资源不够）。</li>
+</ul>
+<p><strong>步骤3</strong>：<strong>试分配</strong>（假设分配，修改数据结构）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Available = Available - Request_i Allocation_i = Allocation_i + Request_i Need_i = Need_i - Request_i</span><br></pre></td></tr></table></figure>
+
+<p><strong>步骤4</strong>：执行<strong>安全性算法</strong>检查新状态是否安全。</p>
+<ul>
+<li><p>若<strong>安全</strong>：正式分配。</p>
+</li>
+<li><p>若<strong>不安全</strong>：试分配作废，恢复原来的数据，<code>Pi</code> 等待。</p>
+</li>
+</ul>
+<hr>
+<h4 id="安全性算法"><a href="#安全性算法" class="headerlink" title="安全性算法"></a>安全性算法</h4><p><strong>初始化</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Work = Available Finish[i] = false （对于所有进程） // 注意：如果 Allocation_i = 0（进程未分配任何资源），可设 Finish[i] = true</span><br></pre></td></tr></table></figure>
+
+<p><strong>循环</strong>：</p>
+<ol>
+<li><p>寻找进程 <code>i</code>，满足：</p>
+<ul>
+<li><p><code>Finish[i] == false</code></p>
+</li>
+<li><p><code>Need_i ≤ Work</code>（该进程所需资源系统当前能满足）</p>
+</li>
+</ul>
+</li>
+<li><p>若找到这样的 <code>i</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Work = Work + Allocation_i // 进程完成，释放资源 </span><br><span class="line">Finish[i] = true 回到步骤1继续找</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若找不到这样的 <code>i</code>，则检查：</p>
+<ul>
+<li><p>若所有 <code>Finish[i] == true</code>：<strong>系统安全</strong>。</p>
+</li>
+<li><p>若存在 <code>Finish[i] == false</code>：<strong>系统不安全</strong>。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>重要结论</strong> ：安全路径可能有多条。但只要存在一个安全序列，算法过程中无论怎么选分叉点，都能找到安全序列；若不存在安全序列，则任何路径都找不到。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/05/31/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="prev" title="编译原理">
+                  <i class="fa fa-angle-left"></i> 编译原理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="数据库">
+                  数据库 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">MuZZZFeng</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div><div class="footer-inner">
+  <div><strong>© 2026 木之风</strong> · Built with Hexo & NexT</div>
+  <div style="margin-top: 6px; opacity: 0.7;">记录学习、代码和一些凌晨的想法。</div>
+</div>
+
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+<script src="/js/autumn-leaves.js"></script>
+
+</body>
+</html>
