@@ -63,12 +63,12 @@
         words = words.concat(splitIntoWords(seg));
       });
 
-      // 末尾上标星号（对应原设计的 showAsterisk）
+      // 末尾上标金色星芒（对应原设计的 showAsterisk）
       if (el.hasAttribute('data-asterisk')) {
         var sup = document.createElement('sup');
         sup.className = 'pu-word prisma-hero-asterisk';
         sup.setAttribute('aria-hidden', 'true');
-        sup.textContent = '*';
+        sup.textContent = '✦';
         el.appendChild(sup);
         words.push(sup);
       }
@@ -176,7 +176,7 @@
     });
   }
 
-  /* ---------- Hero 漂浮微尘粒子（canvas，暖色奶油调） ---------- */
+  /* ---------- Hero 漂浮光尘粒子（canvas，鎏金 / 月蓝 / 云白） ---------- */
   function initHeroCanvas() {
     var canvas = document.querySelector('.prisma-hero-canvas');
     if (!canvas) return;
@@ -189,7 +189,7 @@
     var particles = [];
     var rafId = null;
     var running = false;
-    var COLORS = ['222,219,200', '222,200,150', '196,112,42'];
+    var COLORS = ['212,175,106', '122,162,227', '240,235,210'];
 
     function makeParticle(anyY) {
       return {
