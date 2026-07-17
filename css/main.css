@@ -1322,7 +1322,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #4637ff;
+  background: #ffa812;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -3012,7 +3012,7 @@ a:hover {
   display: inline-block;
   position: relative;
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 1;
   letter-spacing: 0.02em;
   font-size: 11.5vw;
   white-space: nowrap;
@@ -3024,6 +3024,10 @@ a:hover {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+.prisma-hero-title .pu-word {
+  padding: 0.26em 0.14em 0.26em 0.04em;
+  margin: -0.26em -0.14em -0.26em -0.04em;
 }
 @media (min-width: 640px) {
   .prisma-hero-title {
