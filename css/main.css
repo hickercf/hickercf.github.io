@@ -1322,7 +1322,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #bba211;
+  background: #5d3c8b;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2692,6 +2692,9 @@ body {
   background: #000 !important;
   color: #e1e0cc;
 }
+body.is-home {
+  background: radial-gradient(ellipse 60% 40% at 85% 8%, rgba(222,200,150,0.05), transparent 60%), radial-gradient(ellipse 50% 35% at 10% 90%, rgba(196,112,42,0.06), transparent 60%), #000 !important;
+}
 body::before,
 body::after {
   content: none !important;
@@ -2884,12 +2887,61 @@ a:hover {
 .prisma-hero-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 68% 12%, rgba(222,200,150,0.2), transparent 60%), radial-gradient(ellipse 60% 50% at 20% 85%, rgba(120,85,40,0.25), transparent 65%), radial-gradient(ellipse 120% 90% at 50% 45%, #231a10 0%, #100c07 45%, #000 100%);
-  animation: prismaGlow 14s ease-in-out infinite alternate;
+  background: radial-gradient(ellipse 80% 60% at 68% 12%, rgba(222,200,150,0.26), transparent 60%), radial-gradient(ellipse 60% 50% at 20% 85%, rgba(120,85,40,0.32), transparent 65%), radial-gradient(ellipse 120% 90% at 50% 45%, #2a2013 0%, #130e08 45%, #000 100%);
+}
+.prisma-hero-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+.blob-1 {
+  width: 45vw;
+  height: 45vw;
+  min-width: 380px;
+  min-height: 380px;
+  top: -12%;
+  right: -8%;
+  background: radial-gradient(circle, rgba(222,200,150,0.28), rgba(222,200,150,0) 65%);
+  animation: auroraDrift1 22s ease-in-out infinite alternate;
+}
+.blob-2 {
+  width: 38vw;
+  height: 38vw;
+  min-width: 320px;
+  min-height: 320px;
+  bottom: -18%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(196,112,42,0.3), rgba(196,112,42,0) 65%);
+  animation: auroraDrift2 26s ease-in-out infinite alternate;
+}
+.blob-3 {
+  width: 26vw;
+  height: 26vw;
+  min-width: 240px;
+  min-height: 240px;
+  top: 30%;
+  left: 38%;
+  background: radial-gradient(circle, rgba(240,220,180,0.16), rgba(240,220,180,0) 60%);
+  animation: auroraDrift3 18s ease-in-out infinite alternate;
+}
+.prisma-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 .prisma-hero-noise {
   opacity: 0.7;
   mix-blend-mode: overlay;
+  inset: -60%;
+  animation: prismaGrain 9s steps(10) infinite;
 }
 .prisma-hero-gradient {
   position: absolute;
@@ -3382,8 +3434,9 @@ table th {
   html {
     scroll-behavior: auto;
   }
-  .prisma-hero-bg {
-    animation: none;
+  .aurora-blob,
+  .prisma-hero-noise {
+    animation: none !important;
   }
   .prisma-anim .pu-word,
   .prisma-anim [data-fade-up],
@@ -3393,13 +3446,68 @@ table th {
     transition: none !important;
   }
 }
-@keyframes prismaGlow {
+@keyframes auroraDrift1 {
   0% {
-    opacity: 0.85;
-    transform: scale(1);
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-6vw, 5vh) scale(1.15);
   }
   100% {
-    opacity: 1;
-    transform: scale(1.06);
+    transform: translate(3vw, -3vh) scale(0.95);
+  }
+}
+@keyframes auroraDrift2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(7vw, -4vh) scale(1.1);
+  }
+  100% {
+    transform: translate(-4vw, 3vh) scale(1.02);
+  }
+}
+@keyframes auroraDrift3 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5vw, -6vh) scale(1.2);
+  }
+  100% {
+    transform: translate(4vw, 4vh) scale(0.9);
+  }
+}
+@keyframes prismaGrain {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -8%);
+  }
+  20% {
+    transform: translate(-12%, 4%);
+  }
+  30% {
+    transform: translate(6%, -10%);
+  }
+  40% {
+    transform: translate(-4%, 12%);
+  }
+  50% {
+    transform: translate(-10%, 5%);
+  }
+  60% {
+    transform: translate(10%, 0%);
+  }
+  70% {
+    transform: translate(0%, 10%);
+  }
+  80% {
+    transform: translate(-12%, -4%);
+  }
+  90% {
+    transform: translate(8%, 6%);
   }
 }

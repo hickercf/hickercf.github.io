@@ -176,8 +176,98 @@
     });
   }
 
+  /* ---------- Hero 漂浮微尘粒子（canvas，暖色奶油调） ---------- */
+  function initHeroCanvas() {
+    var canvas = document.querySelector('.prisma-hero-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0;
+    var H = 0;
+    var particles = [];
+    var rafId = null;
+    var running = false;
+    var COLORS = ['222,219,200', '222,200,150', '196,112,42'];
+
+    function makeParticle(anyY) {
+      return {
+        x: Math.random() * W,
+        y: anyY ? Math.random() * H : H + 10,
+        r: 0.6 + Math.random() * 1.8,
+        vy: 0.12 + Math.random() * 0.4,
+        vx: (Math.random() - 0.5) * 0.15,
+        sway: Math.random() * Math.PI * 2,
+        swaySpeed: 0.002 + Math.random() * 0.008,
+        alpha: 0.12 + Math.random() * 0.45,
+        color: COLORS[(Math.random() * COLORS.length) | 0]
+      };
+    }
+
+    function resize() {
+      var rect = canvas.getBoundingClientRect();
+      W = rect.width;
+      H = rect.height;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = Math.min(90, Math.max(24, Math.floor((W * H) / 22000)));
+      particles = [];
+      for (var i = 0; i < count; i++) particles.push(makeParticle(true));
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.y -= p.vy;
+        p.sway += p.swaySpeed;
+        p.x += p.vx + Math.sin(p.sway) * 0.2;
+        if (p.y < -10 || p.x < -10 || p.x > W + 10) {
+          particles[i] = p = makeParticle(false);
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.color + ',' + p.alpha + ')';
+        ctx.fill();
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function start() {
+      if (running || document.hidden) return;
+      running = true;
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function stop() {
+      running = false;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    // 滚出视口或切到后台时暂停，省电省性能
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) start();
+        else stop();
+      });
+    }, { threshold: 0 });
+    io.observe(canvas);
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop();
+      else start();
+    });
+  }
+
   initPullUp();
   initFadeUp();
   initCardStagger();
   initCharReveal();
+  initHeroCanvas();
 })();
