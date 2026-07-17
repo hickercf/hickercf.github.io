@@ -1322,7 +1322,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #37504e;
+  background: #4637ff;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2988,6 +2988,7 @@ a:hover {
 .prisma-hero-main {
   grid-column: span 8;
   min-width: 0;
+  container-type: inline-size;
 }
 .prisma-hero-side {
   grid-column: span 4;
@@ -3049,10 +3050,15 @@ a:hover {
     font-size: 8.6vw;
   }
 }
+@supports (container-type: inline-size) {
+  .prisma-hero-title {
+    font-size: 13.5cqw;
+  }
+}
 .prisma-hero-asterisk {
   position: absolute;
   top: 0.55em;
-  right: -0.55em;
+  right: -0.35em;
   font-size: 0.28em;
   font-weight: 400;
   background: none !important;
