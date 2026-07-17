@@ -20,10 +20,10 @@
   --btn-default-hover-bg: #fff;
   --btn-default-hover-color: #222;
   --btn-default-hover-border-color: #222;
-  --highlight-background: #f3f3f3;
-  --highlight-foreground: #444;
-  --highlight-gutter-background: #e1e1e1;
-  --highlight-gutter-foreground: #555;
+  --highlight-background: #1c1b1b;
+  --highlight-foreground: #fff;
+  --highlight-gutter-background: #323131;
+  --highlight-gutter-foreground: #e8e8e8;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -413,124 +413,6 @@ code.hljs {
   padding: 3px 5px
 }
 /*!
-  Theme: Default
-  Description: Original highlight.js style
-  Author: (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
-  Maintainer: @highlightjs/core-team
-  Website: https://highlightjs.org/
-  License: see project LICENSE
-  Touched: 2021
-*/
-/*
-This is left on purpose making default.css the single file that can be lifted
-as-is from the repository directly without the need for a build step
-
-Typically this "required" baseline CSS is added by `makestuff.js` during build.
-*/
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em
-}
-code.hljs {
-  padding: 3px 5px
-}
-/* end baseline CSS */
-.hljs {
-  background: #F3F3F3;
-  color: #444
-}
-/* Base color: saturation 0; */
-.hljs-subst {
-  /* default */
-  
-}
-/* purposely ignored */
-.hljs-formula,
-.hljs-attr,
-.hljs-property,
-.hljs-params {
-  
-}
-.hljs-comment {
-  color: #697070
-}
-.hljs-tag,
-.hljs-punctuation {
-  color: #444a
-}
-.hljs-tag .hljs-name,
-.hljs-tag .hljs-attr {
-  color: #444
-}
-.hljs-keyword,
-.hljs-attribute,
-.hljs-selector-tag,
-.hljs-meta .hljs-keyword,
-.hljs-doctag,
-.hljs-name {
-  font-weight: bold
-}
-/* User color: hue: 0 */
-.hljs-type,
-.hljs-string,
-.hljs-number,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-quote,
-.hljs-template-tag,
-.hljs-deletion {
-  color: #880000
-}
-.hljs-title,
-.hljs-section {
-  color: #880000;
-  font-weight: bold
-}
-.hljs-regexp,
-.hljs-symbol,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-link,
-.hljs-selector-attr,
-.hljs-operator,
-.hljs-selector-pseudo {
-  color: #ab5656
-}
-/* Language color: hue: 90; */
-.hljs-literal {
-  color: #695
-}
-.hljs-built_in,
-.hljs-bullet,
-.hljs-code,
-.hljs-addition {
-  color: #397300
-}
-/* Meta color: hue: 200 */
-.hljs-meta {
-  color: #1f7199
-}
-.hljs-meta .hljs-string {
-  color: #38a
-}
-/* Misc effects */
-.hljs-emphasis {
-  font-style: italic
-}
-.hljs-strong {
-  font-weight: bold
-}
-@media (prefers-color-scheme: dark) {
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em
-}
-code.hljs {
-  padding: 3px 5px
-}
-/*!
   Theme: StackOverflow Dark
   Description: Dark theme as used on stackoverflow.com
   Author: stackoverflow.com
@@ -639,6 +521,61 @@ code.hljs {
   /* purposely ignored */
   
 }
+.highlight:hover .copy-btn,
+.code-container:hover .copy-btn {
+  opacity: 1;
+}
+.code-container {
+  position: relative;
+}
+.code-lang {
+  font-size: 40px;
+  line-height: 1;
+  opacity: 0.1;
+  pointer-events: none;
+  position: absolute;
+  right: 5px;
+}
+.copy-btn {
+  color: #333;
+  cursor: pointer;
+  line-height: 1.6;
+  opacity: 0;
+  padding: 2px 6px;
+  position: absolute;
+  transition: opacity 0.2s ease-in-out;
+  background: #fff;
+  border: 0;
+  font-size: 0.8125em;
+  right: 0;
+  top: 0;
+}
+.expand-btn {
+  bottom: 0;
+  color: var(--highlight-foreground);
+  cursor: pointer;
+  display: none;
+  left: 0;
+  right: 0;
+  position: absolute;
+  text-align: center;
+}
+.fold-cover {
+  background-image: linear-gradient(to top, var(--highlight-background) 0, rgba(0,0,0,0) 100%);
+  bottom: 0;
+  display: none;
+  height: 50px;
+  left: 0;
+  right: 0;
+  position: absolute;
+}
+.highlight-fold {
+  max-height: 300px;
+  overflow-y: hidden !important;
+}
+.highlight-fold .expand-btn,
+.highlight-fold .fold-cover {
+  display: block;
 }
 code,
 kbd,
@@ -1385,7 +1322,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #ff388a;
+  background: #bba211;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2715,293 +2652,754 @@ header.header {
     left: 320px;
   }
 }
-/* autumn.css - Hexo NexT 秋天背景 + 毛玻璃优化 */
-/* 1. 全站秋天背景 - 移除白膜，背景图完全展示 */
+:root {
+  --body-bg-color: #000;
+  --content-bg-color: #101010;
+  --card-bg-color: #212121;
+  --text-color: #e1e0cc;
+  --selection-bg: #dedbc8;
+  --selection-color: #000;
+  --blockquote-color: rgba(222,219,200,0.75);
+  --link-color: rgba(222,219,200,0.85);
+  --link-hover-color: #e1e0cc;
+  --brand-color: #e1e0cc;
+  --brand-hover-color: #fff;
+  --table-row-odd-bg-color: #161616;
+  --table-row-hover-bg-color: #212121;
+  --menu-item-bg-color: #101010;
+  --theme-color: #dedbc8;
+  --btn-default-bg: #212121;
+  --btn-default-color: #e1e0cc;
+  --btn-default-border-color: rgba(222,219,200,0.25);
+  --btn-default-hover-bg: #dedbc8;
+  --btn-default-hover-color: #000;
+  --btn-default-hover-border-color: #dedbc8;
+  --highlight-background: #0d0d0d;
+  --highlight-foreground: #e1e0cc;
+  --highlight-gutter-background: #0a0a0a;
+  --highlight-gutter-foreground: rgba(222,219,200,0.35);
+  color-scheme: dark;
+}
 html,
 body {
   min-height: 100%;
+  overflow-x: clip;
+}
+html {
+  scroll-behavior: smooth;
 }
 body {
-  position: relative;
-  background: url("/img/bg/autumn-bg.png") center center/cover no-repeat fixed !important;
+  background: #000 !important;
+  color: #e1e0cc;
 }
-/* 2. 移除 body::before 白膜 */
 body::before,
 body::after {
   content: none !important;
   background: transparent !important;
 }
-/* 3. 内容容器：只给中间内容区域加背景，侧边栏透明 */
-.main-inner,
-.content-wrap,
-.post-block,
-.comments,
-.pagination,
-#comments,
-#archive,
-.category-all-page,
-.tag-cloud,
-.search-popup,
-.popup {
-  background: rgba(255,252,247,0.88) !important;
-  backdrop-filter: blur(14px) saturate(1.08);
-  -webkit-backdrop-filter: blur(14px) saturate(1.08);
-  border: 1px solid rgba(255,255,255,0.46);
-  box-shadow: 0 14px 40px rgba(118,74,34,0.1);
-  border-radius: 18px;
+* {
+  font-family: 'Almarai', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
-/* 侧边栏背景透明，让秋天背景透出 */
-.sidebar-inner {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
+.fa,
+.fab,
+.far,
+.fas,
+[class^="fa-"],
+[class*=" fa-"] {
+  font-family: 'Font Awesome 7 Free', 'Font Awesome 7 Brands' !important;
 }
-/* NexT 文章块内部稍微松一点 */
-.post-block {
-  padding: 28px !important;
+pre,
+code,
+kbd,
+samp {
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace !important;
 }
-/* 4. 顶部/底部区域适配背景 */
-.header-inner,
-.footer-inner {
-  background: rgba(255,250,243,0.58) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 18px;
+.font-serif,
+.ms-serif,
+.prisma-cats-sub {
+  font-family: 'Instrument Serif', serif !important;
+  font-style: italic;
 }
-/* 5. 文字颜色更贴合秋天，但不要影响代码块 */
-body,
-.post-body,
-.site-title,
-.site-subtitle,
-.menu-item a {
-  color: #3f2b20;
+::selection {
+  background: #dedbc8;
+  color: #000;
+}
+img {
+  opacity: 1 !important;
+}
+.headband {
+  display: none !important;
 }
 a {
-  color: #a85419;
+  color: rgba(222,219,200,0.85);
 }
 a:hover {
-  color: #d46b1f;
+  color: #e1e0cc;
 }
-/* 6. 代码块保持可读 */
-.highlight,
-pre,
-code {
-  backdrop-filter: none;
-}
-/* 7. 枫叶 canvas 层 */
-#autumn-leaf-canvas {
-  position: fixed;
+.noise-overlay {
+  position: absolute;
   inset: 0;
-  z-index: 3;
-  width: 100vw;
-  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
   pointer-events: none;
 }
-/* 8. 降低动画偏好的用户，直接隐藏飘叶 */
-@media (prefers-reduced-motion: reduce) {
-  #autumn-leaf-canvas {
-    display: none !important;
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  pointer-events: none;
+}
+.header {
+  background: transparent !important;
+  border-bottom: none !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 !important;
+  position: relative;
+  z-index: 30;
+}
+.site-brand-container {
+  display: none;
+  position: relative;
+  z-index: 30;
+}
+.site-meta {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.site-nav {
+  background: #000;
+  border: 1px solid rgba(222,219,200,0.14);
+  border-top: none;
+  border-radius: 0 0 22px 22px;
+  padding: 2px 28px;
+  position: relative;
+  z-index: 30;
+  width: fit-content;
+  margin: 0 auto;
+  max-width: 100%;
+}
+.menu {
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(12px, 3vw, 48px);
+  margin: 0;
+}
+.menu .menu-item {
+  margin: 0 !important;
+}
+.menu .menu-item a {
+  display: block;
+  padding: 10px 2px;
+  color: rgba(225,224,204,0.8) !important;
+  font-size: clamp(10px, 1.05vw, 14px);
+  font-weight: 400;
+  border-bottom: none !important;
+  transition: color 0.25s ease;
+}
+.menu .menu-item a:hover,
+.menu .menu-item a.menu-item-active {
+  color: #e1e0cc !important;
+  background: transparent !important;
+}
+.menu .menu-item a.menu-item-active {
+  font-weight: 700;
+}
+.menu .menu-item i[class^='fa'],
+.menu .menu-item .fa {
+  display: none !important;
+}
+@media (max-width: 767px) {
+  .site-brand-container {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    padding: 6px 10px 0;
+  }
+  .site-nav {
+    width: 100%;
+    border-radius: 0 0 18px 18px;
+    padding: 2px 12px;
+  }
+  .menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .menu .menu-item a {
+    padding: 12px 10px;
+    font-size: 14px;
+    text-align: center;
   }
 }
-/* 9. 手机端减少背景固定导致的卡顿 */
-@media (max-width: 768px) {
-  body {
-    background-attachment: scroll !important;
-  }
-  .main-inner,
-  .content-wrap,
-  .post-block,
-  .sidebar-inner {
-    border-radius: 14px;
-  }
-  .post-block {
-    padding: 18px !important;
+.prisma-hero {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .prisma-hero {
+    padding: 24px;
   }
 }
-/* 10. 修复黑色元素为秋天色系 */
-/* 侧边栏背景 */
+.prisma-hero-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+}
+@media (min-width: 768px) {
+  .prisma-hero-frame {
+    border-radius: 32px;
+  }
+}
+.prisma-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.prisma-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 68% 12%, rgba(222,200,150,0.2), transparent 60%), radial-gradient(ellipse 60% 50% at 20% 85%, rgba(120,85,40,0.25), transparent 65%), radial-gradient(ellipse 120% 90% at 50% 45%, #231a10 0%, #100c07 45%, #000 100%);
+  animation: prismaGlow 14s ease-in-out infinite alternate;
+}
+.prisma-hero-noise {
+  opacity: 0.7;
+  mix-blend-mode: overlay;
+}
+.prisma-hero-gradient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent 35%, rgba(0,0,0,0.6));
+}
+.prisma-hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(20px, 4vw, 56px);
+}
+.prisma-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  align-items: end;
+}
+.prisma-hero-main {
+  grid-column: span 8;
+  min-width: 0;
+}
+.prisma-hero-side {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: flex-start;
+  padding-bottom: 8px;
+}
+@media (max-width: 900px) {
+  .prisma-hero-main,
+  .prisma-hero-side {
+    grid-column: 1/-1;
+  }
+  .prisma-hero-side {
+    padding-bottom: 0;
+  }
+}
+.prisma-hero-title {
+  margin: 0;
+  display: inline-block;
+  position: relative;
+  font-weight: 500;
+  line-height: 0.85;
+  letter-spacing: -0.07em;
+  color: #e1e0cc;
+  font-size: 16vw;
+  white-space: nowrap;
+}
+@media (min-width: 640px) {
+  .prisma-hero-title {
+    font-size: 15vw;
+  }
+}
+@media (min-width: 768px) {
+  .prisma-hero-title {
+    font-size: 14vw;
+  }
+}
+@media (min-width: 900px) {
+  .prisma-hero-title {
+    font-size: 11vw;
+  }
+}
+@media (min-width: 1024px) {
+  .prisma-hero-title {
+    font-size: 10.5vw;
+  }
+}
+@media (min-width: 1536px) {
+  .prisma-hero-title {
+    font-size: 10vw;
+  }
+}
+.prisma-hero-asterisk {
+  position: absolute;
+  top: 0.65em;
+  right: -0.3em;
+  font-size: 0.31em;
+  font-weight: 400;
+  color: #e1e0cc;
+  line-height: 1;
+}
+.prisma-hero-desc {
+  margin: 0;
+  color: rgba(222,219,200,0.7);
+  font-size: clamp(12px, 1.15vw, 16px);
+  line-height: 1.45;
+  max-width: 34em;
+}
+.prisma-hero-cta {
+  display: flex;
+}
+.prisma-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #dedbc8;
+  color: #000 !important;
+  border-radius: 999px;
+  padding: 6px 6px 6px 22px;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 500;
+  text-decoration: none !important;
+  border: none !important;
+  transition: gap 0.3s ease;
+}
+.prisma-cta:hover {
+  gap: 12px;
+}
+.prisma-cta-circle {
+  width: 36px;
+  height: 36px;
+  background: #000;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e1e0cc;
+  transition: transform 0.3s ease;
+}
+@media (min-width: 640px) {
+  .prisma-cta-circle {
+    width: 40px;
+    height: 40px;
+  }
+}
+.prisma-cta:hover .prisma-cta-circle {
+  transform: scale(1.1);
+}
+.prisma-hero-spacer {
+  height: 100vh;
+}
+.prisma-cats {
+  position: relative;
+  margin: 0 auto;
+  max-width: 1160px;
+  padding: 64px 16px 32px;
+}
+.prisma-cats-noise {
+  opacity: 0.15;
+}
+.prisma-cats-head {
+  margin-bottom: 36px;
+}
+.prisma-label {
+  margin: 0 0 14px;
+  color: #dedbc8;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.prisma-cats-title {
+  margin: 0 0 8px;
+  color: #e1e0cc;
+  font-size: clamp(20px, 3.4vw, 36px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+.prisma-cats-sub {
+  margin: 0;
+  color: #6b7280;
+  font-size: clamp(14px, 1.7vw, 18px);
+}
+.prisma-cats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .prisma-cats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+}
+.prisma-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 280px;
+  padding: 24px;
+  background: #212121 !important;
+  border: 1px solid rgba(222,219,200,0.08);
+  border-radius: 24px;
+  text-decoration: none !important;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+}
+.prisma-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(222,219,200,0.28);
+}
+.prisma-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.prisma-card-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dedbc8;
+  background: rgba(222,219,200,0.08);
+  border-radius: 12px;
+}
+.prisma-card-num {
+  color: #6b7280;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.prisma-card-name {
+  color: #e1e0cc;
+  font-size: 20px;
+  font-weight: 700;
+}
+.prisma-card-count {
+  color: #9ca3af;
+  font-size: 12px;
+  margin-top: -8px;
+}
+.prisma-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.prisma-card-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.prisma-check {
+  flex-shrink: 0;
+  color: #dedbc8;
+}
+.prisma-card-item-text {
+  color: #9ca3af;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prisma-card-more {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e1e0cc;
+  font-size: 13px;
+}
+.prisma-card-arrow {
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease;
+}
+.prisma-card:hover .prisma-card-arrow {
+  transform: rotate(-45deg) translate(3px, -3px);
+}
+.post-block {
+  background: #101010 !important;
+  border: 1px solid rgba(222,219,200,0.08);
+  border-radius: 24px;
+  padding: clamp(22px, 4vw, 48px) !important;
+  margin: 0 0 24px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+}
+.post-eof {
+  display: none !important;
+}
+.post-title {
+  letter-spacing: -0.01em;
+}
+.posts-expand .post-title-link {
+  color: #e1e0cc !important;
+  border-bottom: none !important;
+}
+.posts-expand .post-title-link:hover {
+  color: #fff !important;
+}
+.post-meta,
+.post-meta .post-meta-item,
+.post-meta a {
+  color: rgba(222,219,200,0.5) !important;
+}
+.post-body {
+  color: #c9c8b8;
+}
+.post-body h1,
+.post-body h2,
+.post-body h3,
+.post-body h4,
+.post-body h5,
+.post-body h6 {
+  color: #e1e0cc;
+}
+.post-button {
+  margin-top: 20px;
+}
+.post-button .btn,
+.post-button .btn:hover {
+  background: #dedbc8 !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 999px;
+  padding: 8px 22px;
+  font-weight: 500;
+}
+.pagination {
+  margin: 36px 0;
+}
+.pagination .page-number,
+.pagination .next,
+.pagination .prev,
+.pagination .space {
+  display: inline-block;
+  background: #101010 !important;
+  border: 1px solid rgba(222,219,200,0.1) !important;
+  border-radius: 12px;
+  color: rgba(225,224,204,0.8) !important;
+  margin: 0 4px;
+}
+.pagination .page-number.current {
+  background: #dedbc8 !important;
+  border-color: #dedbc8 !important;
+  color: #000 !important;
+}
+.pagination a:hover {
+  border-color: rgba(222,219,200,0.35) !important;
+  color: #e1e0cc !important;
+}
 .sidebar {
-  background: rgba(61,43,31,0.92) !important;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.3) !important;
+  background: #0a0a0a !important;
+  box-shadow: none !important;
+  border-right: 1px solid rgba(222,219,200,0.08);
 }
-/* 侧边栏切换按钮 */
-.sidebar-toggle {
-  background: rgba(196,112,33,0.85) !important;
+.sidebar-inner {
+  background: transparent !important;
 }
-.sidebar-toggle:hover {
-  background: #c47021 !important;
-}
-.sidebar-toggle .toggle-line {
-  background: #fff8f0 !important;
-}
-/* 返回顶部按钮 */
-.back-to-top {
-  background: rgba(196,112,33,0.85) !important;
-}
-.back-to-top:hover {
-  background: #c47021 !important;
-  color: #fff8f0 !important;
-}
-/* 侧边栏遮罩 */
-.sidebar-dimmer {
-  background: rgba(61,43,31,0.6) !important;
-}
-/* 侧边栏文字颜色 */
 .sidebar a {
-  color: #e8d5c4 !important;
-  border-bottom-color: rgba(232,213,196,0.3) !important;
+  color: rgba(225,224,204,0.75) !important;
+  border-bottom-color: rgba(222,219,200,0.2) !important;
 }
 .sidebar a:hover {
-  color: #fff8f0 !important;
-  border-bottom-color: #fff8f0 !important;
+  color: #e1e0cc !important;
+  border-bottom-color: #e1e0cc !important;
 }
-.sidebar-nav li:hover {
-  color: #f5efe6 !important;
+.site-author-name,
+.site-state-item-count {
+  color: #e1e0cc !important;
 }
-.sidebar-toc-active .sidebar-nav-toc,
-.sidebar-overview-active .sidebar-nav-overview {
-  color: #daa520 !important;
-  border-bottom-color: #daa520 !important;
+.site-description,
+.site-state-item-name {
+  color: rgba(222,219,200,0.55) !important;
 }
-.site-author-name {
-  color: #fff8f0 !important;
+.sidebar-toggle {
+  background: #dedbc8 !important;
 }
-.site-description {
-  color: #d4b896 !important;
+.sidebar-toggle .toggle-line {
+  background: #000 !important;
 }
-/* 分页器 */
-.pagination .page-number.current {
-  background: #c47021 !important;
-  border-color: #c47021 !important;
-  color: #fff8f0 !important;
+.back-to-top {
+  background: #dedbc8 !important;
+  color: #000 !important;
 }
-/* 代码块高亮背景 */
-figure.highlight {
-  background: rgba(255,252,247,0.9) !important;
+.sidebar-dimmer {
+  background: rgba(0,0,0,0.6) !important;
 }
-pre {
-  background: rgba(255,252,247,0.9) !important;
+.footer {
+  background: transparent !important;
 }
-code {
-  background: rgba(240,225,200,0.5) !important;
+.footer-inner {
+  background: transparent !important;
+  color: rgba(222,219,200,0.5) !important;
+  border-top: 1px solid rgba(222,219,200,0.08);
+  padding: 28px 0;
 }
-/* 引用块 */
-blockquote {
-  border-left-color: #c47021 !important;
-  background: rgba(196,112,33,0.08) !important;
-}
-/* 表格 */
-table th {
-  background: rgba(196,112,33,0.15) !important;
-}
-/* 标签云 */
-.tag-cloud a {
-  color: #a85419 !important;
-}
-.tag-cloud a:hover {
-  color: #d46b1f !important;
-}
-/* 搜索弹出框 */
-.search-popup {
-  background: rgba(255,252,247,0.95) !important;
-}
-/* 修复页脚重复 - 隐藏默认 NexT 页脚 */
 .footer .copyright,
 .footer .powered-by {
   display: none !important;
 }
-/* 11. 动态标题样式 - 移除黑框 + 渐变动画 */
-/* 移除标题周围的黑色背景 */
-.site-brand-container,
-.brand,
-.site-meta {
+figure.highlight,
+pre {
+  background: #0d0d0d !important;
+  border: 1px solid rgba(222,219,200,0.08);
+  border-radius: 12px;
+}
+code {
+  background: rgba(222,219,200,0.1) !important;
+  color: #e1e0cc;
+  border-radius: 6px;
+}
+pre code {
   background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
 }
-/* 标题容器 */
-.site-title {
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace !important;
-  font-size: 2.2rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.05em !important;
-  background: linear-gradient(45deg, #c47021, #d48c32, #daa520, #cd853f, #c47021) !important;
-  background-size: 300% 300% !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  animation: gradientShift 4s ease infinite !important;
-  text-shadow: none !important;
-  filter: drop-shadow(0 2px 4px rgba(196,112,33,0.3));
+blockquote {
+  border-left: 3px solid #dedbc8 !important;
+  background: rgba(222,219,200,0.05) !important;
+  color: rgba(222,219,200,0.8) !important;
+  border-radius: 0 12px 12px 0;
 }
-/* 渐变动画 */
-/* 副标题 */
-.site-subtitle {
-  color: #8b6914 !important;
-  font-size: 0.9rem !important;
-  margin-top: 8px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.1em !important;
+table th {
+  background: #212121 !important;
 }
-/* 菜单项 */
-.menu-item a {
-  color: #5c3d1e !important;
-  font-weight: 500 !important;
+table td,
+table th {
+  border-color: rgba(222,219,200,0.1) !important;
 }
-.menu-item a:hover,
-.menu-item-active a {
-  color: #c47021 !important;
-  background: rgba(196,112,33,0.1) !important;
-  border-radius: 8px !important;
+.category-all-page,
+.tag-cloud {
+  background: #101010 !important;
+  border: 1px solid rgba(222,219,200,0.08);
+  border-radius: 24px;
+  padding: 32px;
 }
-/* 头部区域整体透明化 */
-.header {
-  background: rgba(255,248,238,0.6) !important;
-  border-bottom: 1px solid rgba(196,112,33,0.15) !important;
+.category-list-link,
+.tag-cloud a {
+  color: rgba(225,224,204,0.8) !important;
+  border-bottom-color: rgba(222,219,200,0.2) !important;
 }
-/* 移动端菜单按钮 */
-.toggle .toggle-line {
-  background: #8b6914 !important;
+.category-list-link:hover,
+.tag-cloud a:hover {
+  color: #e1e0cc !important;
+  border-bottom-color: #e1e0cc !important;
 }
-/* 12. 博客 Logo 样式 */
-.blog-logo-container {
+.category-list-count {
+  color: rgba(222,219,200,0.45) !important;
+}
+.posts-collapse .post-title a,
+.collection-header {
+  color: #e1e0cc;
+}
+.about-hero {
   text-align: center;
-  margin: 20px 0 30px;
-  padding: 20px;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 16px 0 8px;
 }
-.blog-logo {
-  max-width: 280px;
-  width: 100%;
-  height: auto;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(196,112,33,0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: rgba(255,252,247,0.5);
-  padding: 15px;
+.about-heading {
+  margin: 14px 0 30px;
+  color: #e1e0cc;
+  font-size: clamp(28px, 5vw, 54px);
+  font-weight: 400;
+  line-height: 1;
 }
-.blog-logo:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(196,112,33,0.3);
+.about-reveal {
+  margin: 0 auto;
+  color: #dedbc8;
+  font-size: clamp(13px, 1.4vw, 17px);
+  line-height: 2;
+  text-align: center;
 }
-@media (max-width: 768px) {
-  .blog-logo {
-    max-width: 200px;
-    padding: 10px;
-    border-radius: 16px;
+.prisma-anim .pu-word {
+  display: inline-block;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+.prisma-anim .pu-word.pu-in {
+  transform: translateY(0);
+  opacity: 1;
+}
+.prisma-anim [data-fade-up] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.prisma-anim [data-fade-up].fu-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.prisma-anim [data-card-stagger] > * {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+}
+.prisma-anim [data-card-stagger] > *.cs-in {
+  opacity: 1;
+  transform: scale(1);
+}
+.prisma-anim [data-card-stagger] > *.cs-in:hover {
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  .blog-logo-container {
-    margin: 15px 0 20px;
-    padding: 10px;
+  .prisma-hero-bg {
+    animation: none;
+  }
+  .prisma-anim .pu-word,
+  .prisma-anim [data-fade-up],
+  .prisma-anim [data-card-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
-@keyframes gradientShift {
+@keyframes prismaGlow {
   0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
+    opacity: 0.85;
+    transform: scale(1);
   }
   100% {
-    background-position: 0% 50%;
+    opacity: 1;
+    transform: scale(1.06);
   }
 }
