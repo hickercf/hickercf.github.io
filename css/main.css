@@ -1322,7 +1322,7 @@ pre code {
   transition: all 0.2s ease-in-out;
 }
 .links-of-author a::before {
-  background: #5d3c8b;
+  background: #f9ff37;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -3372,7 +3372,16 @@ table th {
   border-bottom-color: #e1e0cc !important;
 }
 .category-list-count {
-  color: rgba(222,219,200,0.45) !important;
+  background: #212121 !important;
+  color: rgba(222,219,200,0.75) !important;
+  border: 1px solid rgba(222,219,200,0.12);
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 2px 7px;
+  text-shadow: none;
+}
+.category-list-item {
+  margin: 10px 0 !important;
 }
 .posts-collapse .post-title a,
 .collection-header {
@@ -3430,12 +3439,58 @@ table th {
 .prisma-anim [data-card-stagger] > *.cs-in:hover {
   transform: translateY(-4px);
 }
+::view-transition-old(root) {
+  animation: prismaPageOut 0.26s ease-in both;
+}
+::view-transition-new(root) {
+  animation: prismaPageIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+a {
+  transition: color 0.25s ease;
+}
+.menu .menu-item a {
+  position: relative;
+}
+.menu .menu-item a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 1px;
+  background: #e1e0cc;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.menu .menu-item a:hover::after,
+.menu .menu-item a.menu-item-active::after {
+  transform: scaleX(1);
+}
+.posts-expand .post-block {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+}
+.posts-expand .post-block:hover {
+  transform: translateY(-4px);
+  border-color: rgba(222,219,200,0.2);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.55);
+}
+.category-list-item {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.category-list-item:hover {
+  transform: translateX(6px);
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .aurora-blob,
   .prisma-hero-noise {
+    animation: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
     animation: none !important;
   }
   .prisma-anim .pu-word,
@@ -3509,5 +3564,25 @@ table th {
   }
   90% {
     transform: translate(8%, 6%);
+  }
+}
+@keyframes prismaPageOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes prismaPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
