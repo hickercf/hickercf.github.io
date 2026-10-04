@@ -1,0 +1,132 @@
+<h2 id="section-1">第一课：SQL 注入</h2>
+<h3 id="section-2">SQL 注入是什么？</h3>
+<blockquote>
+<p>用户输入本来应该只是”数据“，但是因为程序直接拼接 SQL，导致输入的一部分被数据库当成了 SQL 语句执行。<br />比如后端有一段不安全代码：</p>
+</blockquote>
+<pre class="note-code"><code class="language-python">username = input();
+
+sql = "SELECT * FROM users WHERE username = '" + username + "'"
+</code></pre>
+<p>正常输入：</p>
+<pre class="note-code"><code class="language-python">alice
+</code></pre>
+<p>最后 SQL 是：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM users
+WHERE username = 'alice';
+</code></pre>
+<p>完全正常。<br />问题就在这里：</p>
+<pre class="note-code"><code class="language-sql">程序员控制的 SQL
+        +
+用户可以控制的 username
+</code></pre>
+<p>如果用户输入能改变 SQL 的语法结构，就产生了 SQL 注入。</p>
+<h4 id="section-3">其中单引号<code>'</code> 非常重要</h4>
+<p>正常 SQL：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM users
+WHERE username = 'alice';
+</code></pre>
+<p>数据库认为：’alice’ 是个字符串，这里的<code>'</code> 相当于，字符串的边界。<br />但是如果用户本身出现：<code>'</code> ，就可能提前结束字符串，于是：</p>
+<blockquote>
+<p>用户就有机会从“数据区域”跑进“SQL 语法区域”。<br />这就是理解 SQL 注入的最关键一步。</p>
+</blockquote>
+<hr />
+<h3 id="section-4">SQL 注入怎么“修改逻辑”的？</h3>
+<p>我们来看一个经典输入：</p>
+<pre class="note-code"><code class="language-bash">` OR 1=1 --
+</code></pre>
+<p>假设放进用户名。原来：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM users
+WHERE username = '用户输入'
+AND password = 'xxx';
+</code></pre>
+<p>拼接之后就变成了：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM users
+WHERE username = '' OR 1=1 --AND passwrod = 'xxx'
+</code></pre>
+<p><code>--</code> 是SQL中的注释，也就是说，攻击者让数据库忽略了后面程序原本拼接的内容。</p>
+<hr />
+<h3 id="section-5">SQL 注入常见的几个类型</h3>
+<p>① 基于报错<br />输入影响 SQL 后，数据库会回显错误信息，我们根据回显的错误信息可以获取：</p>
+<pre class="note-code"><code class="language-sql">数据库类型
+
+SQL结构
+
+表字段信息
+</code></pre>
+<p>② UNION 型<br />SQL 有一个操作：</p>
+<pre class="note-code"><code class="language-sql">UNION
+</code></pre>
+<p>他的作用是：</p>
+<blockquote>
+<p>把两个 SELECT 的查询结果组合起来<br />例如：</p>
+</blockquote>
+<pre class="note-code"><code class="language-sql">SELECT name FROM students
+UNION
+SELECT name FROM TEACHERS
+</code></pre>
+<p>如果应用中存在SQL注入，有时可以利用这个机制让原本查询的正常内容 + 其他数据（攻击者想要获取的）一起出现在响应里。</p>
+<hr />
+<p>③ 布尔盲注<br />有些网站，SQL 执行了，但是不把数据库里的结果直接显示出来，这个时候可以观察：</p>
+<pre class="note-code"><code class="language-sql">条件成立  /  条件不成立
+</code></pre>
+<p>在网页行为上有没有区别。例如概念上：</p>
+<pre class="note-code"><code class="language-sql">条件 True
+→ 页面正常
+
+条件 False
+→ 页面不同
+</code></pre>
+<p>通过不断问数据库：</p>
+<pre class="note-code"><code class="language-sql">是不是这个？
+是不是那个？
+</code></pre>
+<p>逐渐获取信息。</p>
+<hr />
+<p>④ 时间盲注<br />如果网页连 True / False 的结果都看不出来怎么办？<br />某些情况下可以观察服务器的响应时间：</p>
+<pre class="note-code"><code class="language-sql">条件成立
+→ 延迟几秒
+
+条件不成立
+→ 正常返回
+</code></pre>
+<hr />
+<h3 id="section-6">防御SQL注入的常见手段：</h3>
+<h4 id="section-7">参数化查询：</h4>
+<p>先告诉 SQL 查询语句的结构，再告诉他对应的数据：</p>
+<pre class="note-code"><code class="language-sql">cursor.execute(
+    "SELECT * FROM users WHERE username = ?",
+    (username,)
+)
+</code></pre>
+<h4 id="section-8">最小权限：</h4>
+<p>假如网站数据库账户只需要：</p>
+<pre class="note-code"><code class="language-sql">SELECT
+</code></pre>
+<p>那就不要给他 DROP、CREATE等其他功能。</p>
+<blockquote>
+<p>SQL 注入的核心防御不在于“过滤所有危险字符”，而是参数化的查询。</p>
+</blockquote>
+<hr />
+<h2 id="section-9">第二课：如何判断一个点是否可能存在 SQL 注入</h2>
+<hr />
+<h3 id="section-10">什么是输入点？</h3>
+<p>网站上有很多地方可以控制数据，例如：<br /><strong>URL 参数</strong></p>
+<pre class="note-code"><code class="language-sql">/product?id=10 
+</code></pre>
+<p><strong>搜索框：</strong></p>
+<pre class="note-code"><code class="language-sql">搜索：
+iphone
+</code></pre>
+<p><strong>登录框：</strong></p>
+<pre class="note-code"><code class="language-sql">username
+password
+</code></pre>
+<p><strong>Cookie</strong></p>
+<pre class="note-code"><code class="language-sql">Cookie: user_id = 1001
+</code></pre>
+<p><strong>HTTP Header</strong></p>
+<pre class="note-code"><code class="language-sql">User-Agent
+</code></pre>
+<hr />
+<h2 id="section-11">实战练习：</h2>
+<p><a href="/notes/sql-injection-labs/">实战：</a></p>

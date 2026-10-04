@@ -1,0 +1,31 @@
+<hr />
+<h2 id="section-1">BP 是干什么的？</h2>
+<blockquote>
+<p>BP 是一个用于 Web 安全测试的代理工具，可以拦截并修改浏览器和服务器之间的 HTTP/HTTPS 通信。<br />正常访问：</p>
+</blockquote>
+<hr />
+<h3 id="section-2">BP 的核心模块：</h3>
+<h4 id="section-3">Proxy 代理</h4>
+<p>作用：拦截浏览器请求。</p>
+<h4 id="section-4">HTTP History</h4>
+<p>作用：可以查看所有经过 Burp 的请求。<br />例如：</p>
+<pre class="note-code"><code class="language-sql">GET /index
+GET /login
+POST /api/login
+GET /user?id=1001
+</code></pre>
+<h4 id="section-5">Repeater</h4>
+<p>这个非常重要，中文名：请求重放器。<br />流程：<br />当你抓到一个请求：</p>
+<pre class="note-code"><code class="language-sql">GET /product?id=5
+</code></pre>
+<p>发送到Repeater，然后修改为：</p>
+<pre class="note-code"><code class="language-sql">GET /product?id=6
+</code></pre>
+<p>然后点击：Send，看服务器的返回。</p>
+<h4 id="section-6">Intruder</h4>
+<p>作用：自动化测试<br />例如你有 id = 1，你想测试 id = 1 ~ 1000，可以使用 Intruder</p>
+<h4 id="section-7">Decoder</h4>
+<p>编码转化器，通常用于转换 Base64、URL 编码、Hex等</p>
+<h4 id="section-8">Comparer</h4>
+<p>作用：比较两个响应的差异</p>
+<hr />

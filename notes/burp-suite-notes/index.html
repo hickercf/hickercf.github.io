@@ -1,0 +1,32 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f9f5"><meta name="description" content="整理 Proxy、HTTP History、Repeater 等核心模块，理解浏览器与服务器之间的请求和响应。"><title>Burp Suite 使用笔记：代理与请求重放 · Hickercf&#39;blog</title><link rel="canonical" href="https://hickercf.fun/notes/burp-suite-notes/"><meta property="og:type" content="article"><meta property="og:title" content="Burp Suite 使用笔记：代理与请求重放 · Hickercf&#39;blog"><meta property="og:description" content="整理 Proxy、HTTP History、Repeater 等核心模块，理解浏览器与服务器之间的请求和响应。"><meta property="og:url" content="https://hickercf.fun/notes/burp-suite-notes/"><meta name="twitter:card" content="summary"><meta property="article:published_time" content="2026-10-04"><meta property="article:author" content="木之风"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%234d6254'/%3E%3Cpath d='M12 10v20m16-20v20M12 20h16' stroke='%23f8f9f5' stroke-width='3' fill='none'/%3E%3C/svg%3E"><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head><body id="top"><a class="skip-link" href="#main">跳至主要内容</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Hickercf&#39;blog 首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M7 6v16M21 6v16M7 14h14"/><path class="mark-detail" d="M11 4h6M11 24h6"/></svg></span><span>Hickercf&#39;blog</span></a><nav class="main-nav" aria-label="主导航"><a href="/" aria-current="page">文章</a><a href="/archives/" >归档</a><a href="/about/" >关于</a></nav><span class="header-note"><span class="status-dot"></span>持续记录中</span></div></header><main id="main" tabindex="-1"><article class="reader-container"><a class="back-link" href="/"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5" stroke="currentColor" stroke-width="1.25"/></svg>返回所有文章</a><header class="reader-heading"><a class="post-category" href="/categories/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/"><span class="category-square" aria-hidden="true"></span>渗透学习</a><h1>Burp Suite 使用笔记：代理与请求重放</h1><div class="post-meta"><time datetime="2026-10-04">2026.10.04</time><span class="meta-dot" aria-hidden="true"></span><span>约 1 分钟阅读</span></div><p class="reader-excerpt">整理 Proxy、HTTP History、Repeater 等核心模块，理解浏览器与服务器之间的请求和响应。</p></header><p class="source-note">整理自个人 Notion 笔记 · 原笔记更新于 <time datetime="2026-09-19">2026.09.19</time></p><details class="mobile-toc"><summary>文章目录 <span>2 个章节</span></summary><nav aria-label="文章章节"><a href="#section-1">BP 是干什么的？</a><a href="#section-2">BP 的核心模块：</a></nav></details><div class="reader-layout"><div><div class="reader-body" lang="zh-CN"><hr />
+<h2 id="section-1">BP 是干什么的？</h2>
+<blockquote>
+<p>BP 是一个用于 Web 安全测试的代理工具，可以拦截并修改浏览器和服务器之间的 HTTP/HTTPS 通信。<br />正常访问：</p>
+</blockquote>
+<hr />
+<h3 id="section-2">BP 的核心模块：</h3>
+<h4 id="section-3">Proxy 代理</h4>
+<p>作用：拦截浏览器请求。</p>
+<h4 id="section-4">HTTP History</h4>
+<p>作用：可以查看所有经过 Burp 的请求。<br />例如：</p>
+<pre class="note-code"><code class="language-sql">GET /index
+GET /login
+POST /api/login
+GET /user?id=1001
+</code></pre>
+<h4 id="section-5">Repeater</h4>
+<p>这个非常重要，中文名：请求重放器。<br />流程：<br />当你抓到一个请求：</p>
+<pre class="note-code"><code class="language-sql">GET /product?id=5
+</code></pre>
+<p>发送到Repeater，然后修改为：</p>
+<pre class="note-code"><code class="language-sql">GET /product?id=6
+</code></pre>
+<p>然后点击：Send，看服务器的返回。</p>
+<h4 id="section-6">Intruder</h4>
+<p>作用：自动化测试<br />例如你有 id = 1，你想测试 id = 1 ~ 1000，可以使用 Intruder</p>
+<h4 id="section-7">Decoder</h4>
+<p>编码转化器，通常用于转换 Base64、URL 编码、Hex等</p>
+<h4 id="section-8">Comparer</h4>
+<p>作用：比较两个响应的差异</p>
+<hr />
+</div><div class="reader-end"><p>写下来，是为了更好地理解。<br>— 木之风</p></div><a class="reader-next" href="/notes/penetration-learning/"><span>继续阅读 · 渗透学习</span><h2>渗透测试学习笔记：从基础到实践 <span aria-hidden="true">→</span></h2></a></div><aside class="reader-toc"><h2>文章目录</h2><nav aria-label="文章章节"><a href="#section-1">BP 是干什么的？</a><a href="#section-2">BP 的核心模块：</a></nav></aside></div></article></main><footer class="site-footer"><div class="footer-inner"><div><a class="footer-brand" href="/">Hickercf&#39;blog</a><p>用文字，留下一点痕迹。</p></div><div class="footer-right"><div class="footer-links"><a href="https://github.com/hickercf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/about/">关于这里 ↗</a></div><span>© 2026 木之风 · Hickercf&#39;blog</span></div></div></footer><a class="back-to-top" href="#top" aria-label="返回顶部">↑</a></body></html>

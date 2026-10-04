@@ -1,0 +1,630 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f9f5"><meta name="description" content="从 IP、端口、TCP 到 HTTP、Cookie 与信任边界，梳理学习 Web 安全前需要理解的网络基础。"><title>计算机网络基础：从一次网页访问开始 · Hickercf&#39;blog</title><link rel="canonical" href="https://hickercf.fun/notes/network-basics/"><meta property="og:type" content="article"><meta property="og:title" content="计算机网络基础：从一次网页访问开始 · Hickercf&#39;blog"><meta property="og:description" content="从 IP、端口、TCP 到 HTTP、Cookie 与信任边界，梳理学习 Web 安全前需要理解的网络基础。"><meta property="og:url" content="https://hickercf.fun/notes/network-basics/"><meta name="twitter:card" content="summary"><meta property="article:published_time" content="2026-10-04"><meta property="article:author" content="木之风"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%234d6254'/%3E%3Cpath d='M12 10v20m16-20v20M12 20h16' stroke='%23f8f9f5' stroke-width='3' fill='none'/%3E%3C/svg%3E"><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head><body id="top"><a class="skip-link" href="#main">跳至主要内容</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Hickercf&#39;blog 首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M7 6v16M21 6v16M7 14h14"/><path class="mark-detail" d="M11 4h6M11 24h6"/></svg></span><span>Hickercf&#39;blog</span></a><nav class="main-nav" aria-label="主导航"><a href="/" aria-current="page">文章</a><a href="/archives/" >归档</a><a href="/about/" >关于</a></nav><span class="header-note"><span class="status-dot"></span>持续记录中</span></div></header><main id="main" tabindex="-1"><article class="reader-container"><a class="back-link" href="/"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5" stroke="currentColor" stroke-width="1.25"/></svg>返回所有文章</a><header class="reader-heading"><a class="post-category" href="/categories/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/"><span class="category-square" aria-hidden="true"></span>渗透学习</a><h1>计算机网络基础：从一次网页访问开始</h1><div class="post-meta"><time datetime="2026-10-04">2026.10.04</time><span class="meta-dot" aria-hidden="true"></span><span>约 18 分钟阅读</span></div><p class="reader-excerpt">从 IP、端口、TCP 到 HTTP、Cookie 与信任边界，梳理学习 Web 安全前需要理解的网络基础。</p></header><p class="source-note">整理自个人 Notion 笔记 · 原笔记更新于 <time datetime="2026-09-17">2026.09.17</time></p><details class="mobile-toc"><summary>文章目录 <span>22 个章节</span></summary><nav aria-label="文章章节"><a href="#section-1">第一课：一台电脑怎么找到另一台电脑？</a><a href="#section-2">IP 和 端口</a><a href="#section-3">TCP</a><a href="#section-7">HTTP</a><a href="#section-8">第二课：DNS、内网 IP、公网 IP、Ping</a><a href="#section-12">NAT</a><a href="#section-15">第三课：端口、服务、Socket</a><a href="#section-20">第四课：TCP-IP 分层 + 数据包 + Wireshark</a><a href="#section-22">举个完整例子</a><a href="#section-25">第六课：HTTP深入 — GET、POST、Header、Cookie、Session、状态码</a><a href="#section-26">HTTP请求长啥样？</a><a href="#section-27">GET 是什么？</a><a href="#section-28">POST 是什么？</a><a href="#section-29">HEADER 是什么？</a><a href="#section-30">HOST</a><a href="#section-31">User-Agent</a><a href="#section-32">Content-Type</a><a href="#section-33">Cookie</a><a href="#section-35">Cookie 常见安全属性</a><a href="#section-36">HTTP Response</a><a href="#section-37">拆解URL</a><a href="#section-38">第七课：输入、参数、信任边界</a></nav></details><div class="reader-layout"><div><div class="reader-body" lang="zh-CN"><h2 id="section-1">第一课：一台电脑怎么找到另一台电脑？</h2>
+<p>假设你访问一个网站：</p>
+<pre class="note-code"><code class="language-java">https://example.com
+</code></pre>
+<p>背后大致发生的是：<br />你的电脑访问这个网站   —&gt;  DNS：这个域名是哪台服务器？  —&gt;  得到服务器 IP  —&gt; 连接服务器的某个端口  —&gt;  建立 TCP 连接  —&gt;  发送  HTTP / HTTPS 请求  —&gt; 服务器返回网页。</p>
+<hr />
+<h3 id="section-2">IP 和 端口</h3>
+<p>IP 是电脑在网络中的 “地址”，例如</p>
+<pre class="note-code"><code class="language-java">192.168.1.10
+</code></pre>
+<p>就是一个 IPv4 地址<br />一台服务器通常只有一个IP，但是可能会有很多功能，怎么区分这些功能？<br />靠端口。例如常见的端口地址</p>
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+<tr>
+<td><strong>服务</strong></td>
+<td><strong>常见端口</strong></td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td>80</td>
+</tr>
+<tr>
+<td>HTTPS</td>
+<td>443</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>22</td>
+</tr>
+<tr>
+<td>FTP</td>
+<td>21</td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>3306</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>DNS</td>
+<td>53</td>
+</tr>
+</table><blockquote>
+<p>IP 告诉你目标在哪，端口告诉你开放了哪些服务。</p>
+</blockquote>
+<hr />
+<h3 id="section-3">TCP</h3>
+<p>IP + 端口，解决了 ”找谁“ ， ”找哪个程序“ 的问题。那么接下来还有个问题</p>
+<blockquote>
+<p><strong>数据怎么传输？</strong><br />TCP，传输控制协议，有三个核心特征：</p>
+</blockquote>
+<ul>
+<li>面向连接</li>
+<li>可靠传输</li>
+<li>有顺序</li>
+</ul>
+<h4 id="section-4">TCP 三次握手</h4>
+<p>当客户端想要和服务器连接：</p>
+<pre class="note-code"><code class="language-java">客户端                      服务器
+
+   SYN  //客户端发送建立连接请求
+   ------------------------&gt;     
+
+                SYN + ACK   //服务器向客户端回传收到请求
+   &lt;------------------------
+
+   ACK                  //客户端收到回传请求，开始通信
+   ------------------------&gt;
+
+        连接建立
+</code></pre>
+<p>其中 SYN、ACK 是TCP Header 里面的 Flags（标志位）</p>
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+<tr>
+<td>Flag</td>
+<td>含义</td>
+</tr>
+<tr>
+<td>SYN</td>
+<td>建立连接</td>
+</tr>
+<tr>
+<td>ACK</td>
+<td>确认</td>
+</tr>
+<tr>
+<td>FIN</td>
+<td>正常断开连接</td>
+</tr>
+<tr>
+<td>RST</td>
+<td>强制断开</td>
+</tr>
+<tr>
+<td>PSH</td>
+<td>尽快把数据交给应用</td>
+</tr>
+<tr>
+<td>URG</td>
+<td>紧急数据</td>
+</tr>
+</table><h4 id="section-5">TCP 四次挥手</h4>
+<p>TCP 断开连接的时候：</p>
+<pre class="note-code"><code class="language-java">客户端                    服务器
+
+FIN  //客户端发送完毕，发送断开连接的请求
+------------------------&gt;
+
+              ACK //服务端确认请求，回传
+&lt;------------------------
+
+              FIN//服务端允许正常断开连接
+&lt;------------------------
+
+ACK //客户端确认信息，断开连接
+------------------------&gt;
+</code></pre>
+<h4 id="section-6">TCP 还有两个重要的的东西</h4>
+<pre class="note-code"><code class="language-java">Sequence Number            ---SEQ
+Acknowledgment Number      ---ACK
+</code></pre>
+<p>假设客户端发送：</p>
+<pre class="note-code"><code class="language-java">SEQ = 100
+数据长度 = 50
+</code></pre>
+<p>服务器收到后可能回复：</p>
+<pre class="note-code"><code class="language-java">ACk = 150
+</code></pre>
+<p>意思类似于：</p>
+<blockquote>
+<p>前面的数据收到了，下一段从 150 开始给我。<br />实际上 TCP 就是靠：SEQ  + ACK 来实现：</p>
+</blockquote>
+<ul>
+<li>数据排序</li>
+<li>丢包重传</li>
+<li>可靠运输</li>
+</ul>
+<hr />
+<h3 id="section-7">HTTP</h3>
+<p>TCP 解决了，如何把数据可靠的传过去。但是双方到底发送什么内容呢?Web 世界里通常使用 HTTP。<br />比如你浏览：</p>
+<pre class="note-code"><code class="language-plain">http://example.com
+</code></pre>
+<p>浏览器可能发送：</p>
+<pre class="note-code"><code class="language-plain">GET /index.html HTTP/1.1                 //向服务器请求 /html
+Host: example.com
+User-Agent: Mozilla/5.0
+</code></pre>
+<p>服务器可能返回：</p>
+<pre class="note-code"><code class="language-plain">HttP/1.1 200 OK
+Content Type: text/html
+
+&lt;html&gt;
+	&lt;h1&gt;Hello&lt;/h1&gt;
+&lt;/html&gt;
+</code></pre>
+<hr />
+<h2 id="section-8">第二课：DNS、内网 IP、公网 IP、Ping</h2>
+<p>为什么我们平时访问一个网站，输入的是：</p>
+<pre class="note-code"><code class="language-plain">www.baidu.com
+</code></pre>
+<p>而不是直接输入 IP 地址呢？<br />“域名更容易记”，但是计算机真正通信的时候，则需要：IP地址，于是就需要 DNS。</p>
+<hr />
+<h4 id="section-9">DNS</h4>
+<p>Domain Name System，核心作用就是把域名映射成IP地址<br />Windows 查询DNS：</p>
+<pre class="note-code"><code class="language-bash">nslookup baidu.com
+</code></pre>
+<hr />
+<h4 id="section-10">内网 IP</h4>
+<p>大多为私有 IP，主要有三大范围</p>
+<pre class="note-code"><code class="language-bash">//第一类
+10.0.0.0/8     //前八位固定
+
+//第二类
+172.16.0.0
+~
+172.31.255.255
+
+/第三类
+192.168.0.0
+~
+192.168.255.255
+</code></pre>
+<p>外部互联网无法直接通过内网 IP 对内网计算机进行访问。</p>
+<hr />
+<h4 id="section-11">公网 IP</h4>
+<pre class="note-code"><code class="language-plain">互联网
+    |
+    |
+公网 IP
+203.x.x.x
+    |
+  路由器
+    |
+-----------------
+|       |       |
+电脑    手机    平板
+
+192.168.1.10
+192.168.1.11
+192.168.1.12
+</code></pre>
+<p>公网 IP 负责面对互联网，内网 IP 负责内部设备之间的通信。</p>
+<hr />
+<h3 id="section-12">NAT</h3>
+<p>IPV4 地址不够用，32位地址最多 2 的 32 次方个地址，无法满足全球所有网络设备的需求，所以出现了一种重要技术：NAT</p>
+<blockquote>
+<p>全称：Network Address Translation 网络地址转换<br />NAT 什么作用？</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">电脑 192.168.1.10
+手机 192.168.1.11
+平板 192.168.1.12
+        ↓
+      路由器
+        ↓ NAT
+203.xxx.xxx.xxx
+</code></pre>
+<p>三台设备共享一个公网地址访问互联网。</p>
+<hr />
+<h4 id="section-13">Default Gateway</h4>
+<p>例如：</p>
+<pre class="note-code"><code class="language-plain">IPv4 Address:
+192.168.1.10
+
+Default Gateway:
+192.168.1.1
+</code></pre>
+<p>Gateway 就是：网关<br />当你要离开当前局域网时候，你要先经过谁，通常是路由器，也就是说</p>
+<pre class="note-code"><code class="language-plain">你的电脑
+192.168.1.10
+    ↓
+网关
+192.168.1.1
+    ↓
+互联网
+</code></pre>
+<hr />
+<h4 id="section-14">Ping</h4>
+<p>Ping是用来测试：</p>
+<blockquote>
+<p><strong>网络是否可达、延迟多高、有没有丢包</strong><br />Ping 用的不是 TCP，而是 ICMP，全称 Internet Control Message Protocol。Ping 最核心的两个 ICMP 消息是：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">Echo Request
+Echo Reply
+</code></pre>
+<p>过程就是：</p>
+<pre class="note-code"><code class="language-plain">你的电脑                    目标机器
+
+ICMP Echo Request
+---------------------------&gt;
+
+                Echo Reply
+&lt;---------------------------
+</code></pre>
+<p>我们 Ping 一次百度域名 <a href="http://baidu.com">baidu.com</a> 测试一下</p>
+<pre class="note-code"><code class="language-plain">来自 110.242.74.102 的回复: 字节=32 时间=61ms TTL=50
+</code></pre>
+<p>这里的：</p>
+<ul>
+<li>字节 = 32 表示 Ping 携带了 32 字节的数据</li>
+<li>时间 = 61ms 指的是往返时延 RTT</li>
+<li>TTL = 50 指的是，以恶数据包最多允许经过多少个路由器，每经过一个路由器，该值减 1，直到减为 0，路由器就会把这个包丢掉。<ul>
+<li>这是为了防止数据包因为网络配置错误，在互联网中无限循环。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="section-15">第三课：<strong>端口、服务、Socket</strong></h2>
+<h4 id="section-16">什么叫端口开放？</h4>
+<p>例如，一个服务器：</p>
+<pre class="note-code"><code class="language-plain">192.168.1.20
+</code></pre>
+<p>上面运行了一个 Web 服务，它监听 80 端口，那么可以理解为</p>
+<pre class="note-code"><code class="language-plain">192.168.1.20:80
+</code></pre>
+<p>这个地址上有程序在等别人连接，这就叫：80 端口开放。端口开放的本质就是：某个程序绑定了这个端口，并且在监听连接。</p>
+<hr />
+<h4 id="section-17">Socket</h4>
+<p>Socket 可以理解为，程序连接网络的“插座”。</p>
+<pre class="note-code"><code class="language-plain">程序
+ ↓
+Socket
+ ↓
+网络
+</code></pre>
+<p>程序通过 Socket，让操作系统帮它发送和接收网络数据。</p>
+<h4 id="section-18">一个Socket通常包括</h4>
+<p>IP + 端口 + 协议，例如：</p>
+<pre class="note-code"><code class="language-plain">192.168.1.20
+80
+TCP
+</code></pre>
+<p>可以理解为某个网络通信的端点。<br />当你浏览网站：</p>
+<pre class="note-code"><code class="language-plain">你的电脑                   Web服务器
+
+192.168.1.10              192.168.1.20
+
+随机端口 52341  --------&gt;  80端口
+</code></pre>
+<p>客户端通常会随机的给操作系统临时分配一个随机高位端口，这些端口与网站之间建立TCP连接，操作系统通过这些返回的信息，确定返回的数据应该交给哪个程序。</p>
+<hr />
+<h4 id="section-19">TCP 和 UDP</h4>
+<p>TCP 和 UDP 是网络里非常核心的两种传输方式。<br />最简单的区别就是：</p>
+<pre class="note-code"><code class="language-plain">TCP = 先建立连接，再可靠传输
+UDP = 不建立连接，直接发送
+</code></pre>
+<hr />
+<h2 id="section-20">第四课：TCP-IP 分层 + 数据包 + Wireshark</h2>
+<h4 id="section-21">TCP/ IP 模型</h4>
+<p>作为初学者，先了解四层</p>
+<table>
+<tr>
+<td>层</td>
+<td>常见协议/东西</td>
+<td>作用</td>
+</tr>
+<tr>
+<td>应用层</td>
+<td>HTTP、DNS、SSH</td>
+<td>程序具体说什么</td>
+</tr>
+<tr>
+<td>传输层</td>
+<td>TCP、UDP</td>
+<td>怎么传</td>
+</tr>
+<tr>
+<td>网络层</td>
+<td>IP、ICMP</td>
+<td>数据发到哪台机器</td>
+</tr>
+<tr>
+<td>网络接口层</td>
+<td>Ethernet、Wi-Fi</td>
+<td>真正怎么从网卡发出去</td>
+</tr>
+</table><h3 id="section-22">举个完整例子</h3>
+<hr />
+<p>你打开：</p>
+<pre class="note-code"><code class="language-plain">http://192.168.1.20/
+</code></pre>
+<p>浏览器产生：</p>
+<pre class="note-code"><code class="language-plain">GET / HTTP/1.1
+Host: 192.168.1.20
+</code></pre>
+<p>这是<strong>应用层</strong></p>
+<hr />
+<p>然后 TCP 会处理：</p>
+<pre class="note-code"><code class="language-plain">源端口
+目标端口
+序列号
+确认号
+各种标志位
+</code></pre>
+<p>这是<strong>运输层</strong></p>
+<hr />
+<p>然后IP 再加：</p>
+<pre class="note-code"><code class="language-plain">源 IP
+目标 IP
+</code></pre>
+<p>这是<strong>网络层</strong></p>
+<hr />
+<p>再交给网卡，所以可以画成：</p>
+<pre class="note-code"><code class="language-plain">HTTP 数据
+
+↓ 加 TCP 头
+
+TCP + HTTP
+
+↓ 加 IP 头
+
+IP + TCP + HTTP
+
+↓ 再加链路层信息
+
+Ethernet + IP + TCP + HTTP
+</code></pre>
+<p>这叫<strong>封装。</strong></p>
+<hr />
+<h4 id="section-23">什么是”数据包“？</h4>
+<p>数据包是，粗略的可以理解为：</p>
+<blockquote>
+<p>网络上传输的一块数据。<br />比如一个数据包里面可能包括：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">目标 MAC
+源 MAC
+
+目标 IP
+源 IP
+
+目标端口
+源端口
+
+TCP 标志位
+
+HTTP 内容
+</code></pre>
+<p>MAC 是网卡里的一个表示，不同于 IP 地址，IP 地址我跨网络寻址，而 MAC 主要用于局域网的数据交付。 </p>
+<hr />
+<h4 id="section-24">ARP 是干嘛的？</h4>
+<p>比如你的电脑知道：</p>
+<pre class="note-code"><code class="language-plain">我要访问: 192.168.1.20
+</code></pre>
+<p>但是局域网底层通信的时候，还需要知道：</p>
+<pre class="note-code"><code class="language-plain">192.168.1.20 对应哪个 MAC？
+</code></pre>
+<p>这个时候就会使用 ARP （Address Resolution Protocol）<br />小结：</p>
+<pre class="note-code"><code class="language-plain">DNS: 域名 -&gt; IP
+ARP: IP -&gt; MAC
+</code></pre>
+<hr />
+<h2 id="section-25">第六课：HTTP深入 — GET、POST、Header、Cookie、Session、状态码</h2>
+<h3 id="section-26">HTTP请求长啥样？</h3>
+<p>比如你访问：</p>
+<pre class="note-code"><code class="language-plain">http://example.com/login
+</code></pre>
+<p>浏览器可能发送：</p>
+<pre class="note-code"><code class="language-plain">GET /login HTTP/1.1               //请求方法    路径     HTTP版本
+Host: example.com                 //域名
+User-Agent: Mozilla/5.0           //请求头
+Accept: text/html
+Cookie: session=abc123
+</code></pre>
+<hr />
+<h3 id="section-27">GET 是什么？</h3>
+<p>GET 通常表示，我要获取资源，比如</p>
+<pre class="note-code"><code class="language-plain">GET /index.html HTTP/1.1
+</code></pre>
+<p>就是，我要 /index.html<br />又比如：</p>
+<pre class="note-code"><code class="language-plain">GET /user?id=1001 HTTP/1.1
+</code></pre>
+<p>这里的 id = 1001 是查询参数，完整的 URL 通常是：</p>
+<pre class="note-code"><code class="language-plain">http://example.com/user?id=1001
+</code></pre>
+<p>其中 /user 是路径，id = 1001 是参数，参数是很重要的输入点。</p>
+<hr />
+<h3 id="section-28">POST 是什么？</h3>
+<p>POST 通常用于：</p>
+<blockquote>
+<p>把数据提交给服务器<br />比如登录：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">POST /login HTTP/1.1
+Host: example.com
+Content-Type: application/x-www-form-urlencoded
+
+username=alice&amp;password=123456
+</code></pre>
+<p>这里：</p>
+<pre class="note-code"><code class="language-plain">username=alice
+password=123456
+</code></pre>
+<p>直接放在请求体里。<br />和 GET 最大的表面区别之一就是：</p>
+<pre class="note-code"><code class="language-plain">GET 参数常出现在 URL
+POST 数据常放在 Body
+</code></pre>
+<p>但是密码放在 POST 里，并不等于别人看不到，也就不等于安全。<br />真正负责传输加密的是：</p>
+<pre class="note-code"><code class="language-plain">HTTP / TLS
+</code></pre>
+<p>而不是 POST 本身。</p>
+<hr />
+<h3 id="section-29">HEADER 是什么？</h3>
+<p>Header 就是：</p>
+<pre class="note-code"><code class="language-plain">请求头 / 响应头
+</code></pre>
+<p>可以理解为：</p>
+<blockquote>
+<p>HTTP 数据附带的说明信息。<br />常见的请求头：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">Host: example.com
+User-Agent: Mozilla/5.0
+Cookie: session=abc123
+Content-Type: application/json
+Authorization: Bearer xxxxx
+</code></pre>
+<hr />
+<h3 id="section-30">HOST</h3>
+<p>HOST 告诉服务器，我想上哪个网站。<br />同一个 IP 上可能运行很多个网站。</p>
+<hr />
+<h3 id="section-31">User-Agent</h3>
+<p>User-Agent 告诉服务器：</p>
+<blockquote>
+<p>我是什么客户端<br />例如：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">Chrome
+Firefox
+手机浏览器
+curl
+某个脚本
+</code></pre>
+<p>服务可能根据 User-Agent 返回不同内容。<br />但是注意：<br />User-Agent 是客户端自己发的，可以伪造。所以不能当作可靠的身份认证依据。</p>
+<hr />
+<h3 id="section-32">Content-Type</h3>
+<p>它告诉服务器：</p>
+<blockquote>
+<p>请求体里的数据是什么格式<br />例如表单：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">Content-Type: application/x-www-form-urlencoded
+
+//body
+username=alice&amp;password=123
+</code></pre>
+<p>JSON：</p>
+<pre class="note-code"><code class="language-plain">Content-Type application/json
+
+//body
+
+{
+	"username":"Alice",
+	"password":"123"
+}
+</code></pre>
+<hr />
+<h3 id="section-33">Cookie</h3>
+<p>假如你登录：</p>
+<pre class="note-code"><code class="language-plain">username = alice
+password = 正确密码
+</code></pre>
+<p>服务器确认你身份后，可能返回</p>
+<pre class="note-code"><code class="language-plain">Set-Cookie: session=abc123
+</code></pre>
+<p>浏览器保存：</p>
+<pre class="note-code"><code class="language-plain">session=ab123
+</code></pre>
+<p>然后再次请求：</p>
+<pre class="note-code"><code class="language-plain">GET /profile HTTP/1.1
+Cookie: session=abc123
+</code></pre>
+<p>服务器就知道：这个请求来自刚刚登录的 Alice</p>
+<h4 id="section-34">Cookie 不一定等于 Session</h4>
+<p>Cookie：数据保存在客户端浏览器；Session：通常是服务器维护的会话状态。<br />常见的一种模式就是：</p>
+<pre class="note-code"><code class="language-plain">浏览器
+Cookie:
+session_id=A7F92X
+
+        ↓
+
+服务器
+A7F92X → 用户 Alice
+</code></pre>
+<hr />
+<h3 id="section-35">Cookie 常见安全属性</h3>
+<pre class="note-code"><code class="language-plain">Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Lax
+</code></pre>
+<p>其中：<br />HttpOnly，表示 JavaScript 通常不能直接读取这个 Cookie，有助于降低某些 XSS 导致 Cookie 被直接窃取的风险。<br />Secure，表示这个Cookie 只能通过 HTTPS 发送。<br />SameSite，主要帮助控制跨站请求时 Cookie 是否发送.</p>
+<hr />
+<h3 id="section-36">HTTP Response</h3>
+<p>服务器收到请求后，会返回响应，例如：</p>
+<pre class="note-code"><code class="language-plain">HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 100
+
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre>
+<p>他也有：</p>
+<ul>
+<li>状态行</li>
+<li>Header</li>
+<li>Body</li>
+</ul>
+<hr />
+<h3 id="section-37">拆解URL</h3>
+<p>比如：</p>
+<pre class="note-code"><code class="language-plain">https://example.com:443/user?id=1001#info
+</code></pre>
+<p>可以拆成：</p>
+<pre class="note-code"><code class="language-plain">https
+↓
+协议
+
+example.com
+↓
+域名
+
+443
+↓
+端口
+
+/user
+↓
+路径
+
+?id=1001
+↓
+查询参数
+
+#info
+↓
+Fragment / 片段
+</code></pre>
+<hr />
+<h3 id="section-38">第七课：输入、参数、信任边界</h3>
+<blockquote>
+<p>WEB 安全里面，最危险的往往不是”代码“，而是程序错误的相信了用户输入。<br />比如一个网站收到：</p>
+</blockquote>
+<pre class="note-code"><code class="language-plain">username=alice
+</code></pre>
+<p>这很正常。<br />但是如果程序把永不输入直接拼进：</p>
+<pre class="note-code"><code class="language-plain">数据库查询
+HTML 页面
+系统命令
+文件路径
+</code></pre>
+<p>就可能产生不同类型的漏洞。<br />最常见的三类：</p>
+<pre class="note-code"><code class="language-plain">输入进入 SQL
+→ SQL 注入
+
+输入进入 HTML / JavaScript
+→ XSS
+
+输入进入系统命令
+→ 命令注入
+</code></pre>
+<p>程序把输入直接拼入 SQL 指令 / 网页源码 / 系统命令，可能会执行错误的行为。<br />这就引入了一个安全概念：</p>
+<h4 id="section-39">信任边界</h4>
+<p>简单理解就是：</p>
+<blockquote>
+<p>数据从”不可信区域“进入”可信区域“的位置。</p>
+</blockquote>
+</div><div class="reader-end"><p>写下来，是为了更好地理解。<br>— 木之风</p></div><a class="reader-next" href="/notes/penetration-learning/"><span>继续阅读 · 渗透学习</span><h2>渗透测试学习笔记：从基础到实践 <span aria-hidden="true">→</span></h2></a></div><aside class="reader-toc"><h2>文章目录</h2><nav aria-label="文章章节"><a href="#section-1">第一课：一台电脑怎么找到另一台电脑？</a><a href="#section-2">IP 和 端口</a><a href="#section-3">TCP</a><a href="#section-7">HTTP</a><a href="#section-8">第二课：DNS、内网 IP、公网 IP、Ping</a><a href="#section-12">NAT</a><a href="#section-15">第三课：端口、服务、Socket</a><a href="#section-20">第四课：TCP-IP 分层 + 数据包 + Wireshark</a><a href="#section-22">举个完整例子</a><a href="#section-25">第六课：HTTP深入 — GET、POST、Header、Cookie、Session、状态码</a><a href="#section-26">HTTP请求长啥样？</a><a href="#section-27">GET 是什么？</a><a href="#section-28">POST 是什么？</a><a href="#section-29">HEADER 是什么？</a><a href="#section-30">HOST</a><a href="#section-31">User-Agent</a><a href="#section-32">Content-Type</a><a href="#section-33">Cookie</a><a href="#section-35">Cookie 常见安全属性</a><a href="#section-36">HTTP Response</a><a href="#section-37">拆解URL</a><a href="#section-38">第七课：输入、参数、信任边界</a></nav></aside></div></article></main><footer class="site-footer"><div class="footer-inner"><div><a class="footer-brand" href="/">Hickercf&#39;blog</a><p>用文字，留下一点痕迹。</p></div><div class="footer-right"><div class="footer-links"><a href="https://github.com/hickercf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/about/">关于这里 ↗</a></div><span>© 2026 木之风 · Hickercf&#39;blog</span></div></div></footer><a class="back-to-top" href="#top" aria-label="返回顶部">↑</a></body></html>

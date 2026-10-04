@@ -1,10 +1,10 @@
 [
   {
-    "title": "OS",
+    "title": "操作系统学习笔记",
     "category": "课程笔记",
     "date": "2026-05-31",
     "url": "/2026/05/31/OS/",
-    "excerpt": "從進程、執行緒到記憶體管理，整理作業系統的重要概念與課程重點。",
+    "excerpt": "从进程、线程到内存管理，整理操作系统的重要概念与课程重点。",
     "content": "articles/OS.html",
     "minutes": 67,
     "headings": [
@@ -41,7 +41,7 @@
     "category": "课程笔记",
     "date": "2026-05-31",
     "url": "/2026/05/31/数据库/",
-    "excerpt": "整理關聯模型、SQL 與資料庫設計，把課堂上的概念串成完整的知識脈絡。",
+    "excerpt": "整理关系模型、SQL 与数据库设计，把课堂上的概念串成完整的知识脉络。",
     "content": "articles/数据库.html",
     "minutes": 38,
     "headings": [
@@ -70,7 +70,7 @@
     "category": "课程笔记",
     "date": "2026-05-31",
     "url": "/2026/05/31/数据库实验/",
-    "excerpt": "記錄資料庫實驗的操作步驟、SQL 練習與實作過程。",
+    "excerpt": "记录数据库实验的操作步骤、SQL 练习与实践过程。",
     "content": "articles/数据库实验.html",
     "minutes": 6,
     "headings": [
@@ -91,7 +91,7 @@
     "category": "课程笔记",
     "date": "2026-05-31",
     "url": "/2026/05/31/汇编和接口/",
-    "excerpt": "關於組合語言、指令系統與介面設計的完整課程筆記。",
+    "excerpt": "关于汇编语言、指令系统与接口设计的完整课程笔记。",
     "content": "articles/汇编和接口.html",
     "minutes": 87,
     "headings": [
@@ -101,7 +101,7 @@
       },
       {
         "id": "模块化程序设计的相关问题",
-        "text": "模块化程序设计的相关问题"
+        "text": "模块化进程设计的相关问题"
       },
       {
         "id": "汇编代码の使用教程",
@@ -193,7 +193,7 @@
       },
       {
         "id": "整个程序用白话翻译",
-        "text": "整个程序用白话翻译"
+        "text": "整个进程用白话翻译"
       },
       {
         "id": "你抓住这个模型就行",
@@ -208,7 +208,7 @@
     "category": "课程笔记",
     "date": "2026-05-31",
     "url": "/2026/05/31/编译原理/",
-    "excerpt": "從文法、語法分析到 LR 分析方法，逐步理解編譯器背後的原理。",
+    "excerpt": "从文法、语法分析到 LR 分析方法，逐步理解编译器背后的原理。",
     "content": "articles/编译原理.html",
     "minutes": 29,
     "headings": [
@@ -237,11 +237,11 @@
     "missingImages": 0
   },
   {
-    "title": "PY基础",
+    "title": "Python 基础学习笔记",
     "category": "AI学习",
     "date": "2026-05-08",
     "url": "/2026/05/08/PY基础/",
-    "excerpt": "Python 的入門學習記錄，從基礎語法與常用操作開始，為後續實踐打好底子。",
+    "excerpt": "Python 的入门学习记录，从基础语法与常用操作开始，为后续实践打好底子。",
     "content": "articles/PY基础.html",
     "minutes": 6,
     "headings": [
@@ -266,11 +266,11 @@
     "missingImages": 0
   },
   {
-    "title": "How-Transformer-LLMs-Work",
+    "title": "Transformer 与大语言模型的工作原理",
     "category": "AI学习",
     "date": "2026-05-07",
     "url": "/2026/05/07/How-Transformer-LLMs-Work/",
-    "excerpt": "從 Token、Embedding 到 Attention，梳理 Transformer 與大型語言模型的運作方式。",
+    "excerpt": "从 Token、Embedding 到 Attention，梳理 Transformer 与大语言模型的工作方式。",
     "content": "articles/How-Transformer-LLMs-Work.html",
     "minutes": 18,
     "headings": [
@@ -283,16 +283,16 @@
         "text": "2.Understanding Lauguage Models"
       }
     ],
-    "featured": true,
+    "featured": false,
     "missingImages": 0,
-    "featureTitle": "從 Token 到 Transformer，\n理解大型語言模型"
+    "featureTitle": "从 Token 到 Transformer，\n理解大语言模型"
   },
   {
     "title": "汇编语言与接口设计",
     "category": "课程笔记",
     "date": "2026-05-03",
     "url": "/2026/05/03/汇编语言与接口设计/",
-    "excerpt": "整理組合語言與介面設計的基礎概念，留下複習時可以回頭查閱的學習軌跡。",
+    "excerpt": "整理汇编语言与接口设计的基础概念，留下复习时可以回头查阅的学习轨迹。",
     "content": "articles/汇编语言与接口设计.html",
     "minutes": 13,
     "headings": [
@@ -302,7 +302,7 @@
       },
       {
         "id": "模块化程序设计的相关问题",
-        "text": "模块化程序设计的相关问题"
+        "text": "模块化进程设计的相关问题"
       },
       {
         "id": "汇编代码の使用教程",
@@ -325,7 +325,7 @@
     "category": "生活随笔",
     "date": "2026-05-03",
     "url": "/2026/05/03/首页-欢迎来到我的博客/",
-    "excerpt": "在程式碼、書本與凌晨三點之間，記錄學習、工具探索和生活裡的小片刻。",
+    "excerpt": "在代码、书本与凌晨三点之间，记录学习、工具探索和生活里的小片刻。",
     "content": "articles/首页-欢迎来到我的博客.html",
     "minutes": 1,
     "headings": [
@@ -340,5 +340,306 @@
     ],
     "featured": false,
     "missingImages": 0
+  },
+  {
+    "title": "渗透测试学习笔记：从基础到实践",
+    "category": "渗透学习",
+    "date": "2026-10-04",
+    "url": "/notes/penetration-learning/",
+    "excerpt": "从网络与 HTTP 基础出发，记录 SQL 注入、Burp Suite 的使用与靶场实验，逐步建立自己的 Web 安全知识。",
+    "content": "articles/penetration-learning.html",
+    "minutes": 1,
+    "headings": [
+      {
+        "id": "network",
+        "text": "先理解网络与 HTTP"
+      },
+      {
+        "id": "sql",
+        "text": "理解 SQL 注入的形成原因"
+      },
+      {
+        "id": "tools",
+        "text": "用工具观察请求与响应"
+      },
+      {
+        "id": "labs",
+        "text": "在实验中验证理解"
+      }
+    ],
+    "featured": true,
+    "missingImages": 0,
+    "source": {
+      "type": "notion",
+      "url": "https://app.notion.com/p/3de291f8ebf980118837d5f20d0b1d68?pvs=204",
+      "updatedAt": "2026-09-19T07:54:14.325Z"
+    },
+    "featureTitle": "渗透测试学习笔记，\n从网络基础到实验复现"
+  },
+  {
+    "title": "计算机网络基础：从一次网页访问开始",
+    "category": "渗透学习",
+    "date": "2026-10-04",
+    "url": "/notes/network-basics/",
+    "excerpt": "从 IP、端口、TCP 到 HTTP、Cookie 与信任边界，梳理学习 Web 安全前需要理解的网络基础。",
+    "content": "articles/network-basics.html",
+    "minutes": 18,
+    "headings": [
+      {
+        "id": "section-1",
+        "text": "第一课：一台电脑怎么找到另一台电脑？"
+      },
+      {
+        "id": "section-2",
+        "text": "IP 和 端口"
+      },
+      {
+        "id": "section-3",
+        "text": "TCP"
+      },
+      {
+        "id": "section-7",
+        "text": "HTTP"
+      },
+      {
+        "id": "section-8",
+        "text": "第二课：DNS、内网 IP、公网 IP、Ping"
+      },
+      {
+        "id": "section-12",
+        "text": "NAT"
+      },
+      {
+        "id": "section-15",
+        "text": "第三课：端口、服务、Socket"
+      },
+      {
+        "id": "section-20",
+        "text": "第四课：TCP-IP 分层 + 数据包 + Wireshark"
+      },
+      {
+        "id": "section-22",
+        "text": "举个完整例子"
+      },
+      {
+        "id": "section-25",
+        "text": "第六课：HTTP深入 — GET、POST、Header、Cookie、Session、状态码"
+      },
+      {
+        "id": "section-26",
+        "text": "HTTP请求长啥样？"
+      },
+      {
+        "id": "section-27",
+        "text": "GET 是什么？"
+      },
+      {
+        "id": "section-28",
+        "text": "POST 是什么？"
+      },
+      {
+        "id": "section-29",
+        "text": "HEADER 是什么？"
+      },
+      {
+        "id": "section-30",
+        "text": "HOST"
+      },
+      {
+        "id": "section-31",
+        "text": "User-Agent"
+      },
+      {
+        "id": "section-32",
+        "text": "Content-Type"
+      },
+      {
+        "id": "section-33",
+        "text": "Cookie"
+      },
+      {
+        "id": "section-35",
+        "text": "Cookie 常见安全属性"
+      },
+      {
+        "id": "section-36",
+        "text": "HTTP Response"
+      },
+      {
+        "id": "section-37",
+        "text": "拆解URL"
+      },
+      {
+        "id": "section-38",
+        "text": "第七课：输入、参数、信任边界"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0,
+    "source": {
+      "type": "notion",
+      "url": "https://app.notion.com/p/3de291f8ebf980b898c6e47254061cad?pvs=204",
+      "updatedAt": "2026-09-17T14:48:19.373Z"
+    }
+  },
+  {
+    "title": "SQL 注入学习笔记：输入如何改变查询",
+    "category": "渗透学习",
+    "date": "2026-10-04",
+    "url": "/notes/sql-injection-basics/",
+    "excerpt": "记录 SQL 注入的形成原因、常见类型和输入点，以及参数化查询与最小权限的防御思路。",
+    "content": "articles/sql-injection-basics.html",
+    "minutes": 4,
+    "headings": [
+      {
+        "id": "section-1",
+        "text": "第一课：SQL 注入"
+      },
+      {
+        "id": "section-2",
+        "text": "SQL 注入是什么？"
+      },
+      {
+        "id": "section-4",
+        "text": "SQL 注入怎么“修改逻辑”的？"
+      },
+      {
+        "id": "section-5",
+        "text": "SQL 注入常见的几个类型"
+      },
+      {
+        "id": "section-6",
+        "text": "防御SQL注入的常见手段："
+      },
+      {
+        "id": "section-9",
+        "text": "第二课：如何判断一个点是否可能存在 SQL 注入"
+      },
+      {
+        "id": "section-10",
+        "text": "什么是输入点？"
+      },
+      {
+        "id": "section-11",
+        "text": "实战练习："
+      }
+    ],
+    "featured": false,
+    "missingImages": 0,
+    "source": {
+      "type": "notion",
+      "url": "https://app.notion.com/p/3de291f8ebf98034b951e4e843cb338d?pvs=204",
+      "updatedAt": "2026-09-19T08:36:34.481Z"
+    }
+  },
+  {
+    "title": "Burp Suite 使用笔记：代理与请求重放",
+    "category": "渗透学习",
+    "date": "2026-10-04",
+    "url": "/notes/burp-suite-notes/",
+    "excerpt": "整理 Proxy、HTTP History、Repeater 等核心模块，理解浏览器与服务器之间的请求和响应。",
+    "content": "articles/burp-suite-notes.html",
+    "minutes": 1,
+    "headings": [
+      {
+        "id": "section-1",
+        "text": "BP 是干什么的？"
+      },
+      {
+        "id": "section-2",
+        "text": "BP 的核心模块："
+      }
+    ],
+    "featured": false,
+    "missingImages": 0,
+    "source": {
+      "type": "notion",
+      "url": "https://app.notion.com/p/3e0291f8ebf9804ba989ce01c4d45dff?pvs=204",
+      "updatedAt": "2026-09-19T08:10:00.264Z"
+    }
+  },
+  {
+    "title": "SQL 注入靶场练习：从查询逻辑到盲注",
+    "category": "渗透学习",
+    "date": "2026-10-04",
+    "url": "/notes/sql-injection-labs/",
+    "excerpt": "记录靶场中的查询逻辑、UNION 列数判断与布尔盲注练习，保留原笔记的步骤和截图。",
+    "content": "articles/sql-injection-labs.html",
+    "minutes": 6,
+    "headings": [
+      {
+        "id": "section-1",
+        "text": "实战1："
+      },
+      {
+        "id": "section-2",
+        "text": "实战二"
+      },
+      {
+        "id": "section-3",
+        "text": "实战3 UNION攻击"
+      },
+      {
+        "id": "section-6",
+        "text": "实验四：查询具有有用数据类型的列"
+      },
+      {
+        "id": "section-7",
+        "text": "列出数据库的内容："
+      },
+      {
+        "id": "section-8",
+        "text": "盲注 SQL 注入"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0,
+    "source": {
+      "type": "notion",
+      "url": "https://app.notion.com/p/3e0291f8ebf980d78918ff2746ff4a9d?pvs=204",
+      "updatedAt": "2026-09-20T14:33:00.170Z"
+    }
+  },
+  {
+    "title": "MS17-010 实验复现与防御笔记",
+    "category": "渗透学习",
+    "date": "2026-10-04",
+    "url": "/notes/ms17-010-lab/",
+    "excerpt": "在 Kali Linux 与 Windows 7 虚拟机环境中记录实验过程，并整理漏洞原理和系统加固方法。",
+    "content": "articles/ms17-010-lab.html",
+    "minutes": 4,
+    "headings": [
+      {
+        "id": "section-1",
+        "text": "实验环境和准备："
+      },
+      {
+        "id": "section-2",
+        "text": "收集当前网络环境："
+      },
+      {
+        "id": "section-3",
+        "text": "信息收集和漏洞扫描"
+      },
+      {
+        "id": "section-4",
+        "text": "启动 Metasploit 并配置利用模块："
+      },
+      {
+        "id": "section-5",
+        "text": "漏洞技术原理深析 (MS17-010)"
+      },
+      {
+        "id": "section-6",
+        "text": "靶机加固与防御配置方案"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0,
+    "source": {
+      "type": "notion",
+      "url": "https://app.notion.com/p/3df291f8ebf98086a14cd83e9374d5c4?pvs=204",
+      "updatedAt": "2026-09-19T06:49:08.941Z"
+    }
   }
 ]
