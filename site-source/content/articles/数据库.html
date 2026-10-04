@@ -1,0 +1,891 @@
+<h2 id="第2章：关系模型基础">第2章：关系模型基础</h2><h3 id="2-1-关系模型的基本概念">2.1 关系模型的基本概念</h3><h4 id="2-1-1-关系模型是什么">2.1.1 关系模型是什么</h4><p>关系模型是用<strong>二维表</strong>来表示数据以及数据之间关系的一种数学模型。<br>例如学生表</p>
+<table>
+<thead>
+<tr>
+<th>sno</th>
+<th>sname</th>
+<th>age</th>
+<th>dept</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>001</td>
+<td>张三</td>
+<td>20</td>
+<td>计算机</td>
+</tr>
+<tr>
+<td>002</td>
+<td>李四</td>
+<td>21</td>
+<td>软件工程</td>
+</tr>
+</tbody></table>
+<p>在关系模型中，这样的表叫做一个关系</p>
+<h4 id="2-1-2-关系模型的基本术语">2.1.2 关系模型的基本术语</h4><table>
+<thead>
+<tr>
+<th>普通说法</th>
+<th>关系模型术语</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>表</td>
+<td>关系&lt;</td>
+</tr>
+<tr>
+<td>行</td>
+<td>元组</td>
+</tr>
+<tr>
+<td>列</td>
+<td>属性</td>
+</tr>
+<tr>
+<td>列的取值范围</td>
+<td>域</td>
+</tr>
+<tr>
+<td>表结构</td>
+<td>关系模式</td>
+</tr>
+<tr>
+<td>某时刻表中的<strong>数据</strong></td>
+<td>关系实例</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-关系的基本性质">2.2 关系的基本性质</h3><ol>
+<li><p>每一列数据类型相同</p>
+</li>
+<li><p>每一个属性不可再分，属性具有原子性</p>
+</li>
+<li><p>行，列的顺序无关</p>
+</li>
+<li><p>不允许出现完全相同的元组</p>
+</li>
+</ol>
+<h3 id="2-3-码-键">2.3 码/键</h3><h4 id="2-3-1-超码">2.3.1 超码</h4><p>能唯一标识一个元组的属性或者属性组</p>
+<p>例如：</p>
+<p><code>Student(Sno, Sname, IDCard, ClassNo)</code></p>
+<p>若  Sno 唯一，则：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Sno</span><br><span class="line">Sno, Sname</span><br><span class="line">Sno, ClassNo</span><br></pre></td></tr></table></figure>
+
+<p>都可以是超码</p>
+<h4 id="2-3-2-候选码-Unique">2.3.2 候选码 Unique</h4><p>最小的超码</p>
+<p>例如</p>
+<p><code>Student(Sno, Sname, IDCard, ClassNo)</code></p>
+<p>已知</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Sno 唯一</span><br><span class="line">IDCard 唯一</span><br><span class="line">Sname 不唯一</span><br><span class="line">ClassNo 不唯一</span><br></pre></td></tr></table></figure>
+
+<p>候选码是：</p>
+<p><code>Sno IDCard</code></p>
+<p>而不是</p>
+<p><code>Sno, Sname</code></p>
+<p>因为，相比于Sno, Sname 这个作为超码的属性组，还有更小的超码Sno等存在，不满足最小</p>
+<h4 id="2-3-3-主码-Primary-Key">2.3.3 主码 Primary Key</h4><p>从候选码中指定一个作为主码</p>
+<p>候选码可以有很多个，主码通常只有一个</p>
+<p>主码要求：</p>
+<p><code>唯一(Unique)， 非空(NOT NULL)</code></p>
+<h4 id="2-3-4-主属性和非主属性">2.3.4 主属性和非主属性</h4><p><strong>主属性</strong> ：包含在任一候选码中的属性</p>
+<p><strong>非主属性</strong>：不包含在任何候选码中的属性</p>
+<h4 id="2-3-4-外码-Foreign-Key">2.3.4 外码 Foreign Key</h4><p>一个关系中的<strong>属性</strong>引用另一个关系的<strong>主码</strong></p>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Student(Sno, Sname, DeptNo) <span class="keyword">Primary Key</span> sno</span><br><span class="line">Dept(DeptNo, DeptName) <span class="keyword">Primary key</span> DeptNo</span><br></pre></td></tr></table></figure>
+
+<p>则有（Student中）：</p>
+<p><code>FOREIGN KEY (DeptNo) REFERENCES Dept(DeptNo)</code></p>
+<p>Student.DeptNo是外码</p>
+<h3 id="2-4-关系完整性">2.4 关系完整性</h3><h4 id="2-4-1-实体完整性">2.4.1 实体完整性</h4><p>主码不能取空值，且不能重复</p>
+<p>一句话总结：主码非空且唯一</p>
+<h4 id="2-4-2-参照完整性">2.4.2 参照完整性</h4><p>要求：</p>
+<p>    外码的值要么为空，要么参照等于被参照关系的某个主码的值。</p>
+<p>一句话总结：外码是已存在的主码的值</p>
+<h4 id="2-4-3-用户自定义的完整性">2.4.3 用户自定义的完整性</h4><h2 id="第3章：关系代数">第3章：关系代数</h2><h3 id="3-1-关系代数概述">3.1 关系代数概述</h3><h4 id="3-1-1-定义">3.1.1 定义</h4><p>关系代数是一种<strong>关系数据库查询语言的理论基础</strong></p>
+<p>用一组运算对关系进行操作，得到新的关系</p>
+<p><code>用符号对表进行查询</code></p>
+<h3 id="3-2-基本运算">3.2 基本运算</h3><p>关系代数常见基本运算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">选择 σ            --重点</span><br><span class="line">投影 π            --重点</span><br><span class="line">并 ∪</span><br><span class="line">差 −</span><br><span class="line">笛卡尔积 ×</span><br><span class="line">连接 ⋈            --重点</span><br><span class="line">除 ÷              --重点</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-选择运算σ">3.3 选择运算σ</h3><h4 id="3-3-1-含义">3.3.1 含义</h4><p>选择运算用于<strong>从关系中选出满足条件的元组</strong></p>
+<p>也就是：筛选满足条件的行</p>
+<h4 id="3-3-2-形式">3.3.2 形式</h4><p><code>σ 条件(关系名称)</code></p>
+<h5 id="例如：">例如：</h5><p><code>Student(Sno, Sname, Age, Dept)</code></p>
+<p>查询计算机系的学生</p>
+<p><code>σ Dept = &#x27;计算机系&#x27;(Student)</code></p>
+<p>查询年龄大于20岁的学生</p>
+<p><code>σ Age &gt; 20 (Student)</code></p>
+<h3 id="3-4-投影运算-π">3.4 投影运算 π</h3><h4 id="3-4-1-含义">3.4.1 含义</h4><p>投影运算用于<strong>从关系中选出若干属性列</strong></p>
+<h4 id="3-4-2-形式">3.4.2 形式</h4><p><code>π 属性列表(关系名)</code></p>
+<h5 id="例子：">例子：</h5><p>查询所有学生的姓名：</p>
+<p><code>π Sname(Student)</code></p>
+<p>查询所有学生的姓名和学号：</p>
+<p><code>π Sname, Sno(Student)</code></p>
+<h3 id="3-5-选择和投影组合">3.5 选择和投影组合</h3><h5 id="例题：查询计算机系学生的姓名">例题：查询计算机系学生的姓名</h5><p><code>π Sname (σ dept = &#x27;计算机系&#x27;(Student))</code></p>
+<h3 id="3-6-连接运算⋈">3.6 连接运算⋈</h3><h4 id="3-6-1-连接运算是什么？">3.6.1 连接运算是什么？</h4><p>连接运算用于把两个关系按照某种关系组合成一个新的关系。</p>
+<p>直观理解：</p>
+<p>连接 = 笛卡尔积 + 选择条件</p>
+<p>也就是说，连接不是凭空而来的，它可以看成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">先 R x S</span><br><span class="line">再从结果中筛选满足要求的元组。</span><br></pre></td></tr></table></figure>
+
+<p>形式上：</p>
+<p>R ⋈ 条件 S</p>
+<p>等价于：</p>
+<p><code>σ 条件 (R × S)</code></p>
+<h4 id="3-6-2-θ连接">3.6.2 θ连接</h4><p>θ连接就是带一般比较条件的连接：</p>
+<p>θ连接可以是：</p>
+<p><code>=, &gt;, &lt;, &gt;=, &lt;=, !=</code></p>
+<p>形式：</p>
+<p><code>R ⋈ A θ B S</code></p>
+<p>等价于:</p>
+<p><code>σ A θ B(R × S)</code></p>
+<p>例如:</p>
+<p><code>Student ⋈ Student.DeptNo = Dept.DeptNo Dept</code></p>
+<p><code>Student ⋈ Student.Age &gt; Teacher.Age Teacher</code></p>
+<h4 id="3-6-3-等值连接">3.6.3 等值连接</h4><p>等值连接是θ连接的一种特殊情况。</p>
+<p>条件中使用的是：</p>
+<p><code>=</code></p>
+<p>例如：</p>
+<p><code>Student ⋈ Student.DeptNo = Dept.DeptNo Dept</code></p>
+<p><img src="/assets/fbf7eaa3-5a01-4ba8-9fe8-87608224d0ca.png" alt="原文中的操作截圖" loading="lazy"></p>
+<p>这里Student.DeptNo 和 Dept.DeptNo两列值相同，但是都在</p>
+<h5 id="3-6-4-自然连接⋈">3.6.4 自然连接⋈</h5><p><strong>含义</strong></p>
+<p>自然连接是最常考的连接。</p>
+<p>自然连接要求：</p>
+<ol>
+<li><p>两个关系中含有同名属性；</p>
+</li>
+<li><p>自动按照同名属性相等进行连接；</p>
+</li>
+<li><p>结果中同名属性只保留一列。</p>
+</li>
+</ol>
+<p>形式：</p>
+<p><code>R ⋈ S</code></p>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Student(Sno, Sname, DeptNo)</span><br><span class="line">Dept(DeptNo, DeptName)</span><br></pre></td></tr></table></figure>
+
+<p>两个关系有同名属性DeptNo</p>
+<p>所以：</p>
+<p><code>Student ⋈ Dept</code></p>
+<p>结果：</p>
+<p><img src="/assets/9a9eee24-562f-4335-a2ae-2b2b57751ee3.png" alt="原文中的操作截圖" loading="lazy"></p>
+<p><strong>自然连接和等值连接的区别</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>条件</th>
+<th>同名属性是否只保留一列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>等值连接</td>
+<td>手动写A = B</td>
+<td>不一定，会保留两个连接属性</td>
+</tr>
+<tr>
+<td>自然连接</td>
+<td>自动找同名属性</td>
+<td>同名属性只保留一列</td>
+</tr>
+</tbody></table>
+<h3 id="3-7-除运算÷">3.7 除运算÷</h3><p>除运算是关系代数里最抽象也最易考的，通常对应这种查询：</p>
+<p><code>查询：“满足所有条件”的对象</code></p>
+<p>关键词一般是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">全部</span><br><span class="line">所有</span><br><span class="line">每一个</span><br><span class="line">至少选修了全部...</span><br></pre></td></tr></table></figure>
+
+<p>比如：</p>
+<p>查询选修了所有课程的学生。</p>
+<h4 id="3-7-1-除运算的直观理解">3.7.1 除运算的直观理解</h4><p>假设有两个关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SC(Sno, Cno)</span><br><span class="line">Course(Cno)</span><br></pre></td></tr></table></figure>
+
+<p>SC表示学生选课：</p>
+<table>
+<thead>
+<tr>
+<th>Sno</th>
+<th>Cno</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1</td>
+<td>C1</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>C2</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>C3</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>C1</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>C2</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>C1</td>
+</tr>
+</tbody></table>
+<p>Course表示所有课程：</p>
+<table>
+<thead>
+<tr>
+<th>Cno</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+</tr>
+<tr>
+<td>C2</td>
+</tr>
+<tr>
+<td>C3</td>
+</tr>
+</tbody></table>
+<p>现在问：</p>
+<p>哪些学生选修了所有课程？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">S1 选了 C1 C2 C3</span><br><span class="line">S2 只选了 C1 C2</span><br><span class="line">S3 只选了 C1</span><br></pre></td></tr></table></figure>
+
+<p>所以答案是：</p>
+<p><code>S1</code></p>
+<p>关系代数写作：</p>
+<p><code>SC ÷ Course</code></p>
+<h4 id="3-7-2-除运算的形式">3.7.2 除运算的形式</h4><p>设：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">R(X, Y)</span><br><span class="line">S(Y)</span><br></pre></td></tr></table></figure>
+
+<p>那么：</p>
+<p><code>R ÷ S</code></p>
+<p>结果是：</p>
+<p><code>S</code></p>
+<p>含义是：找出哪些X，使得对于S中的每一个Y，组合(X, Y)都出现在R中。</p>
+<p>一句话：</p>
+<p><code>R ÷ S = 在R中，找出能配齐S中所有Y中的X</code></p>
+<h4 id="3-7-3-除法例题">3.7.3 除法例题</h4><p>例题：查询选修了全部课程的学生学号</p>
+<p>关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SC(Sno, Cno)</span><br><span class="line">Course(Cno, Cname)</span><br></pre></td></tr></table></figure>
+
+<p>注意，Course里有两个属性：</p>
+<p><code>Cno, Cname</code></p>
+<p>但是SC中只有Cno对的上，所以要先投影出Cno</p>
+<p><code>π Cno(Course)</code></p>
+<p>然后:</p>
+<p><code>SC ÷ π Cno(Course)</code></p>
+<p><strong>如果要查学生姓名</strong></p>
+<p><code>π Sname(Student ⋈ (SC ÷ π Cno(Course)))</code></p>
+<h2 id="第4章：结构化语言SQL">第4章：结构化语言SQL</h2><h3 id="4-1-SQL概述">4.1 SQL概述</h3><h4 id="4-1-1-SQL是什么">4.1.1 SQL是什么</h4><p>SQL，全称：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stuctured Query Lauguage</span><br></pre></td></tr></table></figure>
+
+<p>中文叫做：结构化查询语言</p>
+<h4 id="4-1-2-SQL的特点">4.1.2 SQL的特点</h4><p>SQL最大的特点就是：非过程化</p>
+<p>也就是说你只需要告诉数据库：我要什么</p>
+<p>而不需要告诉数据库：怎么一步一步找</p>
+<p>比如你写：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELCT Sname</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Dept <span class="operator">=</span> <span class="string">&#x27;计算机&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-3-SQL的功能分类">4.1.3 SQL的功能分类</h4><p>SQL常分成四大类</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>英文</th>
+<th>作用</th>
+<th>常见关键字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DDL</td>
+<td>Data Definition Language</td>
+<td>数据定义</td>
+<td><code>CREATE</code>, <code>DROP</code>, <code>ALTER</code></td>
+</tr>
+<tr>
+<td>DML</td>
+<td>Data Manipulation Language</td>
+<td>数据操纵</td>
+<td><code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td>
+</tr>
+<tr>
+<td>DQL</td>
+<td>Data Query Language</td>
+<td>数据查询</td>
+<td><code>SELECT</code></td>
+</tr>
+<tr>
+<td>DCL</td>
+<td>Data Control Language</td>
+<td>数据控制</td>
+<td><code>GRANT</code>, <code>REVOKE</code></td>
+</tr>
+</tbody></table>
+<h3 id="4-2-SQL基本书写规则">4.2 SQL基本书写规则</h3><h4 id="4-2-1-SQL不区分大小写">4.2.1 SQL不区分大小写</h4><p>一般开始：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span><span class="operator">*</span> <span class="keyword">from</span> Student;</span><br><span class="line">和</span><br><span class="line"><span class="keyword">SELECT</span><span class="operator">*</span> <span class="keyword">FROM</span> Student;</span><br></pre></td></tr></table></figure>
+
+<p>效果一样</p>
+<h4 id="4-2-2-SQL语句用分号结尾">4.2.2 SQL语句用分号结尾</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span><span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> Student;</span><br></pre></td></tr></table></figure>
+
+<p>末尾的；表示一条SQL语句结束</p>
+<h4 id="4-2-3-SQL推荐分行缩进">4.2.3 SQL推荐分行缩进</h4><p>比如不要写成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno,Sname,Age <span class="keyword">FROM</span> Student <span class="keyword">WHERE</span> Dept<span class="operator">=</span><span class="string">&#x27;计算机&#x27;</span> <span class="keyword">AND</span> Age<span class="operator">&gt;</span><span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<p>建议写成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Sname, Age</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Dept <span class="operator">=</span> <span class="string">&#x27;计算机&#x27;</span></span><br><span class="line">  <span class="keyword">AND</span> Age <span class="operator">&gt;</span> <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-数据定义DDL">4.3 数据定义DDL</h3><p>DDL用来定义数据库对象</p>
+<p>常见的对象有：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数据库</span><br><span class="line">表</span><br><span class="line">视图</span><br><span class="line">索引</span><br><span class="line">模式</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-1-创建表">4.3.1 创建表</h4><p>基本格式：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> 表名 (</span><br><span class="line">    列名 数据类型 约束，</span><br><span class="line">    列名 数据类型 约束，</span><br><span class="line">    ...</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>比如创建学生表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> Student(</span><br><span class="line">    Sno <span class="type">CHAR</span>(<span class="number">10</span>) <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">    Sname <span class="type">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">    Age <span class="type">INT</span>,</span><br><span class="line">    Dept <span class="type">VARCHAR</span>(<span class="number">30</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-2-常见数据类型">4.3.2 常见数据类型</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>含义</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>INT</code></td>
+<td>整数</td>
+<td>年龄、数量</td>
+</tr>
+<tr>
+<td><code>CHAR(n)</code></td>
+<td>定长字符串</td>
+<td>学号、身份证号</td>
+</tr>
+<tr>
+<td><code>VARCHAR(n)</code></td>
+<td>变长字符串</td>
+<td>姓名、地址</td>
+</tr>
+<tr>
+<td><code>DATE</code></td>
+<td>日期</td>
+<td>出生日期</td>
+</tr>
+<tr>
+<td><code>DECIMAL(p, s)</code></td>
+<td>定点小数</td>
+<td>金额、成绩</td>
+</tr>
+</tbody></table>
+<p>重点区分：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">CHAR</span>(n)：定长</span><br><span class="line"><span class="type">VARCHAR</span>(n)：变长</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-3-删除表：">4.3.3 删除表：</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> Student;</span><br></pre></td></tr></table></figure>
+
+<p>注意，不是清空表的数据，而是把表本身删掉。</p>
+<h4 id="4-3-4-修改表">4.3.4 修改表</h4><p>添加列：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER TABLE</span> Student</span><br><span class="line"><span class="keyword">ADD</span> Email <span class="type">VARCHAR</span>(<span class="number">50</span>);</span><br></pre></td></tr></table></figure>
+
+<p>删除列：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER TABLE</span> Student</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">COLUMN</span> Email;</span><br></pre></td></tr></table></figure>
+
+<p>修改列类型：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER TABLE</span> Student</span><br><span class="line">MODIFY Sname <span class="type">VARCHAR</span>(<span class="number">30</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-SQL约束">4.4 SQL约束</h3><h4 id="4-4-1-主码约束">4.4.1 主码约束</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> Student(</span><br><span class="line">    Sno <span class="type">CHAR</span>(<span class="number">10</span>) <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">    Sname <span class="type">VARCHAR</span>(<span class="number">20</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>主码要求：唯一且非空</p>
+<p>也可以写成表级约束：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> Student(</span><br><span class="line">    Sno <span class="type">CHAR</span>(<span class="number">10</span>) <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">    Sname VARVHAR(<span class="number">20</span>),</span><br><span class="line">    <span class="keyword">PRIMARY KEY</span> (Sno)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-4-2-非空约束-NOT-NULL">4.4.2 非空约束 NOT NULL</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sname <span class="type">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT NULL</span></span><br></pre></td></tr></table></figure>
+
+<p>表示姓名不能为空。</p>
+<h4 id="4-4-3-唯一约束-UNIQUE">4.4.3 唯一约束 UNIQUE</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IDCard <span class="type">CHAR</span>(<span class="number">18</span>) <span class="keyword">UNIQUE</span></span><br></pre></td></tr></table></figure>
+
+<p>表示身份证号不能重复</p>
+<h4 id="4-4-4-外码约束-FOREIGN-KEY">4.4.4 外码约束 FOREIGN KEY</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> Dept (</span><br><span class="line">    DeptNo <span class="type">CHAR</span>(<span class="number">10</span>) <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">    DeptName <span class="type">VARCHAR</span>(<span class="number">30</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE TABLE</span> Student (</span><br><span class="line">    Sno <span class="type">CHAR</span>(<span class="number">10</span>) <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">    Sname <span class="type">VARCHAR</span>(<span class="number">20</span>),</span><br><span class="line">    DeptNo <span class="type">CHAR</span>(<span class="number">10</span>),</span><br><span class="line">    <span class="keyword">FOREIGN KEY</span> (DeptNo) <span class="keyword">REFERENCES</span> Dept(DeptNo)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<p>Student.DeptNo的值必须来自Dept.DeptNo，或者为空</p>
+<p>对应前面关系完整性里面的<strong>参照完整性</strong></p>
+<h4 id="4-4-5-约束检查-CHECK">4.4.5 约束检查 CHECK</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Age <span class="type">INT</span> <span class="keyword">CHECK</span> (Age <span class="operator">&gt;=</span> <span class="number">0</span> <span class="keyword">AND</span> Age <span class="operator">&lt;=</span> <span class="number">150</span>)</span><br></pre></td></tr></table></figure>
+
+<p>表示年龄必须在合理范围内</p>
+<p>再比如成绩：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Grade <span class="type">INT</span> <span class="keyword">CHECK</span> (Grade <span class="operator">&gt;=</span> <span class="number">0</span> <span class="keyword">AND</span> Grade <span class="operator">&lt;=</span> <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-5-SQL-数据操作DML">4.5 SQL 数据操作DML</h3><h4 id="4-5-1-插入数据-INSERT">4.5.1 插入数据 INSERT</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT INTO</span> Student</span><br><span class="line"><span class="keyword">VALUES</span> (<span class="string">&#x27;001&#x27;</span>, <span class="string">&#x27;张三&#x27;</span>, <span class="number">20</span>, <span class="string">&#x27;计算机&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这种写法要求值的顺序和表的结构完全一致</p>
+<p>更推荐写列名：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT INTO</span> Student (Sno, Sname, Age, Dept)</span><br><span class="line"><span class="keyword">VALUES</span> (<span class="string">&#x27;001&#x27;</span>, <span class="string">&#x27;张三&#x27;</span>, <span class="number">20</span>, <span class="string">&#x27;计算机&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-5-2-修改数据-UPDATE">4.5.2 修改数据 UPDATE</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> Student</span><br><span class="line"><span class="keyword">SET</span> Age <span class="operator">=</span> <span class="number">21</span></span><br><span class="line"><span class="keyword">WHERE</span> Sno <span class="operator">=</span> <span class="string">&#x27;001&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-5-3-删除数据-DELETE">4.5.3 删除数据 DELETE</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Sno <span class="operator">=</span> <span class="string">&#x27;001&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-6-SQL查询-SELECT">4.6 SQL查询 SELECT</h3><p>基本格式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 列名</span><br><span class="line"><span class="keyword">FROM</span> 表名</span><br><span class="line"><span class="keyword">WHERE</span> 条件; </span><br></pre></td></tr></table></figure>
+
+<h4 id="4-6-1-查询全部列">4.6.1 查询全部列</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span><span class="keyword">FROM</span> Student;</span><br></pre></td></tr></table></figure>
+
+<p>含义：<br>    查询 Student 表中的所有列</p>
+<p><code>*</code> 表示所有属性。</p>
+<p>但考试/实际开发里，如果明确知道要哪些列，更推荐写列名：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Sname, AgeFROM Student;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-6-2-查询部分列">4.6.2 查询部分列</h4><pre><code>SELECT Sname, AgeFROM Student;
+</code></pre>
+<p>对应关系代数：<br>    <code>π Sname, Age(Student)</code></p>
+<hr>
+<h4 id="4-6-3-消除重复-DISTINCT">4.6.3 消除重复 DISTINCT</h4><p>SQL 默认<strong>不消除重复行</strong>。</p>
+<p>比如：<code>SELECT DeptNo FROM Student;</code></p>
+<p>结果可能是：</p>
+<table>
+<thead>
+<tr>
+<th>DeptNo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+</tr>
+<tr>
+<td>D1</td>
+</tr>
+<tr>
+<td>D2</td>
+</tr>
+<tr>
+<td>D2</td>
+</tr>
+</tbody></table>
+<p>如果想去重：<br>    <code>SELECT DISTINCT DeptNo FROM Student;</code></p>
+<p>结果：</p>
+<table>
+<thead>
+<tr>
+<th>DeptNo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+</tr>
+<tr>
+<td>D2</td>
+</tr>
+</tbody></table>
+<p>对应关系代数里，关系本身是集合，天然不允许重复；但 SQL 表更接近“多重集合”，所以需要 <code>DISTINCT</code>。</p>
+<h3 id="4-7-WHERE-条件查询">4.7 WHERE 条件查询</h3><h4 id="4-7-1-比较运算">4.7.1 比较运算</h4><p>常见比较符：<br>    <code>=, &gt;, &lt;, &gt;=, &lt;=, &lt;&gt; 或 !=</code></p>
+<p>例如：<br>    <code>SELECT Sname FROM StudentWHERE Age &gt; 20;</code></p>
+<p>查询年龄大于 20 的学生姓名。</p>
+<hr>
+<h4 id="4-7-2-逻辑运算-AND-OR-NOT">4.7.2 逻辑运算 AND / OR / NOT</h4><h5 id="AND：同时满足">AND：同时满足</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname <span class="keyword">FROM</span> StudentWHERE DeptNo <span class="operator">=</span> <span class="string">&#x27;D1&#x27;</span>  <span class="keyword">AND</span> Age <span class="operator">&gt;</span> <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<p>含义：<br>    院系是 D1，并且年龄大于 20</p>
+<h5 id="OR：满足任意一个">OR：满足任意一个</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname <span class="keyword">FROM</span> StudentWHERE DeptNo <span class="operator">=</span> <span class="string">&#x27;D1&#x27;</span>   <span class="keyword">OR</span> DeptNo <span class="operator">=</span> <span class="string">&#x27;D2&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>含义：<br>    院系是 D1 或 D2</p>
+<h5 id="NOT：取反">NOT：取反</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname <span class="keyword">FROM</span> StudentWHERE <span class="keyword">NOT</span> DeptNo <span class="operator">=</span> <span class="string">&#x27;D1&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>更常写成：<br>   <code> SELECT Sname FROM StudentWHERE DeptNo &lt;&gt; &#x27;D1&#x27;;</code></p>
+<hr>
+<h4 id="4-7-3-BETWEEN-范围查询">4.7.3 BETWEEN 范围查询</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname, Age <span class="keyword">FROM</span> StudentWHERE Age <span class="keyword">BETWEEN</span> <span class="number">18</span> <span class="keyword">AND</span> <span class="number">22</span>;</span><br></pre></td></tr></table></figure>
+
+<p>等价于：<br>    <code>SELECT Sname, AgeFROM StudentWHERE Age &gt;= 18  AND Age &lt;= 22;</code></p>
+<p>注意：<br>    <strong>BETWEEN 包含边界</strong></p>
+<p>也就是包括 18 和 22。</p>
+<hr>
+<h4 id="4-7-4-IN-集合查询">4.7.4 IN 集合查询</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname <span class="keyword">FROM</span> Student <span class="keyword">WHERE</span> DeptNo <span class="keyword">IN</span> (<span class="string">&#x27;D1&#x27;</span>, <span class="string">&#x27;D2&#x27;</span>, <span class="string">&#x27;D3&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>等价于：<br>    <code>SELECT SnameFROM StudentWHERE DeptNo = &#x27;D1&#x27;   OR DeptNo = &#x27;D2&#x27;   OR DeptNo = &#x27;D3&#x27;;</code></p>
+<p>所以：<br>    IN = 属于某个集合</p>
+<p>反过来：<br>    <code>SELECT SnameFROM StudentWHERE DeptNo NOT IN (&#x27;D1&#x27;, &#x27;D2&#x27;);</code></p>
+<p>含义：<br>    不属于 D1 或 D2</p>
+<hr>
+<h4 id="4-7-5-LIKE-模糊查询">4.7.5 LIKE 模糊查询</h4><p><code>LIKE</code> 用来做字符串匹配。</p>
+<p>常用通配符：</p>
+<table>
+<thead>
+<tr>
+<th>通配符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>%</code></td>
+<td>任意长度字符串，包括空串</td>
+</tr>
+<tr>
+<td><code>_</code></td>
+<td>任意单个字符</td>
+</tr>
+</tbody></table>
+<h5 id="查询姓张的学生">查询姓张的学生</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span><span class="keyword">FROM</span> StudentWHERE Sname <span class="keyword">LIKE</span> <span class="string">&#x27;张%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>含义：<br>    以“张”开头，后面随便多少字符</p>
+<p>比如：<br>    张三张小明张伟</p>
+<p>都满足。</p>
+<h5 id="查询名字第二个字是“三”的学生">查询名字第二个字是“三”的学生</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span><span class="keyword">FROM</span> Student <span class="keyword">WHERE</span> Sname <span class="keyword">LIKE</span> <span class="string">&#x27;_三%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>解释：<br>    _ 表示第一个字符任意三 表示第二个字符必须是三% 表示后面任意</p>
+<hr>
+<h4 id="4-7-6-NULL-空值查询">4.7.6 NULL 空值查询</h4><p>这个很重要，也很容易错。</p>
+<p>查询某列为空：<br>  <code>SELECT *FROM Student WHERE Email IS NULL;</code></p>
+<p>查询某列不为空：<br>    <code>SELECT *FROM Student WHERE Email IS NOT NULL;</code></p>
+<p>不能写：<br>    WHERE Email = NULL</p>
+<p>这是错的。</p>
+<p>因为 <code>NULL</code> 不是普通值，它表示：<br>    未知不存在不可用</p>
+<p>所以判断空值必须用：<br>    IS NULL / IS NOT NULL</p>
+<hr>
+<h3 id="4-8-ORDER-BY-排序">4.8 ORDER BY 排序</h3><h4 id="4-8-1-升序-ASC">4.8.1 升序 ASC</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Sname, Age <span class="keyword">FROM</span> Student <span class="keyword">ORDER</span> <span class="keyword">BY</span> Age <span class="keyword">ASC</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>ASC</code> 表示升序，默认就是升序，所以也可以写：<br>    SELECT Sno, Sname, AgeFROM StudentORDER BY Age;</p>
+<hr>
+<h4 id="4-8-2-降序-DESC">4.8.2 降序 DESC</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Sname, Age <span class="keyword">FROM</span> Student <span class="keyword">ORDER</span> <span class="keyword">BY</span> Age <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+
+<p>表示按年龄从大到小排序。</p>
+<hr>
+<h4 id="4-8-3-多列排序">4.8.3 多列排序</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Sname, DeptNo, Age <span class="keyword">FROM</span> Student <span class="keyword">ORDER</span> <span class="keyword">BY</span> DeptNo <span class="keyword">ASC</span>, Age <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+
+<p>含义：先按 DeptNo 升序如果 DeptNo 相同，再按 Age 降序</p>
+<h3 id="4-9-聚集函数">4.9 聚集函数</h3><p>聚集函数对一组数据进行统计</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>COUNT(*)</code></td>
+<td>统计行数</td>
+</tr>
+<tr>
+<td><code>COUNT(列名)</code></td>
+<td>统计该列非空值个数</td>
+</tr>
+<tr>
+<td><code>SUM(列名)</code></td>
+<td>求和</td>
+</tr>
+<tr>
+<td><code>AVG(列名)</code></td>
+<td>求平均值</td>
+</tr>
+<tr>
+<td><code>MAX(列名)</code></td>
+<td>最大值</td>
+</tr>
+<tr>
+<td><code>MIN(列名)</code></td>
+<td>最小值</td>
+</tr>
+</tbody></table>
+<h4 id="4-9-1-COUNT">4.9.1 COUNT</h4><p>查询学生总人数：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> Student;</span><br></pre></td></tr></table></figure>
+
+<p>查询有邮箱的学生人数：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(Email) <span class="operator">/</span><span class="operator">/</span>只统计Email的非<span class="keyword">NULL</span>行</span><br><span class="line"><span class="keyword">FROM</span> Student;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-9-2-AVG平均值">4.9.2 AVG平均值</h4><p>查询平均年龄：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">AVG</span>(Age)</span><br><span class="line"><span class="keyword">FROM</span> Student;</span><br></pre></td></tr></table></figure>
+
+<p>查询数据库课程的平均年龄:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">AVG</span>(Age)</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Cname <span class="operator">=</span> <span class="string">&#x27;数据库&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-9-3-MAX-MIN">4.9.3 MAX/MIN</h4><p>查询最高成绩：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">MAX</span>(Grade)</span><br><span class="line"><span class="keyword">FROM</span> sc;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-9-4-SUM">4.9.4 SUM</h4><p>查询某门课的总成绩：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">SUM</span>(Grade)</span><br><span class="line"><span class="keyword">FROM</span> sc</span><br><span class="line"><span class="keyword">WHERE</span> Cno <span class="operator">=</span> <span class="string">&#x27;C1&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-10-GROUP-BY-分组">4.10 GROUP BY 分组</h3><p><code>GROUP BY</code>是SQL查询里非常核心的东西。</p>
+<h4 id="4-10-1-为什么需要分组">4.10.1 为什么需要分组</h4><p>比如你要查：</p>
+<p><code>每个院系有多少个学生</code></p>
+<p>不是查全校总人数，而是按照院系分开看</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> DeptNo, <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> DeptNo;</span><br></pre></td></tr></table></figure>
+
+<h4 id="GROUP-BY的规则">GROUP BY的规则</h4><p>如果使用了<code>GROUP BY</code>,那么<code>SELECT</code>的后面通常只能出现：</p>
+<ul>
+<li><p>分组函数</p>
+</li>
+<li><p>聚集函数</p>
+</li>
+</ul>
+<p>比如这个是对的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> DeptNo, <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> DeptNo;</span><br></pre></td></tr></table></figure>
+
+<p>但是这个通常是错的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> DeptNo, Sname, <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> DeptNo;</span><br></pre></td></tr></table></figure>
+
+<p>一个<code>DeptNo</code>组里面可能有多个学生，数据库不知道你想显示哪个<code>Sname</code></p>
+<h3 id="4-11-HAVING-分组后的筛选">4.11 HAVING 分组后的筛选</h3><h4 id="4-11-1-WHERE-和-HAVING的区别">4.11.1 WHERE 和 HAVING的区别</h4><table>
+<thead>
+<tr>
+<th>子句</th>
+<th>作用对象</th>
+<th>能不能用聚集函数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WHERE</code></td>
+<td>分组前的行</td>
+<td>一般不能直接用聚集函数</td>
+</tr>
+<tr>
+<td><code>HAVING</code></td>
+<td>分组后的组</td>
+<td>可以用聚集函数</td>
+</tr>
+</tbody></table>
+<p>一句话：</p>
+<p><code>WHERE 筛行，HAVING 筛组</code></p>
+<h4 id="4-11-2-例子：查询人数超过20的院系">4.11.2 例子：查询人数超过20的院系</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> DeptNo, <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> DeptNo</span><br><span class="line"><span class="keyword">HAVING</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="operator">&gt;</span> <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-12-SQL-查询执行顺序">4.12 SQL 查询执行顺序</h3><p>虽然SQL写法是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ...</span><br><span class="line"><span class="keyword">FROM</span> ...</span><br><span class="line"><span class="keyword">WHERE</span> ...</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> ...</span><br><span class="line"><span class="keyword">HAVING</span> ...</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> ...</span><br></pre></td></tr></table></figure>
+
+<p>但是逻辑执行顺序大概是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FROM</span><br><span class="line">WHERE</span><br><span class="line">GROUP BY</span><br><span class="line">HAVING</span><br><span class="line">SELECT</span><br><span class="line">ORDER BY</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-14-多表连接查询">4.14 多表连接查询</h3><h4 id="4-14-1-旧式连接写法：FROM-多表-WHERE-条件">4.14.1 旧式连接写法：FROM 多表 + WHERE 条件</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Student.Sname</span><br><span class="line"><span class="keyword">FROM</span> Student, SC, Course</span><br><span class="line"><span class="keyword">WHERE</span> Student.Sno <span class="operator">=</span> SC.Sno</span><br><span class="line">    <span class="keyword">AND</span> SC.Sno <span class="operator">=</span> Course.Cno</span><br><span class="line">    <span class="keyword">AND</span> Course.Cname <span class="operator">=</span> <span class="string">&#x27;数据库&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-14-2-标准的JOIN写法">4.14.2 标准的JOIN写法</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Student.Sname</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">JOIN</span> SC <span class="keyword">ON</span> Student.Sno <span class="operator">=</span> SC.Sno</span><br><span class="line"><span class="keyword">JOIN</span> Course <span class="keyword">ON</span> SC.Cno <span class="operator">=</span> Course.Cno</span><br><span class="line"><span class="keyword">WHERE</span> Course.Cname <span class="operator">=</span> <span class="string">&#x27;数据库&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>结构是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">表<span class="number">1</span></span><br><span class="line"><span class="keyword">JOIN</span> 表<span class="number">2</span> <span class="keyword">ON</span> 连接条件</span><br><span class="line"><span class="keyword">JOIN</span> 表<span class="number">3</span> <span class="keyword">ON</span> 连接条件</span><br><span class="line"><span class="keyword">WHERE</span> 普通筛选条件;</span><br></pre></td></tr></table></figure>
+
+<p>注意区分：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ON：写表和表之间怎么连接</span><br><span class="line">WHERE：写连接之后筛哪些行</span><br></pre></td></tr></table></figure>
+
+<p>表太长时，可以取别名：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> S.Sname</span><br><span class="line"><span class="keyword">FROM</span> Student <span class="keyword">AS</span> S</span><br><span class="line"><span class="keyword">JOIN</span> SC <span class="keyword">AS</span> SC <span class="keyword">ON</span> S.Sno <span class="operator">=</span> SC.Sno</span><br><span class="line"><span class="keyword">JOIN</span> Course <span class="keyword">AS</span> C <span class="keyword">ON</span> SC.Cno <span class="operator">=</span> C.Cno</span><br><span class="line"><span class="keyword">WHERE</span> C.Cname <span class="operator">=</span> <span class="string">&#x27;数据库&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>AS</code>能够省略</p>
+<h4 id="4-14-3-多表连接易错的地方：">4.14.3 多表连接易错的地方：</h4><h5 id="错误-1：忘记连接条件">错误 1：忘记连接条件</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> S.Sname, C.Cname</span><br><span class="line"><span class="keyword">FROM</span> Student S, Course C;</span><br></pre></td></tr></table></figure>
+
+<p>这会产生笛卡尔积，结果会乱配。</p>
+<p>比如 100 个学生、20 门课：<br>    100 × 20 = 2000 行</p>
+<p>很可能不是你想要的。</p>
+<hr>
+<h5 id="错误-2：连接条件写少了">错误 2：连接条件写少了</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> S.Sname, C.Cname</span><br><span class="line"><span class="keyword">FROM</span> Student S, SC, Course C</span><br><span class="line"><span class="keyword">WHERE</span> S.Sno <span class="operator">=</span> SC.Sno;</span><br></pre></td></tr></table></figure>
+
+<p>这里只连了 <code>Student</code> 和 <code>SC</code>，但 <code>Course</code> 没连上，也会导致课程乱配。</p>
+<h3 id="4-15-内连接，外连接">4.15 内连接，外连接</h3><h4 id="4-15-1-INNER-JOIN-内连接">4.15.1 INNER JOIN 内连接</h4><p>普通<code>JOIN</code>默认就是内连接</p>
+<p>含义就是：只保留两边能匹配上的记录</p>
+<h4 id="4-15-2-LEFT-JOIN-左外连接">4.15.2 LEFT JOIN 左外连接</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> S.Sname, SC.Cno</span><br><span class="line"><span class="keyword">FROM</span> Student S</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> SC <span class="keyword">ON</span> S.Sno <span class="operator">=</span> SC.Sno;</span><br></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<p>左表 Student 的所有学生都保留</p>
+<p>如果右表 SC 没用匹配记录，则右表就会显示 NULL</p>
+<h4 id="4-15-3-RIGHT-JOIN-右外连接">4.15.3 RIGHT JOIN 右外连接</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> S.Sname, SC.Cno</span><br><span class="line"><span class="keyword">FROM</span> Student S</span><br><span class="line"><span class="keyword">RIGHT</span> <span class="keyword">JOIN</span> SC <span class="keyword">ON</span> S.Sno <span class="operator">=</span> SC.Sno;</span><br></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<p>右表 SC 的所有学生都保留</p>
+<p>如果左表 Student 没用匹配记录，则左表就会显示 NULL</p>
+<h3 id="4-16-子查询-Subquery">4.16 子查询 Subquery</h3><h4 id="4-16-1-子查询是什么">4.16.1 子查询是什么</h4><p>子查询就是：</p>
+<p>一个<code>SELECT</code>语句里面嵌套另一个<code>SELECT</code>语句</p>
+<p>基本形式：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ...</span><br><span class="line"><span class="keyword">FROM</span> ...</span><br><span class="line"><span class="keyword">WHERE</span> 某列 <span class="keyword">IN</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> ...</span><br><span class="line">    <span class="keyword">FROM</span> ...</span><br><span class="line">    <span class="keyword">WHERE</span> ...</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-17-不相关子查询">4.17 不相关子查询</h3><h4 id="4-17-1-含义">4.17.1 含义</h4><p>不相关子查询指：</p>
+<p>内层子查询可以独立执行，不依赖外层查询</p>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Sname</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Sno <span class="keyword">IN</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> Sno</span><br><span class="line">    <span class="keyword">FROM</span> SC</span><br><span class="line">    <span class="keyword">WHERE</span> Cno <span class="operator">=</span> <span class="string">&#x27;C1&#x27;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-17-2-IN的含义">4.17.2 IN的含义</h4><p><code>IN</code>表示：</p>
+<p>某个属于子查询返回结果的集合</p>
+<p>格式：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">表达式 <span class="keyword">IN</span>(</span><br><span class="line">    子查询</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>实例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sno, Grade</span><br><span class="line"><span class="keyword">FROM</span> SC</span><br><span class="line"><span class="keyword">WHERE</span> Cno <span class="keyword">IN</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> Cno</span><br><span class="line">    <span class="keyword">FROM</span> Course</span><br><span class="line">    <span class="keyword">WHERE</span> Cname <span class="operator">=</span> <span class="string">&#x27;数据库&#x27;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-17-3-IN子查询也可以改写成JOIN">4.17.3 IN子查询也可以改写成JOIN</h4><p>刚才这题也可以写成连接：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> SC.Sno, SC.Grade</span><br><span class="line"><span class="keyword">FROM</span> SC</span><br><span class="line"><span class="keyword">JOIN</span> Course <span class="keyword">ON</span> SC.Sno <span class="operator">=</span> Course.Cno</span><br><span class="line"><span class="keyword">WHERE</span> Course.Cname <span class="operator">=</span> <span class="string">&#x27;数据库&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-18-比较运算符子查询">4.18 比较运算符子查询</h3><h4 id="4-18-1-子查询返回单值时，可以用-、-、">4.18.1 子查询返回单值时，可以用=、&gt;、&lt;</h4><p>格式：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">表达式 比较符 (</span><br><span class="line">    子查询</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>例如：查询年龄大于全体学生平均年龄的学生姓名。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Age <span class="operator">&gt;</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> <span class="built_in">AVG</span>(<span class="operator">*</span>)</span><br><span class="line">    <span class="keyword">FROM</span> Student</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-19-ANY-SOME-子查询">4.19 ANY / SOME 子查询</h3><h4 id="4-19-1-ANY-SOME-是什么">4.19.1 ANY / SOME 是什么</h4><p><code>ANY</code> 和<code>SOME</code>含义一样</p>
+<p>表示：<code>ANY / SOME = 至少满足其中一个</code></p>
+<h4 id="4-19-2-例子：年龄小于信息系某个学生的其他系学生">4.19.2 例子：年龄小于信息系某个学生的其他系学生</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname, Age</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Age <span class="operator">&lt;</span> <span class="keyword">ANY</span>(</span><br><span class="line">    <span class="keyword">SELECT</span> Age</span><br><span class="line">    <span class="keyword">FROM</span> Student</span><br><span class="line">    <span class="keyword">WHERE</span> Dept <span class="operator">=</span> <span class="string">&#x27;Information&#x27;</span></span><br><span class="line">) <span class="keyword">AND</span> Dept <span class="operator">&lt;&gt;</span> <span class="string">&#x27;Information&#x27;</span>;<span class="operator">/</span><span class="operator">/</span>排除信息系自己的学生</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-20-ALL-子查询">4.20 ALL 子查询</h3><h4 id="4-20-1-ALL是什么">4.20.1 ALL是什么</h4><p><code>ALL</code>表示：</p>
+<p>对所有子查询返回值都满足</p>
+<p>例子：年龄小于信息系所有学生的其他系学生</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname, Age</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> Age <span class="operator">&lt;</span> <span class="keyword">ALL</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> Age</span><br><span class="line">    <span class="keyword">FROM</span> Student</span><br><span class="line">    <span class="keyword">WHERE</span> Dept <span class="operator">=</span> <span class="string">&#x27;Information&#x27;</span></span><br><span class="line">) <span class="keyword">AND</span> Dept <span class="operator">&lt;&gt;</span> <span class="string">&#x27;Information&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-21-EXISTS-子查询">4.21 EXISTS 子查询</h3><p><code>EXISTS</code> 子查询判断查询的结果是否为空。</p>
+<p>例题：查询选修了C1的学生姓名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Sname</span><br><span class="line"><span class="keyword">FROM</span> Student</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (</span><br><span class="line">    <span class="keyword">SELECT</span><span class="operator">*</span></span><br><span class="line">    <span class="keyword">FROM</span> SC</span><br><span class="line">    <span class="keyword">WHERE</span> SC.Sno <span class="operator">=</span> Student.Sno</span><br><span class="line">    <span class="keyword">AND</span> SC.Cno <span class="operator">=</span> <span class="string">&#x27;C1&#x27;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="第6章：事务、并发与故障恢复">第6章：事务、并发与故障恢复</h2><h3 id="6-1-为什么需要事务？">6.1 为什么需要事务？</h3><p>通常一个SQL语句可以看作关系数据库的一个原子操作，但实际应用中，很大业务不是一个SQL能完成的，所以要把多个SQL语句定义成一个原子操作。</p>
+<p>比如转账：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> Account <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line"><span class="keyword">UPDATE</span> Account <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">+</span> <span class="number">100</span> <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;B&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这两句话必须绑在一起，否则如果A已经扣了钱，系统突然崩了，B没加钱，那数据库就坏了。</p>
+<p>所以事务就是：</p>
+<p>用户定义的一个数据库操作序列，这些操作要么全做，要么全不做，是不可分割的工作单位。相关SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span> TRANSACTION:    开始事务</span><br><span class="line"><span class="keyword">COMMIT</span>:    提交事务，确认修改生效</span><br><span class="line"><span class="keyword">ROLLBACK</span>：   回滚事务，撤销修改</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-事务的ACID特性：">6.2 事务的ACID特性：</h3><p>事务的四个特性是：原子性、一致性、隔离性、持久性。</p>
+<p><strong>A：原子性</strong></p>
+<p>事务中的操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">要么全部完成</span><br><span class="line">要么全部不完成</span><br><span class="line">不能只完成一半</span><br></pre></td></tr></table></figure>
+
+<p><strong>C：一致性</strong></p>
+<p>事务执行前后，数据库都应该从一个正确状态变到另一个正确状态。</p>
+<p>比如银行转账前后，总额没变，这叫一致。</p>
+<p><strong>I：隔离性</strong></p>
+<p>多个事务并发执行时，结果应该一个一个串行执行。</p>
+<p>比如：两个事务同时操作A:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T1: A = A - 100</span><br><span class="line">T2: A = A * 2</span><br></pre></td></tr></table></figure>
+
+<p>虽然实际可能交替执行，但是最终效果必须等价于：</p>
+<p><code>先T1后T2</code>或<code>先T2后T1</code></p>
+<p><strong>D：持久性</strong></p>
+<p>事务一旦COMMIT，结果就应该永久保存。</p>
+<p>哪怕提交后系统崩溃，重启后也应该能恢复这个结果。</p>
+<h3 id="6-3-并发导致的不一致性：">6.3 并发导致的不一致性：</h3><h4 id="6-3-1-丢失修改-Lost-Update">6.3.1 丢失修改 Lost Update</h4><p>核心：</p>
+<p>两个事务都读同一个旧值；</p>
+<p>都基于旧值修改；</p>
+<p>后写入的覆盖前写入的。</p>
+<h4 id="6-3-2-脏读-Dirty-Read">6.3.2 脏读 Dirty Read</h4><p>核心：</p>
+<p>读到了别人还没提交的数据；</p>
+<p>但是后来别人回滚了。</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">初始 A = 50</span><br><span class="line"></span><br><span class="line">T1 写 A = 30</span><br><span class="line">T2 读 A = 30</span><br><span class="line">T1 ROLLBACK，A 恢复为 50</span><br></pre></td></tr></table></figure>
+
+<p>T2 读到的30是“脏”的，因为它来自一个最终失败的事务。</p>
+<p><code>脏读 = 读到未提交，后来被回滚</code></p>
+<h4 id="6-3-3-不可重复读-Non-repeatable-Read">6.3.3 不可重复读 Non-repeatable Read</h4><p>核心：</p>
+<p>同一个事务内，两次读到同一个数据，结果不一样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">初始 A = 100</span><br><span class="line"></span><br><span class="line">T1 读 A = 100</span><br><span class="line">T2 修改 A = 200 并提交</span><br><span class="line">T1 再读 A = 200</span><br></pre></td></tr></table></figure>
+
+<p>T1 第一次读是100，第二次读是200。</p>
+<h4 id="6-3-4-幻读-Phantom-Read">6.3.4 幻读 Phantom Read</h4><p>核心：</p>
+<p>同一个事务内，两次按相同条件查询，结果集的行数变了</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">T1: SELECT * FROM Student WHERE age &gt; 18;</span><br><span class="line">T2: INSERT INTO Student VALUES (..., age = 20);</span><br><span class="line">T2: COMMIT;</span><br><span class="line">T1: SELECT * FROM Student WHERE age &gt; 18;</span><br></pre></td></tr></table></figure>
+
+<p>T1 第二次查询的时候，突然多出一条符合条件的记录</p>
+<h3 id="6-4-为什么会出现这些问题？">6.4 为什么会出现这些问题？</h3><p>出现不一致的原因是：不同数位间冲突操作的无序进行。</p>
+<p>也就是说，并发本身不是错，<strong>冲突操作乱序执行</strong>才是问题。</p>
+<p>常见冲突：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">读-写冲突：一个读，一个写</span><br><span class="line">写-读冲突：一个写，一个读</span><br><span class="line">写-写冲突：两个都写</span><br></pre></td></tr></table></figure>
+
+<p>并发控制的两大思路：</p>
+<ul>
+<li><p>对事务规定一定顺序：时间戳</p>
+</li>
+<li><p>对共享资源进行控制：加锁</p>
+</li>
+</ul>
+<h4 id="6-4-1-封锁">6.4.1 封锁</h4><p>封锁的意思是：</p>
+<p>事务在操作了某个数据对象之前，先向系统请求向它加锁。加锁后，事务对该对象有一定控制器，释放锁之前，其他事务的操作会受到限制。</p>
+<p>数据库里最基本的两类锁：</p>
+<ul>
+<li><p>S锁：共享锁，也叫读锁</p>
+</li>
+<li><p>X锁：排他锁，也叫写锁</p>
+</li>
+</ul>
+<h4 id="6-4-2-S-锁：共享锁-读锁">6.4.2 S 锁：共享锁 / 读锁</h4><p>事务要读数据时，可以加 S 锁。</p>
+<p>特点：<br>    多个事务可以同时读同一个数据所以 S 锁和 S 锁相容</p>
+<p>例子：<br>    T1 给 A 加 S 锁，读 AT2 也可以给 A 加 S 锁，读 A</p>
+<p>因为大家都只是看，不改。</p>
+<h4 id="6-4-3-X-锁：排它锁-写锁">6.4.3 X 锁：排它锁 / 写锁</h4><p>事务要修改数据时，需要加 X 锁。</p>
+<p>特点：<br>    X 锁很霸道别人既不能读，也不能写</p>
+<p>例子：<br>    T1 给 A 加 X 锁，修改 AT2 不能再给 A 加 S 锁T3 也不能再给 A 加 X 锁</p>
+<p>因为一旦有人在写，别人读可能读到脏数据，别人写可能造成丢失修改。 </p>
+<h4 id="锁相容矩阵">锁相容矩阵</h4><pre><code>     对方已有锁
+      S     X
+申请 S √     ×
+申请 X ×     ×
+</code></pre>
+<p>也就是：<br>    只有S-S相容，其他都不相容</p>
+<h3 id="6-5-封锁协议：">6.5 封锁协议：</h3><p>光有S锁、X锁还不够，还要规定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">什么操作加什么锁？</span><br><span class="line">什么时候加锁？</span><br><span class="line">什么时候释放锁？</span><br></pre></td></tr></table></figure>
+
+<p>常考的是三级封锁协议：</p>
+<h4 id="6-5-1-一级封锁协议">6.5.1 一级封锁协议</h4><p>事务T在修改数据R之前，必须先对R加X锁；</p>
+<p>知道事务结束才释放X锁。</p>
+<p><strong>它主要解决</strong>：丢失修改，但是不能防止脏读</p>
+<h4 id="6-5-2-二级封锁协议">6.5.2 二级封锁协议</h4><p>事务读数据前必须加上S锁；</p>
+<p>读完之后即可释放S锁。</p>
+<h4 id="6-5-3-三级封锁协议">6.5.3 三级封锁协议</h4><p>在二级的基础上，把读锁也延长：</p>
+<p>事务读数据之前加S锁；</p>
+<p>S锁要保持到事务结束之后才释放。</p>
+<h4 id="三级封锁协议对比：">三级封锁协议对比：</h4><p>协议      规则                                             能解决<br>一级      写前加 X，事务结束释放         丢失修改<br>二级      一级 + 读前加 S，读完释放       丢失修改、脏读<br>三级      一级 + 读前加 S，事务结束释放   丢失修改、脏读、不可重复读</p>
+<p>一句话总结：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">一级管写写</span><br><span class="line">二级管写读</span><br><span class="line">三级管重复读</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-6-两段锁协议2PL">6.6 两段锁协议2PL</h3><p>三级封锁协议是在讲：</p>
+<p>不同的锁保持多久，能够避免哪些异常</p>
+<p>接下来常考的是<strong>二封锁协议</strong>，2PL，主要用来保证：</p>
+<p>并行调度是可串行化的</p>
+<p><strong>也就是说</strong>：虽然事务交叉执行，但是结果等价于某个串行执行顺序。</p>
+<h4 id="6-6-1-两段锁协议的规则">6.6.1 两段锁协议的规则</h4><p>一个事务加锁和解锁的过程必须分成两个阶段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">第一阶段：扩展阶段</span><br><span class="line">只能加锁，不能解锁</span><br><span class="line"></span><br><span class="line">第二阶段：收缩阶段</span><br><span class="line">只能解锁，不能再加锁</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，一旦一个事务释放了第一个锁，它以后就不能再申请新锁。</p>
+<p>化成时间线：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">加锁  加锁  加锁  |  解锁  解锁  解锁</span><br><span class="line">     扩展阶段    |      收缩阶段</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-7-可串行化调度">6.7 可串行化调度</h3><h4 id="6-7-1-串行调度：">6.7.1 串行调度：</h4><p>串行调度就是事务一个接一个执行，中间不交叉。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T1: R(A) W(A) COMMIT</span><br><span class="line">T2: R(A) W(A) COMMIT</span><br></pre></td></tr></table></figure>
+
+<p>串行调度通常是安全的，但是效率低</p>
+<h4 id="6-7-2-并发调度：">6.7.2 并发调度：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">T1: R(A)</span><br><span class="line">T2: R(A)</span><br><span class="line">T1: W(A)</span><br><span class="line">T2: W(A)</span><br></pre></td></tr></table></figure>
+
+<p>这样效率搞，但可能出问题，如丢失修改</p>
+<h4 id="6-7-3-冲突可串行化">6.7.3 冲突可串行化</h4><p>考试里常考“冲突操作”。</p>
+<p>两个操作冲突，需要同时满足：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 来自不同事务</span><br><span class="line">2. 操作同一个数据对象</span><br><span class="line">3. 至少有一个是写操作</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-7-4-怎么判断冲突可串行化？">6.7.4 怎么判断冲突可串行化？</h4><p>常用方法是画 <strong>优先图 / 前驱图</strong></p>
+<p>步骤：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 每个事务画成一个节点</span><br><span class="line">2. 如果Ti的某个操作先于Tj的冲突操作，就画Ti -&gt; Tj</span><br><span class="line">3. 如果图中无环，则冲突可串行化，反之则不可冲突串行</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">R1(A)</span><br><span class="line">W1(A)</span><br><span class="line">R2(A)</span><br><span class="line">W2(A)</span><br></pre></td></tr></table></figure>
+
+<p>T1对A的写在T2对A的读/写之前，所以画：</p>
+<p><code>T1 -&gt; T2</code></p>
+<p>无环，所以等价于穿行顺序：</p>
+<p><code>T1 再 T2</code></p>
+<h3 id="6-8-死锁DeadLock">6.8 死锁DeadLock</h3><p>死锁的定义：数据库并发控制中，死锁通常是因为多个事务相互等待对方释放锁。</p>
+<p>最经典形式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T1 持有 A,申请 B</span><br><span class="line">T2 持有 B,申请 A   </span><br></pre></td></tr></table></figure>
+
+<h4 id="死锁的处理思路：">死锁的处理思路：</h4><p>一般有两种：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">预防死锁</span><br><span class="line">检测并解除死锁</span><br></pre></td></tr></table></figure>
+
+<h5 id="预防死锁：">预防死锁：</h5><p>提前规定规则，让死锁根本不容易发生。</p>
+<p>常见思路：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">一次封锁法：事务开始前一次性申请所有需要的锁</span><br><span class="line">顺序封锁法：所有事务都按统一顺序申请锁</span><br></pre></td></tr></table></figure>
+
+<h5 id="检测并解除死锁">检测并解除死锁</h5><p>系统允许死锁可能发生，但会定期检测</p>
+<p>方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">构造事务等待图</span><br><span class="line">如果等待图有环，说明发生死锁</span><br><span class="line">选择一个事务撤销，让他释放锁</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-8-故障恢复">6.8 故障恢复</h3><p>三个关键词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">日志</span><br><span class="line">UNDO</span><br><span class="line">REDO</span><br></pre></td></tr></table></figure>
+
+<p>数据库恢复靠日志记录”事务做过什么“，系统崩溃后再根据日志判断。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">已提交事务：REDO</span><br><span class="line">未提交事务：UNDO</span><br></pre></td></tr></table></figure>
+
+
+
+    

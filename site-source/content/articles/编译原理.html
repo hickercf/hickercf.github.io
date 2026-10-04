@@ -1,0 +1,1144 @@
+<h2 id="编译原理">编译原理</h2><h2 id="第2章-形式语言概论">第2章 形式语言概论</h2><h3 id="2-1-字母表，符号串，语言">2.1 字母表，符号串，语言</h3><h4 id="2-1-1-字母表">2.1.1 字母表</h4><p>字母表是符号的非空优先集合，常记作Σ</p>
+<p>例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Σ = {a, b, c}</span><br><span class="line">Σ = {0, 1}</span><br><span class="line">Σ = {BEGIN, END, FOR, WHILE}</span><br></pre></td></tr></table></figure>
+
+<p>注意：字母表里的“符号”不一定是单个字符</p>
+<p><code>BEGIN</code> 也可以看作一个符号</p>
+<h4 id="2-1-2-符号串">2.1.2 符号串</h4><p><strong>符号串</strong>是字母表中符号组成的优先序列</p>
+<p>例如：</p>
+<p><code>abc, 0011, BEGIN END</code></p>
+<p>空串记作：</p>
+<p><code>ε</code></p>
+<p>符号串的长度记作：</p>
+<p><code>|x|</code></p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">|abc| = 3</span><br><span class="line">|ε| = 0</span><br></pre></td></tr></table></figure>
+
+<p>如果：</p>
+<p><code>Σ = {BEGIN, END, FOR, WHILE}</code></p>
+<p>那么</p>
+<p><code>|BEGINEND| = 2</code></p>
+<h4 id="2-1-3-符号串的基本运算">2.1.3 符号串的基本运算</h4><h5 id="1-连接">1. 连接</h5><p>若x和y是符号串，则把y接在x后面得到</p>
+<h2 id="第5章-自上而下的语法分析">第5章 自上而下的语法分析</h2><h3 id="5-1-基本思想">5.1 基本思想</h3><h4 id="5-1-1">5.1.1</h4><p><strong>自上而下语法分析就是</strong>：</p>
+<p>从文法开始符号出发，一步步推导，看看能不能推出输入串。</p>
+<p>从推导角度来看，它试图构造一个<strong>最左推导序列</strong>；从语法分析树的角度看，他说从识别符号作为根结点，向下构造语法树。</p>
+<h3 id="5-2-自上而下分析会遇到的问题：">5.2 自上而下分析会遇到的问题：</h3><ol>
+<li><p>回溯</p>
+</li>
+<li><p>左递归</p>
+</li>
+</ol>
+<h4 id="5-2-1-问题一：回溯">5.2.1 问题一：回溯</h4><p>假设有产生式：</p>
+<p><code>A → α1 | α2 | α3</code></p>
+<p>现在分析的时候遇到了非终结符<code>A</code>,问题来了：</p>
+<p>到底该选哪个候选式展开？</p>
+<p>如果选错了，推导到一半发现和输入串对不上，就要退回去重新选，这就叫回溯。</p>
+<h4 id="5-2-2-问题二：左递归">5.2.2 问题二：左递归</h4><h3 id="5-3-怎么避免呢？">5.3 怎么避免呢？</h3><ul>
+<li><p>消除左递归</p>
+</li>
+<li><p>避免回溯</p>
+</li>
+</ul>
+<h3 id="5-4-消除左递归">5.4 消除左递归</h3><h4 id="5-4-1-标准形式：">5.4.1 标准形式：</h4><p>如果有：</p>
+<p><code>U → Ux1 | Ux2 | ... | Uxm | y1 | y2 | ... | yn</code></p>
+<p>其中：</p>
+<ul>
+<li><p><code>Ux1, Ux2, ..., Uxm</code>是左递归候选式</p>
+</li>
+<li><p><code>y1, y2, ..., yn</code>是非左递归候选式</p>
+</li>
+</ul>
+<p>那么可以改写成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">U  → y1U&#x27; | y2U&#x27; | ... | ynU&#x27;</span><br><span class="line">U&#x27; → x1U&#x27; | x2U&#x27; | ... | xmU&#x27; | ε</span><br></pre></td></tr></table></figure>
+
+<p>这就是<strong>直接改写法</strong>：引进新的非终结符号，把左递归改写成右递归。</p>
+<h4 id="5-4-2-经典例子：表达式文法">5.4.2 经典例子：表达式文法</h4><p>原文法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">E → E + T | T</span><br><span class="line">T → T * F | F</span><br><span class="line">F → (E) | i</span><br></pre></td></tr></table></figure>
+
+<p>消除后:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">E  → T E&#x27;</span><br><span class="line">E&#x27; → + T E&#x27; | ε</span><br><span class="line"></span><br><span class="line">T  → F T&#x27;</span><br><span class="line">T&#x27; → * F T&#x27; | ε</span><br><span class="line"></span><br><span class="line">F  → (E) | i</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-5-间接左递归：">5.5 间接左递归：</h3><h4 id="5-5-1-什么是间接左递归？">5.5.1 什么是间接左递归？</h4><p>一般的左递归长这样：</p>
+<p><code>A -&gt; Aα</code></p>
+<p>但是间接左递归不是直接写出来的，而上绕一圈又回到自己：</p>
+<p><code>A =&gt; Bα =&gt; Aβα</code></p>
+<p>于是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A =&gt; Bα =&gt; Aβα</span><br></pre></td></tr></table></figure>
+
+<p>这就叫间接左递归</p>
+<h4 id="5-5-2-消除间接左dd递归的核心思想：">5.5.2 消除间接左dd递归的核心思想：</h4><p>不要背一堆伪代码，记住一句话：</p>
+<p>按照非终结符的顺序，把“前面的非终结符开头”的产生式逐步代入，直到间接左递归暴露成直接左递归，再按照直接左递归的消除方法处理。</p>
+<h3 id="5-6-LL-1-文法">5.6 LL(1)文法</h3><p>现在解决第二个问题：</p>
+<p>有多个候选式的时候，怎么不回溯的选出正确的产生式？</p>
+<p>比如：</p>
+<p><code>A -&gt; α1 | α2 | α3</code></p>
+<p>自上而下分析时遇到<code>A</code>时，我们希望只看到<strong>当前输入符号</strong>，就知道该选哪一个产生式</p>
+<h4 id="5-6-1-LL-1-这三个符号什么意思？">5.6.1 LL(1)这三个符号什么意思？</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">L:从左到右扫描输入串</span><br><span class="line">L:构造最左构造</span><br><span class="line">1:只向前看一个输入符号</span><br></pre></td></tr></table></figure>
+
+<p>所以LL(1)分析法就是：</p>
+<p><code>从左到右看输入串，每一步构造最左推导，并且只看当前 1 个符号就能决定用哪个产生式</code></p>
+<h4 id="5-6-2-为什么需要FIRST集？">5.6.2 为什么需要FIRST集？</h4><p>假设：</p>
+<p><code>A -&gt; α | β</code></p>
+<p>如果输入符号是<code>a</code>，我们要判断：</p>
+<p><code>A 应该展开成 α 还是 β？</code></p>
+<p>那就看：</p>
+<p><code>α 能以什么终结符开头？</code><br><code>β 能以什么终结符开头？</code></p>
+<h4 id="5-6-2-FIRST集的定义">5.6.2 FIRST集的定义</h4><p>FIRST(α)表示：</p>
+<p>符号串α能够推导出的所有串中，可能出现在最前面的终结符的集合。</p>
+<p>如果α能够推出空串，那么空串也属于FIRST(α)</p>
+<h4 id="5-6-3-LL-1-的第一个条件">5.6.3 LL(1)的第一个条件</h4><p>对于同一个非终结符号的多个候选式：</p>
+<p><code>A -&gt; α1 | α2 | ... | αn</code></p>
+<p>要求：</p>
+<p><code>FIRST(αi) ∩ FIRST(αj) = ∅    i ≠ j</code></p>
+<p>不同的候选式开头的符号不能撞车</p>
+<h6 id="如果有几个候选式，有相同的开头符号">如果有几个候选式，有相同的开头符号</h6><p>则<strong>提取公共左因子</strong></p>
+<p>如果有：</p>
+<p><code>A -&gt; aB | aC</code></p>
+<p>可以改成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A  -&gt; aA&#x27;</span><br><span class="line">A&#x27; -&gt; B | C</span><br></pre></td></tr></table></figure>
+
+<h6 id="但是只有FIRST集还不够">但是只有FIRST集还不够</h6><p>看这个文法：</p>
+<p><code>A -&gt; a | ε</code></p>
+<p>假设当前要展开<code>A</code>，如果输入符号是<code>a</code>，当然选</p>
+<p><code>A -&gt; a</code></p>
+<p>但是如果输入符号不是<code>a</code>，比如是<code>)</code>或者<code>#</code>呢？</p>
+<p>这时候可能应该选:</p>
+<p><code>A -&gt; ε</code></p>
+<p>问题来了，什么时候该选空串？</p>
+<p>得看<code>A</code>后面允许根什么符号，这就需要<strong>FOLLOW</strong>集。</p>
+<h4 id="5-6-4-FOLLOW集">5.6.4 FOLLOW集</h4><p><strong>FOLLOW(A)</strong> 表示：</p>
+<p>在某种句型中，可能紧跟在非终结符A后面的终结符的集合。</p>
+<p>如果<code>A</code>可能出现在句尾，那么结束符<code>#</code>也属于FOLLOW(A)。</p>
+<p><strong>举个简单的例子</strong>：</p>
+<p>文法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">S -&gt; A b</span><br><span class="line">A -&gt; a | ε</span><br></pre></td></tr></table></figure>
+
+<p>因为在：<code>S -&gt; A b</code>中，A后面紧跟着b，所以：</p>
+<p>FOLLOW(A) = { b }</p>
+<p>如果输入符号是<code>a</code>，那么选择<code>A -&gt; a</code></p>
+<p>如果输入符号是<code>b</code>，那么说明A应该什么都不吃，让后面的<code>b</code>去匹配，所以选择<code>A -&gt; ε</code></p>
+<p>选择 ε 产生式的依据不是FIRST集，而是FOLLOW集.</p>
+<h6 id="怎么求FOLLOW集？">怎么求FOLLOW集？</h6><h6 id="rule1-如果S是开始符号，那么：">rule1: 如果S是开始符号，那么：</h6><p><code># ∈ FOLLOW(S)</code></p>
+<h6 id="rule2-后面有东西，就看后面东西的FIRST">rule2: 后面有东西，就看后面东西的FIRST</h6><p>如果有  <code>A -&gt; α U β</code> </p>
+<p>也就是说<code>U</code>后面紧跟着<code>β</code>，那么</p>
+<p><code>FIRST(β) - {ε} 加入 FOLLOW(U)</code></p>
+<h6 id="rule3-后面的东西可能为空，就继承左部的FOLLOW">rule3: 后面的东西可能为空，就继承左部的FOLLOW</h6><p>如果有：</p>
+<p><code>A -&gt; α U β</code></p>
+<p>并且：</p>
+<p><code>β =&gt;* ε</code></p>
+<p>也就是说U后面的β可能会消失，于是：</p>
+<p><code>FOLLOW(A) 加入 FOLLOW(U)</code></p>
+<p>特殊情况，U已经在产生式的最右边，也可以用</p>
+<h2 id="第6章-自下而上的语法分析">第6章  自下而上的语法分析</h2><h3 id="6-1-基本思想">6.1 基本思想</h3><h4 id="6-1-1">6.1.1</h4><p><strong>自上而下的语法分析是：</strong></p>
+<p>从输入符号串出发，反复用产生式的右部归约成左部，</p>
+<p>最终希望规约到开始符号。</p>
+<p>也就是：</p>
+<p><code>输入串 -&gt; 归约 -&gt; 开始符号</code></p>
+<p>从语法分析树来看：</p>
+<ul>
+<li><p>自上而下：根往叶子长</p>
+</li>
+<li><p>自下而上：叶子往根合</p>
+</li>
+</ul>
+<h4 id="6-1-2-和自上而下分析的对比">6.1.2 和自上而下分析的对比</h4><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>自上而下分析</th>
+<th>自下而上分析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>起点</td>
+<td>开始符号</td>
+<td>输入串</td>
+</tr>
+<tr>
+<td>方向</td>
+<td>从根到叶</td>
+<td>从叶到根</td>
+</tr>
+<tr>
+<td>主要动作</td>
+<td>推导</td>
+<td>归约</td>
+</tr>
+<tr>
+<td>对应推到</td>
+<td>构造最左推导</td>
+<td>规范推导的逆过程</td>
+</tr>
+<tr>
+<td>方法</td>
+<td>LL(1)、递归下降</td>
+<td>移进-归约、LR</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-移进-归约分析">6.2 移进-归约分析</h3><h4 id="6-2-1-为什么需要栈？">6.2.1 为什么需要栈？</h4><p>自下而上分析需要不断扫描输入符号，并判断栈顶某段符号串是否可以归约。</p>
+<p>因此需要一个栈：</p>
+<ul>
+<li><p>符号栈：保存已经读入但是尚未完全归约的符号</p>
+</li>
+<li><p>输入串：保存尚未读入的符号</p>
+</li>
+</ul>
+<p>按照扫描顺序把当前的输入符号推进栈，再查看栈顶符号串是否可以归约。</p>
+<h4 id="6-2-2-四种动作">6.2.2 四种动作</h4><p>移进-归约分析主要有四种动作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 移进 shift</span><br><span class="line">2. 归约 reduce</span><br><span class="line">3. 接受 accept</span><br><span class="line">4. 报错 error</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-移进">1. 移进</h5><p>读入下一个输入符号，并且把它压入栈</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stack：# a                        stack:# a b</span><br><span class="line">input: b c #        shift-&gt;       input:c #</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-归约">2. 归约</h5><p>如果栈顶某个符号串是某条产生式的右部，就把他替换成产生式的左部</p>
+<p>加入有产生式<code>A -&gt; b</code></p>
+<p>现在的栈中为：<code>stack: # a b</code></p>
+<p>归约后为：<code>stack:# a A</code></p>
+<h5 id="3-接受">3. 接受</h5><p>当stack中只剩#和开始符号</p>
+<p>输入也只剩#</p>
+<p>即：<code>stack:# S input: #</code></p>
+<p>则分析成功，结束工作</p>
+<h5 id="4-error">4. error</h5><p>如果当前的状态既不能移进，也不能归约，又不能接受，则出错。</p>
+<h3 id="6-3-自下而上分析的两个基本问题">6.3 自下而上分析的两个基本问题</h3><p>自下而上分析看起来简单：不断归约就行</p>
+<p>但是问题是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">什么时候归约？</span><br><span class="line">由哪条产生式归约？</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-4-短语、直接短语、句柄">6.4 短语、直接短语、句柄</h3><h4 id="6-4-1-短语">6.4.1 短语</h4><p>设有文法G[S]，句型xuy中的子串u，如果存在：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">S-&gt; *xUy</span><br><span class="line">U-&gt; +u</span><br></pre></td></tr></table></figure>
+
+<p>则称u是句型xuy对于非终结符U的短语</p>
+<p>通俗理解：</p>
+<p>    短语 = 某个非终结符能推出的一段子串</p>
+<h4 id="6-4-2-直接短语">6.4.2 直接短语</h4><p>如果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">S-&gt; *xUy</span><br><span class="line">U-&gt; u</span><br></pre></td></tr></table></figure>
+
+<p>也就是说U一步可以直接推出u，则u是直接短语</p>
+<p>通俗理解：</p>
+<p>    直接短语 = 某个非终结符一部推出的子串</p>
+<h4 id="6-4-3-句柄">6.4.3 句柄</h4><p>句柄是：</p>
+<p>       <strong>最左直接短语</strong></p>
+<p>三者关系总结</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> 短语：可以多步推出</span><br><span class="line"><span class="bullet">-</span> 直接短语：一步推出</span><br><span class="line"><span class="bullet">-</span> 句柄：最左边的直接短语</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-5-用语法树理解短语和句柄">6.5 用语法树理解短语和句柄</h3><h4 id="6-5-1">6.5.1</h4><p>语法树中：</p>
+<p>    某课子树的所有叶子节点从左到右组成的串，就是一个短语。</p>
+<h4 id="6-5-2-直接短语和简单子树：">6.5.2 直接短语和简单子树：</h4><p>如果一个子树只有两层：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">父节点 -&gt; 孩子节点</span><br></pre></td></tr></table></figure>
+
+<p>也就是说父节点<strong>可以一步推出</strong>这些孩子节点，那么这些叶子节点从左到右组成的符号串，就是一个<strong>直接短语</strong></p>
+<h4 id="6-5-3-句柄和最左简单子树">6.5.3 句柄和最左简单子树</h4><p>句柄是：</p>
+<p>最左直接短语</p>
+<p>从语法树的角度看：</p>
+<p><code>句柄 = 最左简单子树的叶子串</code></p>
+<h3 id="6-6-为什么句柄重要？">6.6 为什么句柄重要？</h3><p>自下而上分析的本质是：</p>
+<p><code>不断的把句柄归约成对应的非终结符</code></p>
+<p>也就是说，每次归约的时候，不能随便看到一个产生式右部就归约。</p>
+<p>必须找：</p>
+<p><code>当前句型中的句柄</code></p>
+<h4 id="6-6-1-句柄和规范推导">6.6.1 句柄和规范推导</h4><h2 id="第7章-自下而上LR-k-分析方法">第7章 自下而上LR(k)分析方法</h2><h3 id="7-1-LR分析法和LR分析程序">7.1 LR分析法和LR分析程序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────┐</span><br><span class="line">│   总控程序       │  ← 驱动程序，对所有 LR 分析器都一样</span><br><span class="line">│  (Driver)       │</span><br><span class="line">│   ┌─────────┐   │</span><br><span class="line">│   │ 分析表   │   │  ← 核心，因文法不同而不同</span><br><span class="line">│   │(ACTION &amp;│   │</span><br><span class="line">│   │  GOTO)  │   │</span><br><span class="line">│   └─────────┘   │</span><br><span class="line">└─────────────────┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>总控程序</strong>：固定的“骨架”，负责查表、压栈、归约等机械操作。</p>
+</li>
+<li><p><strong>分析表</strong>：文法相关的“灵魂”，决定了看到某个状态和输入符号时该做什么。</p>
+</li>
+</ul>
+<h4 id="1-栈结构（双栈并行）">1. 栈结构（双栈并行）</h4><p>LR分析使用一个栈，但是逻辑上每个元素包含晾干部分：</p>
+<table>
+<thead>
+<tr>
+<th>状态栈 (State)</th>
+<th>q₀</th>
+<th>q₁</th>
+<th>q₂</th>
+<th>…</th>
+<th>qₘ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>符号栈 (Symbol)</td>
+<td>#</td>
+<td>X₁</td>
+<td>X₂</td>
+<td>…</td>
+<td>Xₘ</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>状态栈：存放DFA状态编号，用于记住“当前的分析进行到了哪一步“</p>
+</li>
+<li><p>符号栈：存放文法符号（终结符或非终结符），#作为栈底</p>
+</li>
+</ul>
+<p><strong>为什么需要两个栈？</strong></p>
+<p>因为自下而上分析的本质是识别<strong>句柄</strong>。状态栈相当于一个”记忆装置“，把历史信息编码成状态，避免总控程序需要回头查看栈中信息。</p>
+<h4 id="2-分析表：">2. 分析表：</h4><p>分析表是二维数组，分为两部分：</p>
+<p><strong>(1) ACTION表</strong></p>
+<p>ACTION[q, a]：状态<code>q</code>面临输入符号<code>a</code>（终结符或<code>#</code>）时采取的动作。</p>
+<table>
+<thead>
+<tr>
+<th><strong>动作</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>效果</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sj（Shift）</td>
+<td>移进</td>
+<td>把<code>a</code>和状态<code>j</code>压入栈，输入指针后移</td>
+</tr>
+<tr>
+<td>rj（Reduce）</td>
+<td>归约</td>
+<td>用第<code>j</code>条产生式<code>U -&gt; x</code>进行归约，弹出<code>x</code>个状态和符号，把<code>U</code>压栈，再通过GOTO表查新状态</td>
+</tr>
+<tr>
+<td>acc（Accept）</td>
+<td>接受</td>
+<td>分析成功，结束</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>出错</td>
+<td>报告语法错误</td>
+</tr>
+</tbody></table>
+<p><strong>(2) GOTA表</strong></p>
+<p>GOTO[q, X]：状态<code>q</code>面对文法符号<code>X</code>（通常是归约后的非终结符）时，要转移的新状态。</p>
+<h5 id="注意：">注意：</h5><ul>
+<li><p>ACTION只看<strong>终结符</strong>（输入串里的符号）。</p>
+</li>
+<li><p>GOTO只看<strong>非终结符</strong>（归约后产生的符号），用于规约后压入新状态。</p>
+</li>
+</ul>
+<h4 id="3-LR分析过程（三元式）">3. LR分析过程（三元式）</h4><p>分析过程中每一步格局用三元式表示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">（状态栈、符号栈、剩余输入串）</span><br></pre></td></tr></table></figure>
+
+<p><strong>初始状态</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(q0, #, a1a2...an#)</span><br></pre></td></tr></table></figure>
+
+<p><strong>① 移进</strong></p>
+<p>若ACTION[qi, ak] = Sj ，则：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(q0...qiqj, #X1...Xiak, ak+1...an#)</span><br></pre></td></tr></table></figure>
+
+<p>-&gt; 输入指针移到<code>ak+1</code></p>
+<p><strong>② 归约</strong></p>
+<p>若ACTION[qi, ak] = rj，且第<code>j</code>条产生式为<code>U-&gt;x</code>（<code>|x| = m</code>）：</p>
+<ol>
+<li><p>弹出栈顶的<code>m</code>个状态<code>n</code>符号；</p>
+</li>
+<li><p>把<code>U</code>压入符号栈；</p>
+</li>
+<li><p>设此时状态栈顶为<code>qt</code>，查<code>GOTO[qt, U] = qu</code></p>
+</li>
+<li><p>把<code>qu</code>压入状态栈。</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(q0...qtqu, #X1...Xi-mU, ak...an#)</span><br></pre></td></tr></table></figure>
+
+<p>输入指针不动（归约不消耗输入符号）</p>
+<p><strong>③ 接受</strong></p>
+<p>若<code>ACTION[qi, ak] = acc</code>分析成功</p>
+<p><strong>④ 出错</strong></p>
+<p>若<code>ACTION[qi, ak] = ERROR</code>报错</p>
+<h4 id="7-2-LR-0-分析表的构造">7.2 LR(0) 分析表的构造</h4><h5 id="1-基本原理：句柄识别和活前缀">1. 基本原理：句柄识别和活前缀</h5><p>自上而下分析的核心是找句柄（最左直接短语）。但是又两个难题</p>
+<ol>
+<li><p>句柄在哪？（在栈顶的哪个子串？）</p>
+</li>
+<li><p>用哪个产生式归约的？（若有多个右部相同的产生式）</p>
+</li>
+</ol>
+<p><strong>LR的解决思路：</strong></p>
+<p>把句柄的识别过程拆成一步一步的状态转移。每读入一个符号，就更新一次识别进度，用状态来记录这个进度。</p>
+<ul>
+<li><strong>活前缀</strong>：规范句型的一个前缀，不包含该句型句柄右侧的任何符号。换句话说：活前缀就是句柄及之前部分的前缀。<ul>
+<li>例如句型<code>...句柄...</code>,从左边开始读到句柄右端为止，都是活前缀</li>
+<li>分析过程中，栈里的符号串应该始终是一个活前缀。</li>
+</ul>
+</li>
+<li><strong>可归前缀</strong>：活前缀中，已经把<strong>完整句柄</strong>包含进来的那个前缀，叫做可归前缀，此时应该归约。</li>
+</ul>
+<h5 id="关键结论：">关键结论：</h5><p>对句柄的识别 -&gt; 等价于对<strong>活前缀</strong>的识别。</p>
+<p>只要栈内符号始终是活前缀，分析就是正确的。</p>
+<h4 id="2-LR-0-项目">2. LR(0)项目</h4><p>为了把”识别进度“形式化，引入LR(0)项目。</p>
+<p><strong>定义</strong>：在产生式的右部某个位置加一个圆点<code>·</code>,表示已经识别到了这里。</p>
+<p>例如产生式<code>A -&gt; xyz</code>对应四个LR(0)项目：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A -&gt; ·xyz</span><br><span class="line">A -&gt; x·yz</span><br><span class="line">A -&gt; xy·z</span><br><span class="line">A -&gt; xyz·</span><br></pre></td></tr></table></figure>
+
+<p><strong>项目类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>形式</th>
+<th>含义</th>
+<th>下一步</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>移进项目</strong></td>
+<td><code>A → α·aβ</code>（a 是终结符）</td>
+<td>期待读入终结符 a</td>
+<td>移进 a</td>
+</tr>
+<tr>
+<td><strong>待约项目</strong></td>
+<td><code>A → α·Bβ</code>（B 是非终结符）</td>
+<td>期待先归约出 B</td>
+<td>转去识别 B</td>
+</tr>
+<tr>
+<td><strong>归约项目</strong></td>
+<td><code>A → α·</code></td>
+<td>句柄已完整</td>
+<td>归约</td>
+</tr>
+<tr>
+<td><strong>接受项目</strong></td>
+<td><code>S&#x27; → S·</code></td>
+<td>拓广文法的开始符号已归约完</td>
+<td>接受</td>
+</tr>
+</tbody></table>
+<p>圆点右边是终结符 -&gt; 移进；是非终结符 -&gt; 待约；圆点在末尾 -&gt; 归约。</p>
+<h4 id="3-拓广文法">3. 拓广文法</h4><p>为了统一处理“接受”条件，引入新的开始符号<code>S‘</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">S&#x27; -&gt; S</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>S</code>是原文法的开始符号。当栈中出现<code>S</code>且输入为<code>#</code>时，就能用<code>S&#x27; -&gt; S</code>进行归约，然后接受。</p>
+<h4 id="4-构造识别活前缀的DFA">4. 构造识别活前缀的DFA</h4><p>LR(0)的核心就是构造一个DFA，他的每个状态是一个<strong>项目集</strong>（一组LR（0）项目），用来识别所有的活前缀。</p>
+<p><strong>(1)</strong> 项目集的闭包CLOSURE(I)</p>
+<p><strong>目的</strong>：如果一个项目集里有<code>A → α·Bβ</code>（待约），那么要识别B，必须先把B的所有产生式开头也加进来。</p>
+<p>算法：</p>
+<ol>
+<li><p>I中所有项目属于<code>CLOSURE(I)</code>;</p>
+</li>
+<li><p>若<code>A → α·Bβ</code>属于<code>CLOSURE(I)</code>,则对B的每个产生式<code>B -&gt; γ</code>把<code>B → ·γ</code>;<br>重复2直到不再扩大。</p>
+</li>
+</ol>
+<p><strong>直观理解</strong>：看到 <code>·B</code> 意味着“接下来要归约 B”，但 B 怎么归约？先把 B 的所有“开头项目”放进来备用，这就是<strong>闭包</strong>。</p>
+<p><strong>(2)</strong>：GOTO函数（状态转移）</p>
+<p><code>GOTO(I, X)</code>：从项目集I出发，经过符号X能到达的新项目集。</p>
+<p><strong>算法</strong>：</p>
+<ol>
+<li><p>把 I 中所有形如 <code>A → α·Xβ</code> 的项目，变成 <code>A → αX·β</code>，构成集合 J；</p>
+</li>
+<li><p>对 J 求闭包：<code>GOTO(I, X) = CLOSURE(J)</code>。</p>
+</li>
+</ol>
+<p><strong>直观理解</strong>：<br>圆点向右移过 X，表示“已经读入了 X”，然后对新产生的待约项目做闭包。</p>
+<h4 id="5-构造项目集规范族-C（即-DFA-的所有状态）">5. 构造项目集规范族 C（即 DFA 的所有状态）</h4><p><strong>算法</strong>（从初态开始不断扩展）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C = { I₀ }，其中 I₀ = CLOSURE({ S&#x27; → ·S }) </span><br><span class="line">    while C 还有新状态: </span><br><span class="line">        for C 中每个状态 I: </span><br><span class="line">            for 每个文法符号 X: </span><br><span class="line">                if GOTO(I, X) 非空且不在 C 中: </span><br><span class="line">                    把 GOTO(I, X) 加入 C</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：C 就是所有活前缀对应的项目集，也就是 DFA 的状态集合。<br>DFA 的初态是 <code>I₀</code>，转移边由 GOTO 定义。</p>
+<h4 id="6-有效项目（Valid-Item）">6. 有效项目（Valid Item）</h4><p>项目 <code>A → α·β</code> 对活前缀 <code>γ</code> 是<strong>有效的</strong>，如果存在规范推导：<br>    S ⇒* δAω ⇒ δαβω</p>
+<p>且 <code>γ = δα</code>。</p>
+<p><strong>通俗版</strong>：  活前缀 <code>γ</code> 已经包含了 <code>α</code>，接下来如果能看到 <code>β</code>，就能归约出 <code>A</code>。那么 <code>A → α·β</code> 就是 <code>γ</code> 的一个有效项目。</p>
+<p><strong>一个状态里可能有多个有效项目</strong>（对应不同的活前缀推导路径），这是正常的。</p>
+<h4 id="7-LR-0-文法">7. LR(0)文法</h4><p>如果构造出的DFA中，每个项目集（状态）都不含冲突项目，则称该文法为LR(0)文法。</p>
+<p>冲突类型：</p>
+<table>
+<thead>
+<tr>
+<th>冲突</th>
+<th>形式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>移进-归约冲突</strong></td>
+<td>同一状态里既有 <code>A → α·</code>（归约），又有 <code>B → β·aγ</code>（移进）</td>
+<td>不知道应该归约还是读入 a</td>
+</tr>
+<tr>
+<td><strong>归约-归约冲突</strong></td>
+<td>同一状态里有两个不同的归约项目 <code>A → α·</code> 和 <code>B → β·</code></td>
+<td>不知道用哪个产生式归约</td>
+</tr>
+</tbody></table>
+<p>注意：LR(0)文法要求没有任何冲突。</p>
+<h4 id="8-构造LR-0-分析表">8. 构造LR(0)分析表</h4><p>有了DFA后，按照以下5条规则填表</p>
+<p>设状态集<code>Ii</code>对应状态<code>i</code>。</p>
+<table>
+<thead>
+<tr>
+<th align="left">规则</th>
+<th>条件</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>① 移进</strong></td>
+<td>若 <code>A → α·aβ ∈ Iᵢ</code> 且 <code>GOTO(Iᵢ, a) = Iⱼ</code>，<code>a</code> 为终结符</td>
+<td><code>ACTION[i, a] = Sⱼ</code></td>
+</tr>
+<tr>
+<td align="left"><strong>② 接受</strong></td>
+<td>若 <code>S&#x27; → S· ∈ Iᵢ</code></td>
+<td><code>ACTION[i, #] = acc</code></td>
+</tr>
+<tr>
+<td align="left"><strong>③ 归约</strong></td>
+<td>若 <code>A → α· ∈ Iᵢ</code>（<code>A ≠ S&#x27;</code>），对<strong>任意</strong>终结符 <code>a</code> 和 <code>#</code></td>
+<td><code>ACTION[i, a] = rⱼ</code>，<code>ACTION[i, #] = rⱼ</code>（j 为产生式编号）</td>
+</tr>
+<tr>
+<td align="left"><strong>④ GOTO</strong></td>
+<td>若 <code>A → α·Bβ ∈ Iᵢ</code> 且 <code>GOTO(Iᵢ, B) = Iⱼ</code>，<code>B</code> 为非终结符</td>
+<td><code>GOTO[i, B] = j</code></td>
+</tr>
+<tr>
+<td align="left"><strong>⑤ 报错</strong></td>
+<td>其余空白格</td>
+<td>填 ERROR</td>
+</tr>
+</tbody></table>
+<h3 id="重点：LR-0-完整手推实例">重点：LR(0)完整手推实例</h3><h4 id="一、原文法和拓广文法">一、原文法和拓广文法</h4><p>PPT给出的原文法G[S]:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. S -&gt; E</span><br><span class="line">2. E -&gt; aA</span><br><span class="line">3. E -&gt; bB</span><br><span class="line">3. A -&gt; cA</span><br><span class="line">4. A -&gt; d</span><br><span class="line">5. B -&gt; cB</span><br><span class="line">6. B -&gt; d</span><br></pre></td></tr></table></figure>
+
+<p>拓广文法：引入新开始符号，保证唯一接受状态</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[0&#x27;] S&#x27; → S</span><br><span class="line">[0]  S → E</span><br><span class="line">[1]  E → aA</span><br><span class="line">[2]  E → bB</span><br><span class="line">[3]  A → cA</span><br><span class="line">[4]  A → d</span><br><span class="line">[5]  B → cB</span><br><span class="line">[6]  B → d</span><br></pre></td></tr></table></figure>
+
+<h4 id="二、写出所有LR-0-项目">二、写出所有LR(0)项目</h4><p>在每个产生式右部<strong>所有可能位置</strong>插入圆点：</p>
+<table>
+<thead>
+<tr>
+<th align="left">产生式</th>
+<th align="left">对应项目</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>S&#x27; → S</code></td>
+<td align="left"><code>S&#x27; → ·S</code> , <code>S&#x27; → S·</code></td>
+</tr>
+<tr>
+<td align="left"><code>S → E</code></td>
+<td align="left"><code>S → ·E</code> , <code>S → E·</code></td>
+</tr>
+<tr>
+<td align="left"><code>E → aA</code></td>
+<td align="left"><code>E → ·aA</code> , <code>E → a·A</code> , <code>E → aA·</code></td>
+</tr>
+<tr>
+<td align="left"><code>E → bB</code></td>
+<td align="left"><code>E → ·bB</code> , <code>E → b·B</code> , <code>E → bB·</code></td>
+</tr>
+<tr>
+<td align="left"><code>A → cA</code></td>
+<td align="left"><code>A → ·cA</code> , <code>A → c·A</code> , <code>A → cA·</code></td>
+</tr>
+<tr>
+<td align="left"><code>A → d</code></td>
+<td align="left"><code>A → ·d</code> , <code>A → d·</code></td>
+</tr>
+<tr>
+<td align="left"><code>B → cB</code></td>
+<td align="left"><code>B → ·cB</code> , <code>B → c·B</code> , <code>B → cB·</code></td>
+</tr>
+<tr>
+<td align="left"><code>B → d</code></td>
+<td align="left"><code>B → ·d</code> , <code>B → d·</code></td>
+</tr>
+</tbody></table>
+<h4 id="三、构造项目集规范族（DFA的状态）">三、构造项目集规范族（DFA的状态）</h4><h5 id="step1：求初态I0">step1：求初态I0</h5><p>I0 = CLOSURE({S’ -&gt; ·S})</p>
+<p>求闭包的过程就像“看到待约项目就自动展开“：</p>
+<ol>
+<li><p><strong>初始放入</strong>：<code>S&#x27; → ·S</code></p>
+</li>
+<li><p>圆点后是<strong>非终结符 S</strong>，把 S 的所有开头项目加进来：</p>
+<ul>
+<li>加入 <code>S → ·E</code></li>
+</ul>
+</li>
+<li><p>圆点后是<strong>非终结符 E</strong>，把 E 的所有开头项目加进来：</p>
+<ul>
+<li><p>加入 <code>E → ·aA</code></p>
+</li>
+<li><p>加入 <code>E → ·bB</code></p>
+</li>
+</ul>
+</li>
+<li><p>圆点后是终结符 <code>a</code>、<code>b</code>，停止。</p>
+</li>
+</ol>
+<p>I0 = {</p>
+<ul>
+<li><code>S&#x27; -&gt; ·S</code></li>
+<li><code>S -&gt; ·E</code></li>
+<li><code>E -&gt; ·aA</code></li>
+<li><code>E -&gt; ·bB</code></li>
+</ul>
+<p>}</p>
+<p><strong>从I0求GOTO(出边)</strong></p>
+<p>对I0中<strong>每个圆点后紧跟符号X</strong>的项目，把圆点右移，再求闭包</p>
+<table>
+<thead>
+<tr>
+<th align="center">符号 X</th>
+<th align="left">圆点右移后的项目</th>
+<th align="left">求闭包</th>
+<th align="left">新状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>S</strong></td>
+<td align="left"><code>S&#x27; → S·</code></td>
+<td align="left">圆点已在末尾，无新增</td>
+<td align="left"><strong>I1</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>E</strong></td>
+<td align="left"><code>S → E·</code></td>
+<td align="left">圆点已在末尾</td>
+<td align="left"><strong>I2</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>a</strong></td>
+<td align="left"><code>E → a·A</code></td>
+<td align="left">A 在圆点后，加入 <code>A→·cA</code>, <code>A→·d</code></td>
+<td align="left"><strong>I3</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>b</strong></td>
+<td align="left"><code>E → b·B</code></td>
+<td align="left">B 在圆点后，加入 <code>B→·cB</code>, <code>B→·d</code></td>
+<td align="left"><strong>I8</strong></td>
+</tr>
+</tbody></table>
+<p><strong>例如：求GOTO(I0, a)</strong>：</p>
+<ul>
+<li><p>把I0中的<code>E -&gt; ·aA</code>的圆点右移，得到<code>E -&gt; a·A</code></p>
+</li>
+<li><p>对<code>{E -&gt; a·A}</code>求闭包：圆点后面是A(非终结符)，加入A的所有开头项目<code>A-&gt;·cA</code>,<code>A-&gt;·d</code>，</p>
+</li>
+<li><p>c和d是终结符，停止</p>
+</li>
+<li><p>结果 I3 = {E -&gt; a·A, A -&gt; ·cA, A -&gt; ·d}</p>
+</li>
+</ul>
+<h5 id="处理I1-S’-S·">处理I1 = {S’ -&gt; S·}</h5><ul>
+<li><p>只有接受项目，<strong>没有出边</strong>。</p>
+</li>
+<li><p>分析表中：<code>ACTION[I1, #] = acc</code></p>
+</li>
+</ul>
+<h5 id="处理-I2-S-E·">处理 I2 = {S -&gt; E·}</h5><ul>
+<li><p>只有<strong>归约项目</strong>（产生式0： <code>S -&gt; E</code>）</p>
+</li>
+<li><p>无出边</p>
+</li>
+</ul>
+<h5 id="处理-I3-E→a·A-A→·cA-A→·d">处理 I3 = { E→a·A, A→·cA, A→·d }</h5><p>逐个看圆点后的符号：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>圆点右移</th>
+<th>闭包计算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A</strong></td>
+<td><code>E → aA·</code></td>
+<td>无</td>
+<td><strong>I4</strong></td>
+</tr>
+<tr>
+<td><strong>c</strong></td>
+<td><code>A → c·A</code></td>
+<td>加入 <code>A→·cA</code>, <code>A→·d</code></td>
+<td><strong>I5</strong></td>
+</tr>
+<tr>
+<td><strong>d</strong></td>
+<td><code>A → d·</code></td>
+<td>无</td>
+<td><strong>I7</strong></td>
+</tr>
+</tbody></table>
+<p><strong>I4 = { E → aA· }</strong> （归约，产生式 1）<br><strong>I5 = { A→c·A, A→·cA, A→·d }</strong><br><strong>I7 = { A → d· }</strong> （归约，产生式 4） </p>
+<h5 id="处理-I5-A→c·A-A→·cA-A→·d">处理 I5 = { A→c·A, A→·cA, A→·d }</h5><table>
+<thead>
+<tr>
+<th>符号</th>
+<th>圆点右移</th>
+<th>闭包计算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A</strong></td>
+<td><code>A → cA·</code></td>
+<td>无</td>
+<td><strong>I6</strong></td>
+</tr>
+<tr>
+<td><strong>c</strong></td>
+<td><code>A → c·A</code></td>
+<td>加入 <code>A→·cA</code>, <code>A→·d</code></td>
+<td><strong>= I5 自身</strong></td>
+</tr>
+<tr>
+<td><strong>d</strong></td>
+<td><code>A → d·</code></td>
+<td>无</td>
+<td><strong>= I7</strong></td>
+</tr>
+</tbody></table>
+<p><strong>I6 = { A → cA· }</strong> （归约，产生式 3）</p>
+<blockquote>
+<p><strong>关键发现</strong>：GOTO(I5, c) 算出来的集合和 I5 完全一样！这叫<strong>自环</strong>（PPT 图中 I4 上有个 c 的自环箭头）。 </p>
+</blockquote>
+<h5 id="处理-I7-A-→-d·">处理 I7 = { A → d· }</h5><ul>
+<li>归约项目，无出边。</li>
+</ul>
+<h5 id="处理-I8-E→b·B-B→·cB-B→·d">处理 I8 = { E→b·B, B→·cB, B→·d }</h5><table>
+<thead>
+<tr>
+<th>符号</th>
+<th>圆点右移</th>
+<th>闭包计算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>B</strong></td>
+<td><code>E → bB·</code></td>
+<td>无</td>
+<td><strong>I9</strong></td>
+</tr>
+<tr>
+<td><strong>c</strong></td>
+<td><code>B → c·B</code></td>
+<td>加入 <code>B→·cB</code>, <code>B→·d</code></td>
+<td><strong>I10</strong></td>
+</tr>
+<tr>
+<td><strong>d</strong></td>
+<td><code>B → d·</code></td>
+<td>无</td>
+<td><strong>I12</strong></td>
+</tr>
+</tbody></table>
+<p><strong>I9 = { E → bB· }</strong> （归约，产生式 2）<br><strong>I10 = { B→c·B, B→·cB, B→·d }</strong><br><strong>I12 = { B → d· }</strong> （归约，产生式 6） </p>
+<h5 id="处理-I10-B→c·B-B→·cB-B→·d">处理 I10 = { B→c·B, B→·cB, B→·d }</h5><table>
+<thead>
+<tr>
+<th>符号</th>
+<th>圆点右移</th>
+<th>闭包计算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>B</strong></td>
+<td><code>B → cB·</code></td>
+<td>无</td>
+<td><strong>I11</strong></td>
+</tr>
+<tr>
+<td><strong>c</strong></td>
+<td><code>B → c·B</code></td>
+<td>加入 <code>B→·cB</code>, <code>B→·d</code></td>
+<td><strong>= I10 自身</strong></td>
+</tr>
+<tr>
+<td><strong>d</strong></td>
+<td><code>B → d·</code></td>
+<td>无</td>
+<td><strong>= I12</strong></td>
+</tr>
+</tbody></table>
+<p><strong>I11 = { B → cB· }</strong> （归约，产生式 5）</p>
+<h3 id="四、完整的项目集规范族">四、完整的项目集规范族</h3><table>
+<thead>
+<tr>
+<th align="center">状态</th>
+<th align="left">项目集内容</th>
+<th align="center">类型</th>
+<th align="center">对应 PPT</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>I0</strong></td>
+<td align="left"><code>S&#x27;→·S, S→·E, E→·aA, E→·bB</code></td>
+<td align="center">初态</td>
+<td align="center"><strong>I0</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I1</strong></td>
+<td align="left"><code>S&#x27;→S·</code></td>
+<td align="center">接受</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td align="center"><strong>I2</strong></td>
+<td align="left"><code>S→E·</code></td>
+<td align="center">归约(r0)</td>
+<td align="center"><strong>I1</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I3</strong></td>
+<td align="left"><code>E→a·A, A→·cA, A→·d</code></td>
+<td align="center">移进/待约</td>
+<td align="center"><strong>I2</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I4</strong></td>
+<td align="left"><code>E→aA·</code></td>
+<td align="center">归约(r1)</td>
+<td align="center"><strong>I3</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I5</strong></td>
+<td align="left"><code>A→c·A, A→·cA, A→·d</code></td>
+<td align="center">移进/待约</td>
+<td align="center"><strong>I4</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I6</strong></td>
+<td align="left"><code>A→cA·</code></td>
+<td align="center">归约(r3)</td>
+<td align="center"><strong>I5</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I7</strong></td>
+<td align="left"><code>A→d·</code></td>
+<td align="center">归约(r4)</td>
+<td align="center"><strong>I6</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I8</strong></td>
+<td align="left"><code>E→b·B, B→·cB, B→·d</code></td>
+<td align="center">移进/待约</td>
+<td align="center"><strong>I7</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I9</strong></td>
+<td align="left"><code>E→bB·</code></td>
+<td align="center">归约(r2)</td>
+<td align="center"><strong>I8</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I10</strong></td>
+<td align="left"><code>B→c·B, B→·cB, B→·d</code></td>
+<td align="center">移进/待约</td>
+<td align="center"><strong>I9</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I11</strong></td>
+<td align="left"><code>B→cB·</code></td>
+<td align="center">归约(r5)</td>
+<td align="center"><strong>I10</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I12</strong></td>
+<td align="left"><code>B→d·</code></td>
+<td align="center">归约(r6)</td>
+<td align="center"><strong>I11</strong></td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：所有状态中，<strong>移进项目和归约项目从不共存</strong>，也<strong>不存在多个不同归约项目共存</strong>。</p>
+<p><strong>因此，该文法是 LR(0) 文法。</strong></p>
+<h5 id="完整分析表如下：">完整分析表如下：</h5><table>
+<thead>
+<tr>
+<th align="center">状态</th>
+<th align="center">ACTION(a)</th>
+<th align="center">ACTION(b)</th>
+<th align="center">ACTION(c)</th>
+<th align="center">ACTION(d)</th>
+<th align="center">ACTION(#)</th>
+<th align="center">GOTO(S)</th>
+<th align="center">GOTO(E)</th>
+<th align="center">GOTO(A)</th>
+<th align="center">GOTO(B)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>I0</strong></td>
+<td align="center">S3</td>
+<td align="center">S8</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I1</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><strong>acc</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I2</strong></td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I3</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">S5</td>
+<td align="center">S7</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">4</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I4</strong></td>
+<td align="center">r1</td>
+<td align="center">r1</td>
+<td align="center">r1</td>
+<td align="center">r1</td>
+<td align="center">r1</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I5</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">S5</td>
+<td align="center">S7</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">6</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I6</strong></td>
+<td align="center">r3</td>
+<td align="center">r3</td>
+<td align="center">r3</td>
+<td align="center">r3</td>
+<td align="center">r3</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I7</strong></td>
+<td align="center">r4</td>
+<td align="center">r4</td>
+<td align="center">r4</td>
+<td align="center">r4</td>
+<td align="center">r4</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I8</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">S10</td>
+<td align="center">S12</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">9</td>
+</tr>
+<tr>
+<td align="center"><strong>I9</strong></td>
+<td align="center">r2</td>
+<td align="center">r2</td>
+<td align="center">r2</td>
+<td align="center">r2</td>
+<td align="center">r2</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I10</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">S10</td>
+<td align="center">S12</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">11</td>
+</tr>
+<tr>
+<td align="center"><strong>I11</strong></td>
+<td align="center">r5</td>
+<td align="center">r5</td>
+<td align="center">r5</td>
+<td align="center">r5</td>
+<td align="center">r5</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>I12</strong></td>
+<td align="center">r6</td>
+<td align="center">r6</td>
+<td align="center">r6</td>
+<td align="center">r6</td>
+<td align="center">r6</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><strong>观察</strong>：所有归约状态（I2, I4, I6, I7, I9, I11, I12）的 ACTION 行都是清一色的 <code>rₖ</code>，<strong>不管输入什么终结符都归约</strong>。这就是 LR(0) “盲目归约”的特点，也是它容易产生冲突的根源。</p>
+<h3 id="7-3-SLR-1-分析表的构造">7.3 SLR(1)分析表的构造</h3><h4 id="一、LR-0-的”盲目归约”的问题">一、LR(0)的”盲目归约”的问题</h4><p>在LR(0)中，只要状态中出现归约项目<code>A -&gt; α·</code>:</p>
+<p>规则是：对<strong>所有终结符</strong><code>a</code>和<code>#</code>，都填<code>ACTION[i,a] = rj</code></p>
+<p>比如刚才推出来的<strong>I2 = {S -&gt; E·}</strong>, LR(0)表是这样填的：</p>
+<table>
+<thead>
+<tr>
+<th align="center">状态</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">c</th>
+<th align="center">d</th>
+<th align="center">#</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>I2</strong></td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+<td align="center">r0</td>
+</tr>
+</tbody></table>
+<p><strong>问题</strong>：状态I2意味着我已经读完了<code>S -&gt; E</code>。在这个文法里，E后面只能根<code>#</code>(因为E是S的唯一直接组成，而S后面是<code>#</code>)。对<code>a,b,c,d</code>填<code>r0</code>是多余的，甚至是危险的，如果某个状态既有归约又有移进，这种“一刀切”就会发生冲突。</p>
+<p>SLR(1)的改进就是：只有在该归约的时候才归约。</p>
+<h4 id="二、SLR-1-的核心改进">二、SLR(1)的核心改进</h4><p>对归约项目<code>A -&gt; a·</code>，不再对所有终结符填<code>r</code>，而是只对所有的 <strong><code>a ∈ FOLLOW(A)</code></strong> 填 <code>ACTION[i, a] = r</code>。</p>
+<h5 id="计算上述文法的FOLLOW集">计算上述文法的FOLLOW集</h5><p>文法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">S&#x27; → S</span><br><span class="line">S → E</span><br><span class="line">E → aA | bB</span><br><span class="line">A → cA | d</span><br><span class="line">B → cB | d</span><br></pre></td></tr></table></figure>
+
+<p><strong>FIRST 集</strong>（辅助计算）：</p>
+<ul>
+<li><p><code>FIRST(E) = {a, b}</code></p>
+</li>
+<li><p><code>FIRST(A) = {c, d}</code></p>
+</li>
+<li><p><code>FIRST(B) = {c, d}</code></p>
+</li>
+</ul>
+<p><strong>FOLLOW 集</strong>（从后往前、从外往里推）：</p>
+<table>
+<thead>
+<tr>
+<th>非终结符</th>
+<th>推导过程</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FOLLOW(S&#x27;)</code></td>
+<td>开始符号，末尾自动加 <code>#</code></td>
+<td>``</td>
+</tr>
+<tr>
+<td><code>FOLLOW(E)</code></td>
+<td><code>S → E</code>，E 在末尾，继承 <code>FOLLOW(S)</code></td>
+<td>``</td>
+</tr>
+<tr>
+<td><code>FOLLOW(B)</code></td>
+<td><code>E → bB</code>，B 在末尾，继承 <code>FOLLOW(E)</code>；<code>B → cB</code> 同理</td>
+<td><code>{#}</code></td>
+</tr>
+</tbody></table>
+<p>这个文法太”瘦”了，所有非终结符后面都只有 <code>#</code>。所以 FOLLOW 集都很小。</p>
+<h4 id="三、SLR-1-分析表">三、SLR(1)分析表</h4><p>我们只列出上述文法有归约的状态：</p>
+<table>
+<thead>
+<tr>
+<th align="center">状态</th>
+<th align="left">项目内容</th>
+<th align="left">LR(0) 动作 (a,b,c,d,#)</th>
+<th align="left">SLR(1) 动作 (a,b,c,d,#)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>I1</strong></td>
+<td align="left"><code>S&#x27;→S·</code></td>
+<td align="left">—,—,—,—,acc</td>
+<td align="left">—,—,—,—,<strong>acc</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I2</strong></td>
+<td align="left"><code>S→E·</code></td>
+<td align="left">r0,r0,r0,r0,r0</td>
+<td align="left">—,—,—,—,<strong>r0</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I4</strong></td>
+<td align="left"><code>E→aA·</code></td>
+<td align="left">r1,r1,r1,r1,r1</td>
+<td align="left">—,—,—,—,<strong>r1</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I6</strong></td>
+<td align="left"><code>A→cA·</code></td>
+<td align="left">r3,r3,r3,r3,r3</td>
+<td align="left">—,—,—,—,<strong>r3</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I7</strong></td>
+<td align="left"><code>A→d·</code></td>
+<td align="left">r4,r4,r4,r4,r4</td>
+<td align="left">—,—,—,—,<strong>r4</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I9</strong></td>
+<td align="left"><code>E→bB·</code></td>
+<td align="left">r2,r2,r2,r2,r2</td>
+<td align="left">—,—,—,—,<strong>r2</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I11</strong></td>
+<td align="left"><code>B→cB·</code></td>
+<td align="left">r5,r5,r5,r5,r5</td>
+<td align="left">—,—,—,—,<strong>r5</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>I12</strong></td>
+<td align="left"><code>B→d·</code></td>
+<td align="left">r6,r6,r6,r6,r6</td>
+<td align="left">—,—,—,—,<strong>r6</strong></td>
+</tr>
+</tbody></table>
+<p><strong>观察</strong>：SLR(1)表比LR(0)表稀疏的多，那些永远不会出现的输入(比如在 <code>E→aA·</code> 状态读 <code>c</code>),</p>
+<p>SLR(1)直接留空(ERROR)。</p>
+<p><strong>但是分析过程完全一样</strong>，因为这个文法本手就是LR(0)文法，但是实际运行到这些状态时，输入确实只会是<code>#</code>。</p>
+
+    
