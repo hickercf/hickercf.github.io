@@ -1,0 +1,344 @@
+[
+  {
+    "title": "OS",
+    "category": "课程笔记",
+    "date": "2026-05-31",
+    "url": "/2026/05/31/OS/",
+    "excerpt": "從進程、執行緒到記憶體管理，整理作業系統的重要概念與課程重點。",
+    "content": "articles/OS.html",
+    "minutes": 67,
+    "headings": [
+      {
+        "id": "第二章：进程与线程",
+        "text": "第二章：进程与线程"
+      },
+      {
+        "id": "第2章-进程与线程",
+        "text": "第2章 进程与线程"
+      },
+      {
+        "id": "POSIX共享内存",
+        "text": "POSIX共享内存"
+      },
+      {
+        "id": "第三章：调度",
+        "text": "第三章：调度"
+      },
+      {
+        "id": "第四章：进程同步",
+        "text": "第四章：进程同步"
+      },
+      {
+        "id": "第五章-死锁",
+        "text": "第五章 死锁"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "数据库",
+    "category": "课程笔记",
+    "date": "2026-05-31",
+    "url": "/2026/05/31/数据库/",
+    "excerpt": "整理關聯模型、SQL 與資料庫設計，把課堂上的概念串成完整的知識脈絡。",
+    "content": "articles/数据库.html",
+    "minutes": 38,
+    "headings": [
+      {
+        "id": "第2章：关系模型基础",
+        "text": "第2章：关系模型基础"
+      },
+      {
+        "id": "第3章：关系代数",
+        "text": "第3章：关系代数"
+      },
+      {
+        "id": "第4章：结构化语言SQL",
+        "text": "第4章：结构化语言SQL"
+      },
+      {
+        "id": "第6章：事务、并发与故障恢复",
+        "text": "第6章：事务、并发与故障恢复"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "数据库实验",
+    "category": "课程笔记",
+    "date": "2026-05-31",
+    "url": "/2026/05/31/数据库实验/",
+    "excerpt": "記錄資料庫實驗的操作步驟、SQL 練習與實作過程。",
+    "content": "articles/数据库实验.html",
+    "minutes": 6,
+    "headings": [
+      {
+        "id": "实验二",
+        "text": "实验二"
+      },
+      {
+        "id": "实验3：",
+        "text": "实验3："
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "汇编和接口",
+    "category": "课程笔记",
+    "date": "2026-05-31",
+    "url": "/2026/05/31/汇编和接口/",
+    "excerpt": "關於組合語言、指令系統與介面設計的完整課程筆記。",
+    "content": "articles/汇编和接口.html",
+    "minutes": 87,
+    "headings": [
+      {
+        "id": "寄存器：",
+        "text": "寄存器："
+      },
+      {
+        "id": "模块化程序设计的相关问题",
+        "text": "模块化程序设计的相关问题"
+      },
+      {
+        "id": "汇编代码の使用教程",
+        "text": "汇编代码の使用教程"
+      },
+      {
+        "id": "标志寄存器Related",
+        "text": "标志寄存器Related"
+      },
+      {
+        "id": "内中断",
+        "text": "内中断"
+      },
+      {
+        "id": "int指令",
+        "text": "int指令"
+      },
+      {
+        "id": "端口",
+        "text": "端口"
+      },
+      {
+        "id": "外中断",
+        "text": "外中断"
+      },
+      {
+        "id": "第16章-直接定位表",
+        "text": "第16章 直接定位表"
+      },
+      {
+        "id": "第17章",
+        "text": "第17章"
+      },
+      {
+        "id": "接口部分：",
+        "text": "接口部分："
+      },
+      {
+        "id": "第5章、第6章学习总路线",
+        "text": "第5章、第6章学习总路线"
+      },
+      {
+        "id": "5-2-RAM-随机存储器-1",
+        "text": "5.2 RAM 随机存储器"
+      },
+      {
+        "id": "5-3-ROM-只读存储器",
+        "text": "5.3 ROM 只读存储器"
+      },
+      {
+        "id": "5-4-存储器与-CPU-的连接",
+        "text": "5.4 存储器与 CPU 的连接"
+      },
+      {
+        "id": "6-1-I-O接口-1",
+        "text": "6.1 I/O接口"
+      },
+      {
+        "id": "6-2-8255A-工作原理",
+        "text": "6.2 8255A 工作原理"
+      },
+      {
+        "id": "6-3-8255A应用举例",
+        "text": "6.3 8255A应用举例"
+      },
+      {
+        "id": "本轮小结",
+        "text": "本轮小结"
+      },
+      {
+        "id": "例1：8个开关控制8个LED",
+        "text": "例1：8个开关控制8个LED"
+      },
+      {
+        "id": "为什么用-A口和-B口？",
+        "text": "为什么用 A口和 B口？"
+      },
+      {
+        "id": "为什么控制字是-10010000B？",
+        "text": "为什么控制字是 10010000B？"
+      },
+      {
+        "id": "端口地址为什么是-F0H、F2H、F6H？",
+        "text": "端口地址为什么是 F0H、F2H、F6H？"
+      },
+      {
+        "id": "最关键的一点：为什么读进来能直接输出？",
+        "text": "最关键的一点：为什么读进来能直接输出？"
+      },
+      {
+        "id": "整个程序用白话翻译",
+        "text": "整个程序用白话翻译"
+      },
+      {
+        "id": "你抓住这个模型就行",
+        "text": "你抓住这个模型就行"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "编译原理",
+    "category": "课程笔记",
+    "date": "2026-05-31",
+    "url": "/2026/05/31/编译原理/",
+    "excerpt": "從文法、語法分析到 LR 分析方法，逐步理解編譯器背後的原理。",
+    "content": "articles/编译原理.html",
+    "minutes": 29,
+    "headings": [
+      {
+        "id": "编译原理",
+        "text": "编译原理"
+      },
+      {
+        "id": "第2章-形式语言概论",
+        "text": "第2章 形式语言概论"
+      },
+      {
+        "id": "第5章-自上而下的语法分析",
+        "text": "第5章 自上而下的语法分析"
+      },
+      {
+        "id": "第6章-自下而上的语法分析",
+        "text": "第6章  自下而上的语法分析"
+      },
+      {
+        "id": "第7章-自下而上LR-k-分析方法",
+        "text": "第7章 自下而上LR(k)分析方法"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "PY基础",
+    "category": "AI学习",
+    "date": "2026-05-08",
+    "url": "/2026/05/08/PY基础/",
+    "excerpt": "Python 的入門學習記錄，從基礎語法與常用操作開始，為後續實踐打好底子。",
+    "content": "articles/PY基础.html",
+    "minutes": 6,
+    "headings": [
+      {
+        "id": "三个重要的库",
+        "text": "三个重要的库"
+      },
+      {
+        "id": "Numpy",
+        "text": "Numpy"
+      },
+      {
+        "id": "Pandas",
+        "text": "Pandas"
+      },
+      {
+        "id": "Matplotlib",
+        "text": "Matplotlib"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "How-Transformer-LLMs-Work",
+    "category": "AI学习",
+    "date": "2026-05-07",
+    "url": "/2026/05/07/How-Transformer-LLMs-Work/",
+    "excerpt": "從 Token、Embedding 到 Attention，梳理 Transformer 與大型語言模型的運作方式。",
+    "content": "articles/How-Transformer-LLMs-Work.html",
+    "minutes": 18,
+    "headings": [
+      {
+        "id": "1-引言：LLM到底是怎么读懂一句话，并且继续写下去的？",
+        "text": "1.引言：LLM到底是怎么读懂一句话，并且继续写下去的？"
+      },
+      {
+        "id": "2-Understanding-Lauguage-Models",
+        "text": "2.Understanding Lauguage Models"
+      }
+    ],
+    "featured": true,
+    "missingImages": 0,
+    "featureTitle": "從 Token 到 Transformer，\n理解大型語言模型"
+  },
+  {
+    "title": "汇编语言与接口设计",
+    "category": "课程笔记",
+    "date": "2026-05-03",
+    "url": "/2026/05/03/汇编语言与接口设计/",
+    "excerpt": "整理組合語言與介面設計的基礎概念，留下複習時可以回頭查閱的學習軌跡。",
+    "content": "articles/汇编语言与接口设计.html",
+    "minutes": 13,
+    "headings": [
+      {
+        "id": "寄存器：",
+        "text": "寄存器："
+      },
+      {
+        "id": "模块化程序设计的相关问题",
+        "text": "模块化程序设计的相关问题"
+      },
+      {
+        "id": "汇编代码の使用教程",
+        "text": "汇编代码の使用教程"
+      },
+      {
+        "id": "标志寄存器Related",
+        "text": "标志寄存器Related"
+      },
+      {
+        "id": "内中断",
+        "text": "内中断"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  },
+  {
+    "title": "👋 欢迎来到我的博客",
+    "category": "生活随笔",
+    "date": "2026-05-03",
+    "url": "/2026/05/03/首页-欢迎来到我的博客/",
+    "excerpt": "在程式碼、書本與凌晨三點之間，記錄學習、工具探索和生活裡的小片刻。",
+    "content": "articles/首页-欢迎来到我的博客.html",
+    "minutes": 1,
+    "headings": [
+      {
+        "id": "📝-最近更新",
+        "text": "📝 最近更新"
+      },
+      {
+        "id": "📂-浏览内容",
+        "text": "📂 浏览内容"
+      }
+    ],
+    "featured": false,
+    "missingImages": 0
+  }
+]

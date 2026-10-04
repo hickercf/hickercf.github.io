@@ -1,270 +1,23 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#faf5eb" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#3d2b1f" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#faf5eb">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hickercf.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":24,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"stackoverflow-dark","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"flat"},"fold":{"enable":true,"height":300},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
-
-    <meta name="description" content="寄存器：以8086为例：寄存器都是16位 *通用寄存器：*AX, BX, CX, DX	每个寄存器又可以分为高8位和低8位：如AX -&gt; AH,  AL  每个寄存器都可以独立使用    处理数据的尺寸：	字节 byte 8位     字 word 16位 简单的汇编指令：	mov ax bx   ax &lt;- bx	add ax bx   ax &lt;- ax + bx	jmp 3:">
-<meta property="og:type" content="article">
-<meta property="og:title" content="汇编语言与接口设计">
-<meta property="og:url" content="https://hickercf.github.io/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/index.html">
-<meta property="og:site_name" content="MuZZZFeng&#39;s Blog">
-<meta property="og:description" content="寄存器：以8086为例：寄存器都是16位 *通用寄存器：*AX, BX, CX, DX	每个寄存器又可以分为高8位和低8位：如AX -&gt; AH,  AL  每个寄存器都可以独立使用    处理数据的尺寸：	字节 byte 8位     字 word 16位 简单的汇编指令：	mov ax bx   ax &lt;- bx	add ax bx   ax &lt;- ax + bx	jmp 3:">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-03T12:04:43.277Z">
-<meta property="article:author" content="MuZZZFeng">
-<meta property="article:tag" content="AI, 学习笔记, 工具折腾, 生活随笔, 个人博客">
-<meta name="twitter:card" content="summary">
-
-
-<link rel="canonical" href="https://hickercf.github.io/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/">
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hickercf.github.io/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/","path":"2026/05/03/汇编语言与接口设计/","title":"汇编语言与接口设计"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>汇编语言与接口设计 | MuZZZFeng's Blog</title>
-  
-
-
-
-
-
-
-
-
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
-<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
-
-  
-
-
-
-
-
-
-  
-
-
-
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-
-
-<meta name="view-transition" content="same-origin">
-
-
-<link rel="icon" type="image/png" href="/images/logo-muzzzfeng.png">
-<link rel="apple-touch-icon" href="/images/logo-muzzzfeng.png">
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="headband"></div>
-
-  <main class="main">
-    <div class="column">
-      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-      <img class="custom-logo-image" src="/images/logo-muzzzfeng.png" alt="MuZZZFeng's Blog">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">MuZZZFeng's Blog</p>
-      <i class="logo-line"></i>
-    </a>
-      <p class="site-subtitle" itemprop="description">记录学习、思考、折腾和一些凌晨的碎碎念。</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="搜索" role="button">
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-  </ul>
-</nav>
-
-
-
-
-
-
-</header>
-        
-  
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">寄存器：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A58086%E4%B8%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">以8086为例：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">模块化程序设计的相关问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%A8%A1%E5%9D%97%E5%AE%9E%E4%BE%8B%EF%BC%8C%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E5%AD%90%E7%A8%8B%E5%BA%8F%EF%BC%8C%E6%A0%B9%E6%8D%AE%E6%8F%90%E4%BE%9B%E7%9A%84N%EF%BC%8C%E8%AE%A1%E7%AE%97N%E7%9A%84%E4%B8%89%E6%AC%A1%E6%96%B9"><span class="nav-number">2.1.</span> <span class="nav-text">例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E5%86%B2%E7%AA%81%E5%AD%98%E5%9C%A8%E4%B8%8B%E7%9A%84%E6%A8%A1%E5%9D%97%E5%8C%96%E8%AE%BE%E8%AE%A1%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">寄存器冲突存在下的模块化设计：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81%E3%81%AE%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">汇编代码の使用教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ret%E5%92%8Cretf"><span class="nav-number">3.1.</span> <span class="nav-text">ret和retf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#call"><span class="nav-number">3.2.</span> <span class="nav-text">call</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mul"><span class="nav-number">3.3.</span> <span class="nav-text">mul</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adc"><span class="nav-number">3.4.</span> <span class="nav-text">adc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sbb"><span class="nav-number">3.5.</span> <span class="nav-text">sbb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cmp"><span class="nav-number">3.6.</span> <span class="nav-text">cmp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pushf%E5%92%8Cpopf"><span class="nav-number">3.7.</span> <span class="nav-text">pushf和popf</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8Related"><span class="nav-number">4.</span> <span class="nav-text">标志寄存器Related</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E4%B8%AD%E6%96%AD"><span class="nav-number">5.</span> <span class="nav-text">内中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">中断向量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E8%BF%87%E7%A8%8B-8086CPU-%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">中断过程(8086CPU)：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B%E5%A4%84%E7%90%860%E5%8F%B7%E4%B8%AD%E6%96%AD"><span class="nav-number">5.3.</span> <span class="nav-text">编程处理0号中断</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BA%86%E5%AE%9E%E7%8E%B0%E8%BF%99%E4%B8%AA%E5%8A%9F%E8%83%BD%E6%88%91%E4%BB%AC%E6%9D%A5%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90%EF%BC%9A"><span class="nav-number">5.3.1.</span> <span class="nav-text">为了实现这个功能我们来进行分析：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#do0%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">5.3.2.</span> <span class="nav-text">do0的安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#do0"><span class="nav-number">5.3.3.</span> <span class="nav-text">do0</span></a></li></ol></li></ol></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">MuZZZFeng</p>
-  <div class="site-description" itemprop="description">记录 AI 学习、课程笔记、工具折腾与生活碎片。</div>
-</div>
-<div class="site-state-wrap animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">9</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">3</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hickercf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hickercf" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
-      </span>
-  </div>
-
-        </div>
-      </div>
-    </div>
-
-    
-  </aside>
-
-
-    </div>
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hickercf.github.io/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MuZZZFeng">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MuZZZFeng's Blog">
-      <meta itemprop="description" content="记录 AI 学习、课程笔记、工具折腾与生活碎片。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="汇编语言与接口设计 | MuZZZFeng's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          汇编语言与接口设计
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2026-05-03 00:00:00 / 修改时间：20:04:43" itemprop="dateCreated datePublished" datetime="2026-05-03T00:00:00+08:00">2026-05-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">课程笔记</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody"><h1 id="寄存器："><a href="#寄存器：" class="headerlink" title="寄存器："></a>寄存器：</h1><h2 id="以8086为例："><a href="#以8086为例：" class="headerlink" title="以8086为例："></a>以8086为例：</h2><p>寄存器都是16位</p>
+<!doctype html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f9f5"><meta name="description" content="整理組合語言與介面設計的基礎概念，留下複習時可以回頭查閱的學習軌跡。"><title>汇编语言与接口设计 · Hickercf&#39;blog</title><link rel="canonical" href="https://hickercf.fun/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/"><meta property="og:type" content="article"><meta property="og:title" content="汇编语言与接口设计 · Hickercf&#39;blog"><meta property="og:description" content="整理組合語言與介面設計的基礎概念，留下複習時可以回頭查閱的學習軌跡。"><meta property="og:url" content="https://hickercf.fun/2026/05/03/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/"><meta name="twitter:card" content="summary"><meta property="article:published_time" content="2026-05-03"><meta property="article:author" content="木之風"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%234d6254'/%3E%3Cpath d='M12 10v20m16-20v20M12 20h16' stroke='%23f8f9f5' stroke-width='3' fill='none'/%3E%3C/svg%3E"><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head><body id="top"><a class="skip-link" href="#main">跳至主要內容</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Hickercf&#39;blog 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M7 6v16M21 6v16M7 14h14"/><path class="mark-detail" d="M11 4h6M11 24h6"/></svg></span><span>Hickercf&#39;blog</span></a><nav class="main-nav" aria-label="主要導覽"><a href="/" aria-current="page">文章</a><a href="/archives/" >歸檔</a><a href="/about/" >關於</a></nav><span class="header-note"><span class="status-dot"></span>持續記錄中</span></div></header><main id="main" tabindex="-1"><article class="reader-container"><a class="back-link" href="/"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5" stroke="currentColor" stroke-width="1.25"/></svg>返回所有文章</a><header class="reader-heading"><a class="post-category" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/"><span class="category-square" aria-hidden="true"></span>課程筆記</a><h1>汇编语言与接口设计</h1><div class="post-meta"><time datetime="2026-05-03">2026.05.03</time><span class="meta-dot" aria-hidden="true"></span><span>約 13 分鐘閱讀</span></div><p class="reader-excerpt">整理組合語言與介面設計的基礎概念，留下複習時可以回頭查閱的學習軌跡。</p></header><details class="mobile-toc"><summary>文章目錄 <span>5 個章節</span></summary><nav aria-label="文章章節"><a href="#%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%9A">寄存器：</a><a href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98">模块化程序设计的相关问题</a><a href="#%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81%E3%81%AE%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B">汇编代码の使用教程</a><a href="#%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8Related">标志寄存器Related</a><a href="#%E5%86%85%E4%B8%AD%E6%96%AD">内中断</a></nav></details><div class="reader-layout"><div><div class="reader-body" lang="zh-CN"><h2 id="寄存器：">寄存器：</h2><h3 id="以8086为例：">以8086为例：</h3><p>寄存器都是16位</p>
 <p>*<strong>通用寄存器</strong>：*AX, BX, CX, DX<br>	每个寄存器又可以分为高8位和低8位：如AX -&gt; AH,  AL  每个寄存器都可以独立使用   </p>
 <p><em><strong>处理数据的尺寸</strong>：</em><br>	字节 byte 8位     字 word 16位</p>
 <p><strong><em>简单的汇编指令</em>：</strong><br>	<code>mov ax bx   ax &lt;- bx</code><br>	<code>add ax bx   ax &lt;- ax + bx</code><br>	<code>jmp 3:0b16  CS &lt;- 3h IP &lt;- 0b16h</code><br>	<code>jmp ax  ip &lt;- ax</code>
 	</p>
 <p><strong><em>16位cpu</em>:</strong><br>	1.运算器一次最多处理16位数据<br>	2.寄存器最大宽度位16<br>	3.reg和alu之间的数据通路为16位</p>
-<p><em><strong>地址：(内存中没有段的划分)</strong></em><br>	20位物理地址 16位段地址 16位偏移地址  -&gt; 一个段的最大长度为 2 &lt;&lt; 16 &#x3D; 64kb<br>	20位地址只在内存中使用<br>	物理地址 &#x3D; 段地址 &lt;&lt; 4  + 偏移地址</p>
+<p><em><strong>地址：(内存中没有段的划分)</strong></em><br>	20位物理地址 16位段地址 16位偏移地址  -&gt; 一个段的最大长度为 2 &lt;&lt; 16 = 64kb<br>	20位地址只在内存中使用<br>	物理地址 = 段地址 &lt;&lt; 4  + 偏移地址</p>
 <p><strong><em>段寄存器</em>：</strong><br>	CS DS SS ES (段：segment)</p>
-<p><em><strong>CS和IP：</strong></em><br>	CS 代码段寄存器 IP 指令指针寄存器<br>	读取一个指令后IP自动增加一个指令的长度<br>	启动，复位后 CS &#x3D; FFFFH IP&#x3D; 0000H</p>
+<p><em><strong>CS和IP：</strong></em><br>	CS 代码段寄存器 IP 指令指针寄存器<br>	读取一个指令后IP自动增加一个指令的长度<br>	启动，复位后 CS = FFFFH IP= 0000H</p>
 <p><strong><em>代码段</em>：</strong><br>	最大64kb, 起始地址16倍数</p>
-<h1 id="模块化程序设计的相关问题"><a href="#模块化程序设计的相关问题" class="headerlink" title="模块化程序设计的相关问题"></a>模块化程序设计的相关问题</h1><h2 id="例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方"><a href="#例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方" class="headerlink" title="例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方"></a>例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">assmume cs:code</span><br><span class="line">data segment</span><br><span class="line">	dw 1,2,3,4,5,6,7,8</span><br><span class="line">	dd 0,0,0,0,0,0,0,0</span><br><span class="line">data ends</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line">start:</span><br><span class="line">	mov ax, data</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov si, 0</span><br><span class="line">	mov di, 16</span><br><span class="line">	</span><br><span class="line">	mov cx, 8</span><br><span class="line">s:</span><br><span class="line">	mov bx, [si]</span><br><span class="line">	call cube</span><br><span class="line">	mov [di], ax</span><br><span class="line">	mov [di].2, ax</span><br><span class="line">	add si, 2</span><br><span class="line">	add di, 4</span><br><span class="line">	loop s</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">cube:</span><br><span class="line">	mov ax, bx</span><br><span class="line">	mul bx</span><br><span class="line">	mul bx</span><br><span class="line">	ret</span><br><span class="line"></span><br><span class="line">code ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+<h2 id="模块化程序设计的相关问题">模块化程序设计的相关问题</h2><h3 id="例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方">例子：简单的模块实例，设计一个子程序，根据提供的N，计算N的三次方</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">assmume cs:code</span><br><span class="line">data segment</span><br><span class="line">	dw 1,2,3,4,5,6,7,8</span><br><span class="line">	dd 0,0,0,0,0,0,0,0</span><br><span class="line">data ends</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line">start:</span><br><span class="line">	mov ax, data</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov si, 0</span><br><span class="line">	mov di, 16</span><br><span class="line">	</span><br><span class="line">	mov cx, 8</span><br><span class="line">s:</span><br><span class="line">	mov bx, [si]</span><br><span class="line">	call cube</span><br><span class="line">	mov [di], ax</span><br><span class="line">	mov [di].2, ax</span><br><span class="line">	add si, 2</span><br><span class="line">	add di, 4</span><br><span class="line">	loop s</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">cube:</span><br><span class="line">	mov ax, bx</span><br><span class="line">	mul bx</span><br><span class="line">	mul bx</span><br><span class="line">	ret</span><br><span class="line"></span><br><span class="line">code ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 <p>这是一个很简单的子程序，没有任何的寄存器冲突</p>
-<h2 id="寄存器冲突存在下的模块化设计："><a href="#寄存器冲突存在下的模块化设计：" class="headerlink" title="寄存器冲突存在下的模块化设计："></a>寄存器冲突存在下的模块化设计：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">assume cs:code</span><br><span class="line"></span><br><span class="line">data segment</span><br><span class="line">	db &#x27;word&#x27;, 0</span><br><span class="line">	db &#x27;unix&#x27;, 0</span><br><span class="line">	db &#x27;wind&#x27;, 0</span><br><span class="line">	db &#x27;good&#x27;, 0</span><br><span class="line">data ends</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">	mov ax, data</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov bx, 0</span><br><span class="line">	</span><br><span class="line">	mov cx, 4</span><br><span class="line">s:</span><br><span class="line">	mov si, bx</span><br><span class="line">	call capital</span><br><span class="line">	add bx, 5</span><br><span class="line">	loop s</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">capital</span><br><span class="line">	push 1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="汇编代码の使用教程"><a href="#汇编代码の使用教程" class="headerlink" title="汇编代码の使用教程"></a>汇编代码の使用教程</h1><h2 id="ret和retf"><a href="#ret和retf" class="headerlink" title="ret和retf"></a><code>ret</code>和<code>retf</code></h2><p><code>ret</code> 相当于，<br><code>pop ip</code><br>适用于近迁移</p>
+<h3 id="寄存器冲突存在下的模块化设计：">寄存器冲突存在下的模块化设计：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">assume cs:code</span><br><span class="line"></span><br><span class="line">data segment</span><br><span class="line">	db &#x27;word&#x27;, 0</span><br><span class="line">	db &#x27;unix&#x27;, 0</span><br><span class="line">	db &#x27;wind&#x27;, 0</span><br><span class="line">	db &#x27;good&#x27;, 0</span><br><span class="line">data ends</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">	mov ax, data</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov bx, 0</span><br><span class="line">	</span><br><span class="line">	mov cx, 4</span><br><span class="line">s:</span><br><span class="line">	mov si, bx</span><br><span class="line">	call capital</span><br><span class="line">	add bx, 5</span><br><span class="line">	loop s</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">capital</span><br><span class="line">	push 1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="汇编代码の使用教程">汇编代码の使用教程</h2><h3 id="ret和retf"><code>ret</code>和<code>retf</code></h3><p><code>ret</code> 相当于，<br><code>pop ip</code><br>适用于近迁移</p>
 <p><code>retf</code> 相当于<br><code>pop ip</code><br><code>pop cs</code><br>适用于远迁移</p>
-<h2 id="call"><a href="#call" class="headerlink" title="call"></a><code>call</code></h2><p>CPU执行call操作的时候进行两步操作：<br>1.将当前的CS和IP压栈，或者只压栈当前的IP<br>2.转移</p>
+<h3 id="call"><code>call</code></h3><p>CPU执行call操作的时候进行两步操作：<br>1.将当前的CS和IP压栈，或者只压栈当前的IP<br>2.转移</p>
 <ul>
 <li><p>第一种情况：<code>call</code>标号<br>  相当于：<br>  <code>push IP</code><br>  <code>jmp near ptr 标号</code></p>
 </li>
-<li><p>第二种情况：<code>call far ptr 标号</code><br>  相当于：<br>  <code>push CS   </code>push IP<code>   </code>jmp far ptr 标号&#96;</p>
+<li><p>第二种情况：<code>call far ptr 标号</code><br>  相当于：<br>  <code>push CS   </code>push IP<code>   </code>jmp far ptr 标号`</p>
 </li>
 <li><p>第三种情况：<code>call 16位reg</code><br>  相当于：<br>  <code>push IP</code><br>  <code>jmp 16位reg</code></p>
 </li>
@@ -274,24 +27,24 @@
 </blockquote>
 </li>
 </ul>
-<h2 id="mul"><a href="#mul" class="headerlink" title="mul"></a><code>mul</code></h2><p>格式如下：<br><code>mul reg</code><br><code>mul 内存单元</code><br>分两种情况：</p>
+<h3 id="mul"><code>mul</code></h3><p>格式如下：<br><code>mul reg</code><br><code>mul 内存单元</code><br>分两种情况：</p>
 <blockquote>
 <p>如果是两个8位相乘，那么结果全部放在AX中。<br>如果是两个16位相乘，那么结果的高16位放在DX中，低16位放在AX中。</p>
 </blockquote>
-<h2 id="adc"><a href="#adc" class="headerlink" title="adc"></a><code>adc</code></h2><blockquote>
+<h3 id="adc"><code>adc</code></h3><blockquote>
 <p><code>adc</code> 带进位加法指令<br>用法：<code>adc ax, bx</code><br>相当于计算：<br><code>(ax) = (ax) + (bx) + CF</code></p>
 </blockquote>
-<h2 id="sbb"><a href="#sbb" class="headerlink" title="sbb"></a><code>sbb</code></h2><blockquote>
+<h3 id="sbb"><code>sbb</code></h3><blockquote>
 <p><code>sbb</code> 带借位的减法<br>用法：<code>sbb ax, bx</code><br>相当于计算：<br><code>(ax) = (ax) - (bx) - CF</code></p>
 </blockquote>
-<h2 id="cmp"><a href="#cmp" class="headerlink" title="cmp"></a><code>cmp</code></h2><blockquote>
+<h3 id="cmp"><code>cmp</code></h3><blockquote>
 <p><code>cmp</code> 是比较指令， 本质上是不保存结果的减法指令<br>用法：<code>cmp ax, bx</code><br>先进行计算<code>ax - bx</code>，计算后<br>![[Pasted image 20260426232144.png]]<br>对应的跳转指令如下：<br>![[Pasted image 20260426232305.png]]</p>
 </blockquote>
-<h2 id="pushf和popf"><a href="#pushf和popf" class="headerlink" title="pushf和popf"></a><code>pushf和popf</code></h2><p><code>pushf</code>:标志寄存器入栈<br><code>popf</code>：标志寄存器出栈</p>
-<h1 id="标志寄存器Related"><a href="#标志寄存器Related" class="headerlink" title="标志寄存器Related"></a>标志寄存器<code>Related</code></h1><ol>
-<li><code>ZF</code>寄存器：判断相关指令结果是否为0，是0则<code>ZF</code> &#x3D; 1</li>
-<li><code>PF</code>寄存器：奇偶标准位，记录相关指令执行后结果的所以bit中1的个数是否为偶数，如果是偶数则<code>PF</code> &#x3D; 1，16位寄存器进行操作时，只看低8位。</li>
-<li><code>SF</code>寄存器，记录相关指令执行后结果是否位负，如果为负则<code>SF</code> &#x3D; 1</li>
+<h3 id="pushf和popf"><code>pushf和popf</code></h3><p><code>pushf</code>:标志寄存器入栈<br><code>popf</code>：标志寄存器出栈</p>
+<h2 id="标志寄存器Related">标志寄存器<code>Related</code></h2><ol>
+<li><code>ZF</code>寄存器：判断相关指令结果是否为0，是0则<code>ZF</code> = 1</li>
+<li><code>PF</code>寄存器：奇偶标准位，记录相关指令执行后结果的所以bit中1的个数是否为偶数，如果是偶数则<code>PF</code> = 1，16位寄存器进行操作时，只看低8位。</li>
+<li><code>SF</code>寄存器，记录相关指令执行后结果是否位负，如果为负则<code>SF</code> = 1</li>
 <li><code>CF</code>寄存器，在进行<strong>无符号数</strong>运算的时候，记录运算结果最高有效位向更高位的进位值</li>
 <li><code>OF</code>寄存器，在进行<strong>有符号数</strong>的运算的时候，如果结果超过机器表示范围，称为溢出</li>
 <li><code>DF</code>寄存器和串传送指令：<br> <code>df</code>是方向标志位，在传处理指令中控制<code>si, di</code>的增减<ol>
@@ -313,7 +66,7 @@
 </ol>
 </li>
 </ol>
-<h1 id="内中断"><a href="#内中断" class="headerlink" title="内中断"></a>内中断</h1><blockquote>
+<h2 id="内中断">内中断</h2><blockquote>
 <p>当<code>cpu</code>发生以下情况时，将产生中断信息</p>
 </blockquote>
 <ol>
@@ -322,10 +75,10 @@
 <li>执行<code>into</code> 指令                         –中断码4</li>
 <li>执行<code>int</code>指令                            –中断码为指令参数</li>
 </ol>
-<h2 id="中断向量表："><a href="#中断向量表：" class="headerlink" title="中断向量表："></a>中断向量表：</h2><blockquote>
+<h3 id="中断向量表：">中断向量表：</h3><blockquote>
 <p>储存在内存的<code>0000:0000</code> 到 <code>0000:03FF</code> 这1024个单元中</p>
 </blockquote>
-<h2 id="中断过程-8086CPU-："><a href="#中断过程-8086CPU-：" class="headerlink" title="中断过程(8086CPU)："></a>中断过程(<code>8086CPU</code>)：</h2><ul>
+<h3 id="中断过程-8086CPU-：">中断过程(<code>8086CPU</code>)：</h3><ul>
 <li>从中断信息中获取中断类型码</li>
 <li>标志寄存器入栈(中断过程要改变标志寄存器的值)</li>
 <li>设置标志寄存器第八位的<code>TF</code>和第九位<code>IF</code>的值为0</li>
@@ -340,10 +93,10 @@
 </blockquote>
 </li>
 </ul>
-<h2 id="编程处理0号中断"><a href="#编程处理0号中断" class="headerlink" title="编程处理0号中断"></a>编程处理0号中断</h2><p>现在我们考虑，重新写一个0号中断处理程序，功能是在拼命中间显示”overflow!”，然后返回系统。</p>
-<h3 id="为了实现这个功能我们来进行分析："><a href="#为了实现这个功能我们来进行分析：" class="headerlink" title="为了实现这个功能我们来进行分析："></a>为了实现这个功能我们来进行分析：</h3><ol>
+<h3 id="编程处理0号中断">编程处理0号中断</h3><p>现在我们考虑，重新写一个0号中断处理程序，功能是在拼命中间显示”overflow!”，然后返回系统。</p>
+<h4 id="为了实现这个功能我们来进行分析：">为了实现这个功能我们来进行分析：</h4><ol>
 <li>当除法发生溢出的时候，产生0号中断信息，从而引发中断过程。<ul>
-<li>此时CPU进行以下工作:<br>  (1).  获取中断类型码0；<br>  (2).  标志寄存器入栈，TF和IF设置为0<br>  (3). CS， IP入栈<br>  (4). (IP) &#x3D; (0 * 4), (CS) &#x3D; (0 * 4 + 2)</li>
+<li>此时CPU进行以下工作:<br>  (1).  获取中断类型码0；<br>  (2).  标志寄存器入栈，TF和IF设置为0<br>  (3). CS， IP入栈<br>  (4). (IP) = (0 * 4), (CS) = (0 * 4 + 2)</li>
 <li>可见中断0发生的时候，CPU将转去执行中断处理程序，只要按照以下步骤编写中断处理程序，当中断0发生的时候，即可显示“overflow!”<ol>
 <li>相关处理；</li>
 <li>向显示缓冲区宋字符串”overflow!”;</li>
@@ -355,82 +108,11 @@
 </ul>
  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">assume cs:code</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">	do0安装程序</span><br><span class="line">	设置中断向量表</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">do0:</span><br><span class="line">	显示字符串&quot;overflow!&quot;</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">code ends</span><br><span class="line"></span><br><span class="line">end start</span><br></pre></td></tr></table></figure></li>
 </ol>
-<h3 id="do0的安装"><a href="#do0的安装" class="headerlink" title="do0的安装"></a>do0的安装</h3><p>可以用<code>movsb</code>指令，将do0的代码送入0：200处。</p>
+<h4 id="do0的安装">do0的安装</h4><p>可以用<code>movsb</code>指令，将do0的代码送入0：200处。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">assume cs:code</span><br><span class="line">code segment</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">	mov ax, cs</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov si, offset do0</span><br><span class="line">	</span><br><span class="line">	mov ax, 0</span><br><span class="line">	mov es, ax</span><br><span class="line">	mov di, 200h</span><br><span class="line">	</span><br><span class="line">	mov cx, offset do0end-offset do0</span><br><span class="line">	</span><br><span class="line">	cld</span><br><span class="line">	rep movsb</span><br><span class="line">	</span><br><span class="line">	设置中断向量表</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">	</span><br><span class="line">do0:</span><br><span class="line">	显示字符串&quot;overflow!&quot;</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">do0end:nop</span><br><span class="line"></span><br><span class="line">code ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 
-<h3 id="do0"><a href="#do0" class="headerlink" title="do0"></a>do0</h3><p>按照我们一贯的思路：</p>
+<h4 id="do0">do0</h4><p>按照我们一贯的思路：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">assume cs:code</span><br><span class="line"></span><br><span class="line">data segment</span><br><span class="line">	db &quot;overflow!&quot;</span><br><span class="line">data ends</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">	mov ax, cs</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov si, ....</span><br></pre></td></tr></table></figure>
 <p>看似很合理，实际上大错特错。”overflow!”在程序的data段中，当程序执行完后返回，它所占用的空间会被系统是否，其中存放的字符串很肯可能被其他的信息覆盖。<br>正确的程序如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">asuume cs:code</span><br><span class="line"></span><br><span class="line">code segment</span><br><span class="line">start:</span><br><span class="line">	mov ax, cs</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov si, offset do0</span><br><span class="line">	mov ax, 0</span><br><span class="line">	mov es, cx</span><br><span class="line">	mov di, 200h</span><br><span class="line">	mov cx, offset do0end - offset do0</span><br><span class="line">	</span><br><span class="line">	cld</span><br><span class="line">	rep movsb</span><br><span class="line">	</span><br><span class="line">	mov ax, 0</span><br><span class="line">	mov es, ax</span><br><span class="line">	mov word ptr es:[0 * 4], 200h</span><br><span class="line">	mov word ptr es:[0 * 4 + 2], 0</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line"></span><br><span class="line">do0:</span><br><span class="line">	jmp short do0start</span><br><span class="line">	db &quot;overflow!&quot;</span><br><span class="line">	</span><br><span class="line">do0start:</span><br><span class="line">	mov ax, cs</span><br><span class="line">	mov ds, ax</span><br><span class="line">	mov si, 202h</span><br><span class="line">	</span><br><span class="line">	mov ax, 0b800h</span><br><span class="line">	mov es, ax</span><br><span class="line">	mov di, 12*160+36*2</span><br><span class="line">	</span><br><span class="line">	mov cx, 9</span><br><span class="line">s:</span><br><span class="line">	mov al, [si]</span><br><span class="line">	mov es:[di], al</span><br><span class="line">	int si</span><br><span class="line">	add di, 2</span><br><span class="line">	loop s</span><br><span class="line">	</span><br><span class="line">	mov ax, 4c00h</span><br><span class="line">	int 21h</span><br><span class="line">do0end:nop</span><br><span class="line">code ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-            </div>
-            <div class="post-nav-item">
-                <a href="/2026/05/03/%E9%A6%96%E9%A1%B5-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/" rel="next" title="👋 欢迎来到我的博客">
-                  👋 欢迎来到我的博客 <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
-
-
-
-
-
-
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="copyright">
-    &copy; 
-    <span itemprop="copyrightYear">2026</span>
-    <span class="with-love">
-      <i class="fa fa-heart"></i>
-    </span>
-    <span class="author" itemprop="copyrightHolder">MuZZZFeng</span>
-  </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
-  </div><div class="footer-inner">
-  <div><strong>© 2026 木之风</strong> · Built with Hexo & NexT</div>
-  <div style="margin-top: 6px; opacity: 0.7;">⚔ 剑与魔法之外，也记录学习、代码和一些凌晨的想法。</div>
-</div>
-
-
-    </div>
-  </footer>
-
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-  <div class="sidebar-dimmer"></div>
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-<script src="/js/prisma-animations.js"></script>
-
-</body>
-</html>
+    </div><div class="reader-end"><p>寫下來，是為了更好地理解。<br>— 木之風</p></div><a class="reader-next" href="/2026/05/31/OS/"><span>繼續閱讀 · 課程筆記</span><h2>OS <span aria-hidden="true">→</span></h2></a></div><aside class="reader-toc"><h2>ON THIS PAGE · 文章目錄</h2><nav aria-label="文章章節"><a href="#%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%9A">寄存器：</a><a href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98">模块化程序设计的相关问题</a><a href="#%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81%E3%81%AE%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B">汇编代码の使用教程</a><a href="#%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8Related">标志寄存器Related</a><a href="#%E5%86%85%E4%B8%AD%E6%96%AD">内中断</a></nav></aside></div></article></main><footer class="site-footer"><div class="footer-inner"><div><a class="footer-brand" href="/">Hickercf&#39;blog</a><p>用文字，留下一點痕跡。</p></div><div class="footer-right"><div class="footer-links"><a href="https://github.com/hickercf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/about/">關於這裡 ↗</a></div><span>© 2026 木之風 · Hickercf&#39;blog</span></div></div></footer><a class="back-to-top" href="#top" aria-label="返回頂部">↑</a></body></html>
